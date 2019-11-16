@@ -130,7 +130,7 @@ server.post("/user", (request, response) => {
         // 결과 값이 존재하지 않으면
         if (!results[0]) {
             response.status(500).end("Server Error");
-            console.log("이건 에러인가?");
+            console.log("이건 에러");
             return response.send("please check your id.");
         }
     
