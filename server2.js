@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 const mysql         = require('mysql');
-const dbConfig      = require('.config/dbConfig');
+const dbConfig      = require('./config/dbConfig');
 const express       = require('express');
 const hbs           = require('express-handlebars');
 const server        = express();
@@ -65,16 +65,9 @@ crypto.pbkdf2('password', salt, 100000, 64, 'sha512', (error, derivedKey) => {
 })
 
 
-
 // querystring(path URL) & semantic(clean URL)
 // url path의 차이가 있다.
 // request.query.#### & request.params.####
-
-// get = /user/:email
-// get = /user
-// post = /user
-// update = 
-// delete
 
 // 현재 날짜 출력 npm node-datatime
 // data formatt = ####-##-##
@@ -85,7 +78,7 @@ var formatted = dt.format('Y-m-d');
 // POST
 // 회원가입
 server.use(bodyParser.urlencoded({ extended: false }));
-server.post("/user", (request, response) => {
+server.post("/user/signUp", (request, response) => {
     
     // let sqlQuery = 'INSERT INTO member (email, password, name, nickName, phoneNumber, regiDate) VALUES (?, ?, ?, ?, ?, ?)'
     // var email = request.body.email;
@@ -125,7 +118,7 @@ server.post("/user", (request, response) => {
 server.post("/user", (request, response) => {
     let email = request.body.email;
     let password = request.body.password;
-    let sqlQuery = 'select * from member where email = ? && password = ?'
+    let sqlQuery = 'select * from member where email = ? && password = ?';
 
     connection.query(sqlQuery, [email, password], function(error, results, fields) {
         if (error) {
@@ -143,14 +136,24 @@ server.post("/user", (request, response) => {
     
         var user = results[0];
         
-        crypto
+        crypto.pbkdf2(pw, user.salt, 100000, 64, 'sha512', function(error, derivedKey){
+            if (error) {
+                console.log(error)
+            }
+            
+            if (derivedKey.toString('hex') === user.password) {
+                return response.send("login success");
+            }
+            else { 
+                return response.send("please check your password.");
+            }
+        });
 
         console.log(results);
         response.send({error: false, data: results[0], message: 'users list.'});
         response.status(200).end("Success => User login Query");
-    })
-})
-
+    });
+});
 
 // 특정한 유저의 데이터를 출력
 server.get("/user/:memberNumber", (request, response) => {
