@@ -1,14 +1,12 @@
 /* ==================== START modules ==================== */
 const mysql         = require('mysql');
-const dbConfig      = require('./config/dbConfig');
+const dbConfig      = require('../../config/dbConfig');
 const express       = require('express');
-const hbs           = require('express-handlebars');
-const server        = express();
+const app           = express();
+const router        = express.Router();
 const bodyParser    = require('body-parser');
-const morgan        = require('morgan');
 const crypto        = require('crypto');
 /* ==================== END modules ==================== */
-
 
 /* ==================== START DB Connection ==================== */
 var dbOptions = {
@@ -23,63 +21,8 @@ var connection = mysql.createConnection(dbOptions);
 connection.connect();
 /* ==================== END DB Connection ==================== */
 
-
-/* ==================== START lendering ==================== */
-// template Engine == html 변형 engine을 이용
-// pug, ejs, handlebars 세가지의 대표적인 엔진이 존재한다.
-// 전체적인 페이지 view는 views에서 관리한다.
-server.engine('hbs', hbs({
-    extname: 'hbs',
-    defaultLayout: 'layout',
-    layoutsDir: __dirname+'/views/layouts',
-    partialsDir:__dirname+'/views/partials'    
-}))
-server.set("view engine", "hbs");
-
-server.use(express.static(__dirname + "/public"));
-server.use(morgan('combined'));
-
-// 해당 use가 정상적으로 실행되어야 GET으로 넘어갈수 있다
-// 확인은 로컬호스트의 로딩이 지속됨으로 확인가능하다.
-server.use((request, response, next) => {
-    //config
-    next();
-});
-/* ==================== END lendering ==================== */
-
-
-// crypto 암호화
-var salt = '';
-var pw = '';
-crypto.randomBytes(64, (error, Buffer) => {
-    if (error) {
-        throw error;
-    }
-    salt = Buffer.toString('hex');
-});
-crypto.pbkdf2('password', salt, 100000, 64, 'sha512', (error, derivedKey) => {
-    if (error) {
-        throw error;
-    }
-    pw = derivedKey.toString('hex');
-})
-
-
-// querystring(path URL) & semantic(clean URL)
-// url path의 차이가 있다.
-// request.query.#### & request.params.####
-
-// 현재 날짜 출력 npm node-datatime
-// data formatt = ####-##-##
-var datetime = require('node-datetime');
-var dt = datetime.create();
-var formatted = dt.format('Y-m-d');
-
-// POST
 // 회원가입
-server.use(bodyParser.urlencoded({ extended: false }));
-server.post("/user/signUp", (request, response) => {
-    
+router.post("/signUp", (request, response) => {
     // let sqlQuery = 'INSERT INTO member (email, password, name, nickName, phoneNumber, regiDate) VALUES (?, ?, ?, ?, ?, ?)'
     // var email = request.body.email;
     // var password = request.body.password;
@@ -113,9 +56,24 @@ server.post("/user/signUp", (request, response) => {
     });
 });
 
-// GET
-// 회원 로그인
-server.post("/user", (request, response) => {
+// 특정 회원조회
+router.get("/:memberNumber", (request, response) => {
+    let memberNumber = request.params.memberNumber;
+    let sqlQuery = 'SELECT * FROM member WHERE memberNumber=?';
+    
+    connection.query(sqlQuery, memberNumber, function (error, results, fields) {
+        if (error) {
+            response.status(500).end("Server Error");
+            console.log(error);
+        } 
+        console.log(results);
+        response.send({error: false, data: results[0], message: 'users list.'});
+        response.status(200).end("Success => User Select Query");
+      });
+});
+
+// 로그인
+router.post("/", (request, response) => {
     let email = request.body.email;
     let password = request.body.password;
     let sqlQuery = 'select * from member where email = ? && password = ?';
@@ -155,25 +113,8 @@ server.post("/user", (request, response) => {
     });
 });
 
-// 특정한 유저의 데이터를 출력
-server.get("/user/:memberNumber", (request, response) => {
-    let memberNumber = request.params.memberNumber;
-    let sqlQuery = 'SELECT * FROM member WHERE memberNumber=?';
-    
-    connection.query(sqlQuery, memberNumber, function (error, results, fields) {
-        if (error) {
-            response.status(500).end("Server Error");
-            console.log(error);
-        } 
-        console.log(results);
-        response.send({error: false, data: results[0], message: 'users list.'});
-        response.status(200).end("Success => User Select Query");
-      });
-});
-
-// put
-// 회원정보 수정
-server.put("/user/:memberNumber", (request, response) => {
+// 회원수정
+router.put("/:memberNumber", (request, response) => {
     let memberNumber = request.params.memberNumber;
     let sqlQuery = 'UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?';
     
@@ -194,8 +135,8 @@ server.put("/user/:memberNumber", (request, response) => {
 });
 
 
-// delete 
-server.delete("/user/:memberNumber", (request, response) => {
+// 회원삭제 
+router.delete("/:memberNumber", (request, response) => {
     let memberNumber = request.params.memberNumber;
     let sqlQuery = 'DELETE FROM member WHERE memberNumber=?';
 
@@ -212,34 +153,30 @@ server.delete("/user/:memberNumber", (request, response) => {
 });
 
 
-server.get("/map/search", (request, response) => {
-        
-})
-
-
-
-// GET
-server.get("/", (request, response) => {
-    // 수신상태를 보고싶다면
-    response.status(200).render('index', {
-        name: "AAA",
-        home: true,
-    });
+// crypto 암호화
+var salt = '';
+var pw = '';
+crypto.randomBytes(64, (error, Buffer) => {
+    if (error) {
+        throw error;
+    }
+    salt = Buffer.toString('hex');
 });
-
-server.get("/features", (request, response)=> {
-    response.status(200).render("features", {
-        features: true
-    })
+crypto.pbkdf2('password', salt, 100000, 64, 'sha512', (error, derivedKey) => {
+    if (error) {
+        throw error;
+    }
+    pw = derivedKey.toString('hex');
 })
 
-server.get("/contact", (request, response)=>{
-    response.status(200).render("contact", {
-        contact: true,
-        list:["Choi","Yong","Kwon","Enjoy"]
-    })
-})
+// querystring(path URL) & semantic(clean URL)
+// url path의 차이가 있다.
+// request.query.#### & request.params.####
 
-server.listen(3000, () => {
-    console.log("The server is running on Port 3000");
-});
+// 현재 날짜 출력 npm node-datatime
+// data formatt = ####-##-##
+var datetime = require('node-datetime');
+var dt = datetime.create();
+var formatted = dt.format('Y-m-d');
+
+module.exports = router;
