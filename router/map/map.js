@@ -21,7 +21,6 @@ var connection = mysql.createConnection(dbOptions);
 connection.connect();
 /* ==================== END DB Connection ==================== */
 
-
 router.get("/map", (request, response) => {
     response.writeHead(200, {
         'Content-Type' : text/html
