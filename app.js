@@ -21,12 +21,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
 app.use(router);
 
-app.use('/user', userRouter);
+// app.use('/user', userRouter);
 
 app.use((request, response, next) => {
     //config
     next();
 });
+
+app.get("/addressSearch", (request, response) => {
+    console.log("이거 되나용?");
+    // response.status(200).render('map');
+    response.status(200).render('../map/addressSearch');
+});
+
 
 app.listen(3000, () => {
     console.log("The server is running on Port 3000");

@@ -4,6 +4,7 @@ const router        = express.Router();
 const path          = require('path');
 const user          = require('./user/user');
 const place         = require('./place/place');
+const images         = require('./imageDir/images');
 /* ==================== END modules ==================== */
 
 // url routing
@@ -15,6 +16,7 @@ router.get("/", (request, response) => {
 /* ==================== START router ==================== */
 router.use("/user", user);          // member
 router.use("/place", place);        // place
+router.use("/images", images)       // images
 /* ==================== END router ==================== */
 
 module.exports = router;

@@ -1,21 +1,8 @@
 /* ==================== START modules ==================== */
-const mysql         = require('mysql');
-const dbConfig      = require('../config/dbConfig');
-const bodyParser    = require('body-parser');
+
+const db            = require('../config/db');
+
 /* ==================== END modules ==================== */
-
-/* ==================== START DB Connection ==================== */
-var dbOptions = {
-    host: dbConfig.host,
-    port: dbConfig.port,
-    user: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database
-};
-
-var sql = mysql.createConnection(dbOptions);
-sql.connect();
-/* ==================== END DB Connection ==================== */
 
 var Place = function(place) {
     this.placeNumber = place.placeNumber;
@@ -30,74 +17,83 @@ var Place = function(place) {
     this.regiDate = place.regiDate;
 };
 
-
 Place.createPlace = function(setValues, result) {
     console.log(__filename + " - setValues : " + setValues);
 
-    sql.query("INSERT INTO place SET ?", setValues, function(err, res) {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-        }
-        else{
+    db((err, connection) => {
+        connection.query("INSERT INTO place SET ?", setValues, function(err, res) {
+            connection.release();
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+            }
             result(null, res);
-        }
+        });
     });
 };
 
 Place.readOnePlace = function(placeNumber, result) {
     console.log(__filename + " - placeNumber : " + placeNumber);
 
-    sql.query("SELECT * FROM place WHERE placeNumber = ?", placeNumber, function(err, res) {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-        }
-        else{
+    db((err, connection) => {
+        connection.query("SELECT * FROM place WHERE placeNumber = ?", placeNumber, function(err, res) {
+            connection.release();
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+            }
             result(null, res);
-        }
+        });
     });
 };
 
-Place.readAllPlace = function(placeNumber, result) {
+Place.readAllPlace = function(result) {
+    
+    db((err, connection) => {
+        connection.query("SELECT * FROM place", function(err, res) {
+            connection.release();
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+            }
+            result(null, res);
+        });
+    });
+};
+
+Place.updatePlace = function([name, address, openingTime, phoneNumber, content, placeNumber], result) {
+    console.log(__filename + " - name : " + name);
+    console.log(__filename + " - address : " + address);
+    console.log(__filename + " - openingTime : " + openingTime);
+    console.log(__filename + " - phoneNumber : " + phoneNumber);
+    console.log(__filename + " - content : " + content);
     console.log(__filename + " - placeNumber : " + placeNumber);
 
-    sql.query("SELECT * FROM place", function(err, res) {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-        }
-        else{
+    db((err, connection) => {
+        connection.query("UPDATE place SET name = ?, address = ?, openingTime = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?", [name, address, openingTime, phoneNumber, content, placeNumber], function(err, res) {
+            connection.release();
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+            }
             result(null, res);
-        }
-    });
-};
-
-// 미구현
-Place.updatePlace = function(placeNumber, result) {
-
-    sql.query("INSERT INTO member SET ?", placeNumber, function(err, res) {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
+        });
     });
 };
 
 Place.deletePlace = function(placeNumber, result) {
     console.log(__filename + " - placeNumber : " + placeNumber);
 
-    sql.query("DELETE FROM place WHERE placeNumber = ?", placeNumber, function(err, res) {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-        }
-        else{
+    db((err, connection) => {
+        connection.query("DELETE FROM place WHERE placeNumber = ?", placeNumber, function(err, res) {
+            connection.release();
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+            }
             result(null, res);
-        }
+        });
     });
 };
+
 module.exports= Place;
