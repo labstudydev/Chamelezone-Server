@@ -21,20 +21,23 @@ var connection = mysql.createConnection(dbOptions);
 connection.connect();
 /* ==================== END DB Connection ==================== */
 
-// 특정 회원조회
-router.get("/:memberNumber", (request, response) => {
-    let memberNumber = request.params.memberNumber;
-    let sqlQuery = 'SELECT * FROM member WHERE memberNumber=?';
-    
-    connection.query(sqlQuery, memberNumber, function (error, results, fields) {
+router.get("/map", (request, response) => {
+    response.writeHead(200, {
+        'Content-Type' : text/html
+    });
+    fs.readFile('../views/index.html', null, function(error, data) {
         if (error) {
-            response.status(500).end("Server Error");
-            console.log(error);
-        } 
-        console.log(results);
-        response.send({error: false, data: results[0], message: 'users list.'});
-        response.status(200).end("Success => User Select Query");
-      });
+            response.writeHead(404);
+            response.write("404 not found!");
+        }
+        else {
+            response(data);
+        }
+        response.end();
+    });
+    // response.end(fs.readFileSync(__dirname + './views/map.html'));
+    response.sendFile(path.join(__dirname, '../views/map.html'));
+    response.status(200).end("map get success");
 });
 
 
