@@ -4,6 +4,8 @@ const hbs           = require('express-handlebars');
 const app           = express();
 const bodyParser    = require('body-parser');
 const router        = require('./router/index');
+const errorHandler   = require('./error')
+// const errorHandler  = require('errorhandler')
 var userRouter = require('./router/user/user');
 /* ==================== END modules ==================== */
 
@@ -20,6 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
 app.use(router);
+app.use(errorHandler);
 
 // app.use('/user', userRouter);
 

@@ -23,10 +23,12 @@ Place.createPlace = function(request, response) {
 
     db((error, connection) => {
         connection.query("INSERT INTO place SET ?", request, function(err, res) {
-            if (error) {
-                console.log("error: ", error);
+            if (err) {
+                // console.log("error: ", err);
+                // console.log('################DAO ERRROR#################')
+                response(err, null);
             }
-            console.log(res);
+            // console.log('res', res);
             response(null, res);
             connection.release();
         });

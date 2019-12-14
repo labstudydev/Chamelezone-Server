@@ -4,31 +4,31 @@ const Place = require('../service/placeService.js');
 
 /* ==================== END modules ==================== */
 
-exports.place_create = function(request, response, callback) {
-    Place.createPlace(request, response, callback);
+exports.place_create = function(request, response, next) {
+    Place.createPlace(request, response, next);
 };
 
-exports.place_readOne = function(request, response, callback) {
-    Place.readOnePlace(request, response, callback);
+exports.place_readOne = function(request, response, next) {
+    Place.readOnePlace(request, response, next);
 };
 
-exports.place_readAll = function(request, response, callback) {
-    Place.readAllPlace(request, response, callback);
+exports.place_readAll = function(request, response, next) {
+    Place.readAllPlace(request, response, next);
 };
 
-exports.place_update = function(request, response, callback) {
-    Place.updatePlace(request, response, callback);
+exports.place_update = function(request, response, next) {
+    Place.updatePlace(request, response, next);
 };
 
-exports.place_delete = function(request, response, callback) {
-    Place.deletePlace(request, response, callback);
+exports.place_delete = function(request, response, next) {
+    Place.deletePlace(request, response, next);
 };
 
-exports.place_getCutrrentLocation = function(request, response, callback) {
-    Place.getCutrrentLocation(request, response, callback);
+exports.place_getCutrrentLocation = function(request, response, next) {
+    Place.getCutrrentLocation(request, response, next);
 }
 
-// exports.place_create = function(request, response, callback) {
+// exports.place_create = function(request, response, next) {
 //     Place.createPlace(placeNumber, function(error, place) { 
 //         if (error) {
 //             response.send(error);
