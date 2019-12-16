@@ -10,18 +10,17 @@ var Images = function(images) {
 }
 
 Images.getImageFile = function(request, response) {
-    console.log("여기까지 무사 도착 111111111111111111111");
     
     db((error, connection) => {
-        console.log("여기까지 무사 도착 2222222222222222222");
         // INSERT INTO files (fileName) VALUES (?)
         // INSERT INTO files SET ?
-        connection.query("INSERT INTO files (fileName) VALUES (?)", request, function(err, res) {
+        connection.query("INSERT INTO files (fileName) VALUES (?)", request, function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log(results);
+            response(null, results);
             connection.release();
         });
     });

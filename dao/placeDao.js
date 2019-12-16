@@ -20,16 +20,13 @@ var Place = function(place) {
 };
 
 Place.createPlace = function(request, response) {
-
     db((error, connection) => {
-        connection.query("INSERT INTO place SET ?", request, function(err, res) {
-            if (err) {
-                // console.log("error: ", err);
-                // console.log('################DAO ERRROR#################')
-                response(err, null);
+        connection.query("INSERT INTO place SET ?", request, function(error, results) {
+            if (error) {
+                console.log("error: ", error);
+                response(error, null);
             }
-            // console.log('res', res);
-            response(null, res);
+            response(null, results);
             connection.release();
         });
     });
@@ -38,12 +35,13 @@ Place.createPlace = function(request, response) {
 Place.readOnePlace = function(request, response) {
 
     db((error, connection) => {
-        connection.query("SELECT * FROM place WHERE placeNumber = ?", request, function(err, res) {
+        connection.query("SELECT * FROM place WHERE placeNumber = ?", request, function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -52,12 +50,12 @@ Place.readOnePlace = function(request, response) {
 Place.readAllPlace = function(response) {
     
     db((error, connection) => {
-        connection.query("SELECT * FROM place", function(err, res) {
+        connection.query("SELECT * FROM place", function(error, results) {
             if (error) {
-                console.log("error: ", error);
+                console.log("error: " + error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            response(null, results);
             connection.release();
         });
     });
@@ -70,14 +68,14 @@ Place.updatePlace = function([name, address, openingTime, phoneNumber, content, 
     console.log(__filename + " - phoneNumber : " + phoneNumber);
     console.log(__filename + " - content : " + content);
     console.log(__filename + " - placeNumber : " + placeNumber);
-
     db((error, connection) => {
-        connection.query("UPDATE place SET name = ?, address = ?, openingTime = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?", [name, address, openingTime, phoneNumber, content, placeNumber], function(err, res) {
+        connection.query("UPDATE place SET name = ?, address = ?, openingTime = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?", [name, address, openingTime, phoneNumber, content, placeNumber], function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -86,12 +84,13 @@ Place.updatePlace = function([name, address, openingTime, phoneNumber, content, 
 Place.deletePlace = function(request, response) {
 
     db((error, connection) => {
-        connection.query("DELETE FROM place WHERE placeNumber = ?", request, function(err, res) {
+        connection.query("DELETE FROM place WHERE placeNumber = ?", request, function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -109,12 +108,13 @@ Place.getCutrrentLocation = function([latitude, longitude, latitude2], response)
                 "LIMIT 0 , 5";
 
     db((error, connection) => {
-        connection.query(sql, [latitude, longitude, latitude2], function(err, res) {
+        connection.query(sql, [latitude, longitude, latitude2], function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });

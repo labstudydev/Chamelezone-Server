@@ -50,7 +50,7 @@ const upload = multer({ storage: storage });
 // }
 
 
-exports.getImageFile = function(request, response) {
+exports.getImageFile = function(request, response, next) {
     let fileName = request.body.fileName;
     console.log(__filename + " fileName : " + fileName);
 

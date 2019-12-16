@@ -18,12 +18,13 @@ var User = function(user) {
 User.createUser = function(request, response) {
     
     db((error, connection) => {
-        connection.query("INSERT INTO member SET ?", request, function(err, res) {
+        connection.query("INSERT INTO member SET ?", request, function(error, results) {
             if (error) {
                 console.log("error: ", error);
+                response(error, null);
             }
-            console.log(res);
-            response(null, res);
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -32,12 +33,13 @@ User.createUser = function(request, response) {
 User.getUserById = function(request, response) {
 
     db((error, connection) => {
-        connection.query("SELECT * FROM member WHERE memberNumber = ?", request, function(err, res) {
+        connection.query("SELECT * FROM member WHERE memberNumber = ?", request, function(error, results) {
             if (error) {
-                console.log(error);
-            } 
-            console.log(res);
-            response(null, res);
+                console.log("error: ", error);
+                response(error, null);
+            }
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -48,12 +50,13 @@ User.getLogin = function([email, password], response) {
     console.log(__filename + " - password : " + password);
     
     db((error, connection) => {
-        connection.query("select * from member where email = ? && password = ?", [email, password], function(err, res) {
+        connection.query("select * from member where email = ? && password = ?", [email, password], function(error, results) {
             if (error) {
-                console.log(error);
-            } 
-            console.log(res);
-            response(null, res);
+                console.log("error: ", error);
+                response(error, null);
+            }
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     }); 
@@ -62,12 +65,13 @@ User.getLogin = function([email, password], response) {
 User.updateById = function([password, nickName, phoneNumber, memberNumber], response) {
 
     db((error, connection) => {
-        connection.query("UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?", [password, nickName, phoneNumber, memberNumber], function(err, res) {
+        connection.query("UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?", [password, nickName, phoneNumber, memberNumber], function(error, results) {
             if (error) {
-                console.log(error);
-            } 
-            console.log(res);
-            response(null, res);
+                console.log("error: ", error);
+                response(error, null);
+            }
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });
@@ -76,12 +80,13 @@ User.updateById = function([password, nickName, phoneNumber, memberNumber], resp
 User.deleteById = function(request, response) {
 
     db((error, connection) => {
-        connection.query("DELETE FROM member WHERE memberNumber = ?", request, function(err, res) {
+        connection.query("DELETE FROM member WHERE memberNumber = ?", request, function(error, results) {
             if (error) {
-                console.log(error);
-            } 
-            console.log(res);
-            response(null, res);
+                console.log("error: ", error);
+                response(error, null);
+            }
+            console.log('response: ', results);
+            response(null, results);
             connection.release();
         });
     });

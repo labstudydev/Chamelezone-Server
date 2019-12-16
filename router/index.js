@@ -14,9 +14,11 @@ router.get("/", (request, response) => {
 });
 
 /* ==================== START router ==================== */
+
 router.use("/user", user);          // member
 router.use("/place", place);        // place
 router.use("/images", images)       // images
+
 /* ==================== END router ==================== */
 
 module.exports = router;

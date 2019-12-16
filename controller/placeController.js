@@ -5,6 +5,7 @@ const Place = require('../service/placeService.js');
 /* ==================== END modules ==================== */
 
 exports.place_create = function(request, response, next) {
+    console.log("너여기 들어와?")
     Place.createPlace(request, response, next);
 };
 

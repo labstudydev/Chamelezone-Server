@@ -5,8 +5,8 @@ const app           = express();
 const bodyParser    = require('body-parser');
 const router        = require('./router/index');
 const errorHandler   = require('./error')
-// const errorHandler  = require('errorhandler')
 var userRouter = require('./router/user/user');
+
 /* ==================== END modules ==================== */
 
 app.engine('hbs', hbs({
@@ -26,7 +26,7 @@ app.use(errorHandler);
 
 // app.use('/user', userRouter);
 
-app.use((request, response, next) => {
+app.use((error, request, response, next) => {
     //config
     next();
 });

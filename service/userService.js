@@ -4,7 +4,7 @@ const User = require('../dao/userDao.js');
 
 /* ==================== END modules ==================== */
 
-exports.createUser = function(request, response) {
+exports.createUser = function(request, response, next) {
     var setValues = {
         'email': request.body.email,
         'password': request.body.password,
@@ -21,7 +21,7 @@ exports.createUser = function(request, response) {
     });
 };
 
-exports.getUserById = function(request, response) {
+exports.getUserById = function(request, response, next) {
     let memberNumber = request.params.memberNumber;
 
     User.getUserById(memberNumber, function(error, user) {
@@ -32,7 +32,7 @@ exports.getUserById = function(request, response) {
     });
 };
 
-exports.getLogin = function(request, response) {
+exports.getLogin = function(request, response, next) {
     let email = request.body.email;
     let password = request.body.password;
   
@@ -44,7 +44,7 @@ exports.getLogin = function(request, response) {
     });
 };
 
-exports.updateById = function(request, response) {
+exports.updateById = function(request, response, next) {
     let password = request.body.password;
     let nickName = request.body.nickName;
     let phoneNumber = request.body.phoneNumber;
@@ -58,7 +58,7 @@ exports.updateById = function(request, response) {
     });
 };
 
-exports.deleteById = function(request, response) {
+exports.deleteById = function(request, response, next) {
     let memberNumber = request.params.memberNumber;
    
     User.deleteById(memberNumber, function(error, user) {
