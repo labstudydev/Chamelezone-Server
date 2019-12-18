@@ -32,7 +32,7 @@ app.use((error, request, response, next) => {
 });
 
 app.get("/addressSearch", (request, response) => {
-    response.status(200).render('map/addressSearch');
+    response.status(200).render('map/addressSearch.html');
 });
 
 app.listen(3000, () => {
