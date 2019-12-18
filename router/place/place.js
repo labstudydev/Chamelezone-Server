@@ -2,6 +2,7 @@
 
 const express       = require('express');
 const router        = express.Router();
+<<<<<<< HEAD
 const place_controller = require('../../controller/placeController');
 
 /* ==================== END modules ==================== */

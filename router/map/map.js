@@ -7,7 +7,7 @@ const fs = require('fs');
 
 /* ==================== END modules ==================== */
 
-router.get("/", (request, response) => {
+router.get("/map", (request, response) => {
     response.writeHead(200, {
         'Content-Type' : text/html
     });
