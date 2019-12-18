@@ -15,30 +15,53 @@ exports.createUser = function(request, response, next) {
         email, password, name, nickName, phoneNumber
     } = request.body
 
-    if(!email) {
+    if(!email || email == "") {
         console.log("email : " + email);
-        error.status = 400
-        error.message = str2json.convert({"status": 400, "message": error.message})
-        throw error
-        console.log("이메일 에러!!")
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        return response.status(400).json({
+            message: "email is null !!!!"
+        })
     }
 
+    // if(!email) {
+    //     console.log("email : " + email);
+    //     error.status = 400
+    //     error.message = str2json.convert({"status": 400, "message": error.message})
+    //     throw error
+    //     console.log("이메일 에러!!")
+    // }
 
     if(!password) {
         console.log("password is null")
-        error.status = 400
-        next(error)
-        response.status(error.status).end(error.message + "이건가??")
-        console.log("너무시하는거야?")
-
-        if(password.length < 10 || password.length > 20) {
-            console.log("password : " + password + ", password size : " + password.length)
-            error.status = 400
-            next(error)
-            response.status(error.status).end(error.message + "이건가2222222??")
-            console.log("너무시하는거야?")  
-        }
+        return response.status(400).json({
+            error: {
+                status: 400,
+                message: "password is null !!!"
+            }
+        })
+    } else if (password.length < 10 || password.length > 20) {
+        console.log("password : " + password + ", password size : " + password.length)
+        return response.status(400).json({
+            status: 400,
+            message: "password size is not valid"
+        })
     }
+
+    // if(!password) {
+    //     console.log("password is null")
+    //     error.status = 400
+    //     next(error)
+    //     response.status(error.status).end(error.message + "이건가??")
+    //     console.log("너무시하는거야?")
+
+    //     if(password.length < 10 || password.length > 20) {
+    //         console.log("password : " + password + ", password size : " + password.length)
+    //         error.status = 400
+    //         next(error)
+    //         response.status(error.status).end(error.message + "이건가2222222??")
+    //         console.log("너무시하는거야?")  
+    //     }
+    // }
 
     // if(!password || password.length < 10 || password.length > 20) {
     //     console.log("password : " + password + ", password size : " + password.length)
