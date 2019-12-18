@@ -1,7 +1,7 @@
 /* ==================== START modules ==================== */
 
-var str2json = require('string-to-json');
-const Place = require('../dao/placeDao.js');
+const str2json = require('string-to-json')
+const Place = require('../dao/placeDao.js')
 
 /* ==================== END modules ==================== */
 
@@ -16,40 +16,46 @@ exports.createPlace = function(request, response, next) {
         keywordNumber, name, address, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
 
+
     Place.createPlace(setValues, function(error, place) { 
         if (error) {
             // response.send(error);
             // var output = str2json.convert({ "status": "400", "message": "error" });
             // console.log(output)
             error.status = 500;
-            error.message = str2json.convert({ "status": 500, "message": error.message });
+            error.message = str2json.convert({ "status": 500, "message": error.message })
             next(error);
         }
         
-        const result = str2json.convert({ "status": 200, "data": place });
+        const result = str2json.convert({ "status": 200, "data": place })
         response.send(result);
-    });
-};
+    })
+}
 
 exports.readOnePlace = function(request, response, next) {
-    let placeNumber = request.params.placeNumber;
+    let placeNumber = request.params.placeNumber
 
     Place.readOnePlace(placeNumber, function(error, place) { 
         if (error) {
-            response.send(error);
+            error.status = 500
+            error.message = str2json.convert({ "status": 500, "message": error.message})
+            next(error)
         }
-        response.send(place);
-    });
-};
+        const result = str2json.convert({"status": 200, "data": place})
+        response.send(result)
+    })
+}
 
 exports.readAllPlace = function(request, response, next) {
     
     Place.readAllPlace(function(error, place) { 
         if (error) {
-            // response.send(error);
-            next(error);
+            error.status = 500
+            error.message = str2json.convert({ "status": 500, "message": error.message})
+            next(error)
         }
-        response.send(place);
+        const result = str2json.convert({"status": 200, "data": place})
+        response.send(result)
     });
 };
 
@@ -63,9 +69,12 @@ exports.updatePlace = function(request, response, next) {
 
     Place.updatePlace([name, address, openingTime, phoneNumber, content, placeNumber], function(error, place) { 
         if (error) {
-            response.send(error);
+            error.status = 500
+            error.message = str2json.convert({ "status": 500, "message": error.message})
+            next(error)
         }
-        response.send(place);
+        const result = str2json.convert({"status": 200, "data": place})
+        response.send(result)
     });
 };
 
@@ -74,22 +83,30 @@ exports.deletePlace = function(request, response, next) {
 
     Place.deletePlace(placeNumber, function(error, place) { 
         if (error) {
-
-            response.send(error);
+            error.status = 500
+            error.message = str2json.convert({ "status": 500, "message": error.message})
+            next(error)
         }
-        response.send(place);
+        const result = str2json.convert({"status": 200, "data": place})
+        response.send(result)
     });
 };
 
 exports.getCutrrentLocation = function(request, response, next) {
-    let latitude = request.params.latitude;
-    let longitude = request.params.longitude;
-    let latitude2 = request.params.latitude;
+    
+    const setValues = {
+        latitude, longitude, latitude2
+    } = request.params
 
-    Place.getCutrrentLocation([latitude, longitude, latitude2], function(error, place){
+    // [latitude, longitude, latitude2]
+
+    Place.getCutrrentLocation(setValues, function(error, place){
         if (error) {
-            response.send(error);
+            error.status = 500
+            error.message = str2json.convert({ "status": 500, "message": error.message})
+            next(error)
         }
-        response.send(place);
+        const result = str2json.convert({"status": 200, "data": place})
+        response.send(result)
     });
 };
