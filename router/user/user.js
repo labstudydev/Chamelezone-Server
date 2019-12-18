@@ -7,7 +7,7 @@ const user_controller       = require('../../controller/userController');
 
 /* ==================== END modules ==================== */
 
-router.post('/' , user_controller.user_create);                 // 회원가입
+router.post('/', user_controller.user_create);                 // 회원가입
 router.get('/login', user_controller.user_login);               // 로그인   ==>> 재구현
 router.get('/:memberNumber', user_controller.user_detail);      // 회원한명조회
 router.put('/:memberNumber', user_controller.user_update);      // 회원수정

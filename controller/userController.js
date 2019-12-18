@@ -4,7 +4,9 @@
 
 /* ==================== END modules ==================== */
 
-exports.user_create = function(request, response, next) {
+exports.user_create = function( request, response, next) {
+    // console.log("error : " + error)
+    console.log("create controller ))))))))))))))))))))))))))))))))")
     User.createUser(request, response, next);
 };
 
