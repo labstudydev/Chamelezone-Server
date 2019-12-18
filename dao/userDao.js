@@ -16,7 +16,6 @@ var User = function(user) {
 };
 
 User.createUser = function(request, response) {
-    
     db((error, connection) => {
         connection.query("INSERT INTO member SET ?", request, function(error, results) {
             if (error) {
