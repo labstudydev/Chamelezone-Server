@@ -1,147 +1,116 @@
 /* ==================== START modules ==================== */
 
-const str2json = require('string-to-json');
 const User = require('../dao/userDao.js');
-const errorMessage = require("../error.js")
-const errorHandler2   = require('../error')
+const { ErrorHandler, handleError } = require('../costomModules/customError')
+const isEmpty = require('../costomModules/valueCheck')
 
 /* ==================== END modules ==================== */
 
 exports.createUser = function(request, response, next) {
-    console.log("#######################################################################")
-    var error = new Error("Not Found")
-
     let setValues = {
         email, password, name, nickName, phoneNumber
     } = request.body
 
-    if(!email || email == "") {
-        console.log("email : " + email);
-        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-        return response.status(400).json({
-            message: "email is null !!!!"
-        })
-    }
-
-    // if(!email) {
-    //     console.log("email : " + email);
-    //     error.status = 400
-    //     error.message = str2json.convert({"status": 400, "message": error.message})
-    //     throw error
-    //     console.log("이메일 에러!!")
-    // }
-
-    if(!password) {
-        console.log("password is null")
-        return response.status(400).json({
-            error: {
-                status: 400,
-                message: "password is null !!!"
-            }
-        })
-    } else if (password.length < 10 || password.length > 20) {
+    isEmpty('email', email)
+    isEmpty('password', password)
+    if (password.length < 8 || password.length > 16) {
         console.log("password : " + password + ", password size : " + password.length)
-        return response.status(400).json({
-            status: 400,
-            message: "password size is not valid"
-        })
+        throw new ErrorHandler(400, 'password size is not valid')
+    }
+    
+    isEmpty('name', name)
+    isEmpty('nickName', nickName)
+    isEmpty('phoneNumber', phoneNumber)
+    if (phoneNumber.length < 11 || phoneNumber.length > 14) {
+        throw new ErrorHandler(400, 'phoneNumber size is not valid')
     }
 
-    // if(!password) {
-    //     console.log("password is null")
-    //     error.status = 400
-    //     next(error)
-    //     response.status(error.status).end(error.message + "이건가??")
-    //     console.log("너무시하는거야?")
-
-    //     if(password.length < 10 || password.length > 20) {
-    //         console.log("password : " + password + ", password size : " + password.length)
-    //         error.status = 400
-    //         next(error)
-    //         response.status(error.status).end(error.message + "이건가2222222??")
-    //         console.log("너무시하는거야?")  
-    //     }
-    // }
-
-    // if(!password || password.length < 10 || password.length > 20) {
-    //     console.log("password : " + password + ", password size : " + password.length)
-    //     error.status = 400
-    //     error.message = str2json.convert({"status": 400, "message": error.message})
-    //     console.log("#########################")
-    //     console.log(error + "%%%%%%%%%%")
-    //     next(error)
-    //     console.log(error)
-    //     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    // }
-
-    try {
-        User.createUser(setValues, function(error, user) { 
-            if (error) {
-                error.status = 500
-                error.message = str2json.convert({"status":500, "message": error.message})
-                response.send(error)
-            }
-            const result = str2json.convert({"status": 200, "data": user})
-            response.send(result)
-        });
-    } catch (error) {
-        error.status = 500
-        error.message = str2json.convert({"status": 500, "message": error.message})
-        response.send(error)
-    }
-};
+    User.createUser(setValues, function(error, user) {
+        if (error) {
+            console.log(__filename + ", User.createUser() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(user)
+    })
+}
 
 exports.getUserById = function(request, response, next) {
-    let memberNumber = request.params.memberNumber;
-
-    if(!memberNumber) {
-        console.log("memberNumber : " + memberNumber);
-        error.status = 400
-        error.message = str2json.convert({"status": 400, "message": error.message})
-        response.send(error)
-    }
+    let memberNumber = request.params.memberNumber
 
     User.getUserById(memberNumber, function(error, user) {
         if (error) {
-            response.send(error);
+            console.log(__filename + ", User.getUserById() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))   
         }
-        response.send(user);
-    });
-};
+
+        if(user.length == 0) {
+            response.status(404).send("User does not exist")
+        } else {
+            response.status(200).send(user)
+        }
+    })
+}
 
 exports.getLogin = function(request, response, next) {
-    let email = request.body.email;
-    let password = request.body.password;
-  
+    const setValues = {
+        email, password
+    } = request.body
+
+    isEmpty('email', email)
+    isEmpty('password', password)
+
     User.getLogin([email, password], function(error, user) {
         if (error) {
-            response.send(error);
+            console.log(__filename + ", User.getLogin() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
         }
-        response.send(user);
-    });
-};
+
+        if(user.length == 0) {
+            response.status(404).send("User does not exist")
+        } else {    
+            response.status(200).send(user)
+        }
+    })
+}
 
 exports.updateById = function(request, response, next) {
-    let password = request.body.password;
-    let nickName = request.body.nickName;
-    let phoneNumber = request.body.phoneNumber;
     let memberNumber = request.params.memberNumber;
+    const setValues = {
+        password, nickName, phoneNumber
+    } = request.body
+
+    if (!memberNumber || memberNumber == "") {
+        throw new ErrorHandler(400, 'memberNumber is null !!!')
+    }
+
+    isEmpty('password', password)
+    isEmpty('nickName', nickName)
+    isEmpty('phoneNumber', phoneNumber)
 
     User.updateById([password, nickName, phoneNumber, memberNumber], function(error, user) {
         if (error) {
-            response.send(error);
+            console.log(__filename + ", User.updateById() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))   
         }
-        response.send(user);
-    });
-};
+        response.status(200).send(user)
+    })
+}
 
 exports.deleteById = function(request, response, next) {
     let memberNumber = request.params.memberNumber;
-   
+    
+    isEmpty('memberNumber', memberNumber)
+
     User.deleteById(memberNumber, function(error, user) {
         if (error) {
-            response.send(error);
+            console.log(__filename + ", User.deleteById() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))   
         }
-        response.send(user);
-    });
-};
+
+        if (user.length == 0 || user.length == undefined) {
+            response.status(404).send("User does not exist" )
+        } else {
+            response.status(200).send(user)
+        }
+    })
+}

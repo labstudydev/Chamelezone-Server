@@ -1,36 +1,43 @@
 /* ==================== START modules ==================== */
 
-const str2json = require('string-to-json')
-const Images = require('../dao/imagesDao.js')
-const multer = require('multer')
-// const upload = multer({dest: '/uploads/'})
-// const upload = multer({dest: '../public/uploads'})
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, '../public/uploads') // cb 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname) // cb 콜백함수를 통해 전송된 파일 이름 설정
-    }
-})
-
-const upload = multer({ storage: storage })
+const { ErrorHandler, handleError } = require('../costomModules/customError')
+const Images            = require('../dao/imagesDao.js')
+const isEmpty           = require('../costomModules/valueCheck')
 
 /* ==================== END modules ==================== */
 
-exports.getImageFile = function(request, response, next) {
-    let fileName = request.body.fileName
-    console.log(__filename + " fileName : " + fileName)
+exports.uploadImageFile = function(request, response, next) {
+    const files = request.files
+    isEmpty('files', files[0])
+    
+    let originalFileName, savedFileName, mimetype, fileSize
 
-    Images.getImageFile(fileName, function(error, images) {
+    files.forEach((item, index, array) => {
+        originalFileName = array[index] = item.originalname;
+        savedFileName = array[index] = item.filename;
+        mimetype = array[index] = item.mimetype;
+        fileSize = array[index] = item.size;
+        console.log("file: " + index + ": " + originalFileName + " || " + savedFileName + " || " + mimetype + " || " + fileSize)
+    })
+
+    Images.uploadImageFile([originalFileName, savedFileName, mimetype, fileSize], function(error, images) {
         if (error) {
-            error.status(500)
-            error.message = str2json.convert({"status": 500, "message": error.message})
-            next(error)
+            console.log(__filename + ", Images.uploadImageFile() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
         }
-        
-        const result = str2json.convert({"status": 200, "data": images})
-        response.send(result)
+        response.status(200).send(images)
+    })
+}
+
+exports.getImageFile = function(request, response, next) {
+    const placeNumber = request.params.placeNumber
+    isEmpty('placeNumber', placeNumber)
+
+    Images.getImageFile(placeNumber, function(error, images) {
+        if (error) {
+            console.log(__filename + ", Images.getImageFile() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(images)
     })
 }

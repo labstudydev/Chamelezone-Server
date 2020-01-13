@@ -1,11 +1,13 @@
 /* ==================== START modules ==================== */
+
 const express       = require('express');
 const router        = express.Router();
 const path          = require('path');
 const user          = require('./user/user');
 const place         = require('./place/place');
-const images         = require('./imageDir/images');
+const images        = require('./imageDir/images');
 const map           = require('./map/map')
+
 /* ==================== END modules ==================== */
 
 // url routing
@@ -16,10 +18,11 @@ router.get("/", (request, response) => {
 
 /* ==================== START router ==================== */
 
-router.use("/user", user);          // member
-router.use("/place", place);        // place
-router.use("/images", images)       // images
+router.use("/user", user)             // member
+router.use("/place", place)           // place
+router.use("/images", images)         // images
 router.use("/map", map)
+
 /* ==================== END router ==================== */
 
 module.exports = router;
