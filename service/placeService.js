@@ -44,8 +44,10 @@ exports.createPlace = function(request, response, next) {
 
     isEmpty('phoneNumber', phoneNumber)
     isEmpty('content', content)
+    isEmpty('latitude', latitude)
+    isEmpty('longitude', longitude)
 
-    Place.createPlace([name, address, keyword1, keyword2, keyword3, openingTime1, openingTime2, openingTime3, phoneNumber, content], function(error, place) { 
+    Place.createPlace([name, address, keyword1, keyword2, keyword3, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude], function(error, place) { 
         if (error) {
             console.log(__filename + ", Place.createPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))

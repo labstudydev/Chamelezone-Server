@@ -23,11 +23,11 @@ var Place = function(place) {
 // 함수랑 API 분할
 
 // 장소&키워드에 먼저 값을 insert한다.
-Place.createPlace = function([name, address, keyword1, keyword2, keyword3, openingTime1, openingTime2, openingTime3, phoneNumber, content], response) {
+Place.createPlace = function([name, address, keyword1, keyword2, keyword3, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude], response) {
     db((error, connection) => {
         // 일단 place 테이블부터 insert
-        const placeSqlQuery = 'INSERT INTO place (name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        connection.query(placeSqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content], function(error, results) {
+        const placeSqlQuery = 'INSERT INTO place (name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        connection.query(placeSqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude], function(error, results) {
             if (error) {
                 console.log(__filename + "placeSqlQuery : error: ", error)
                 connection.release()
