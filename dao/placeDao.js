@@ -55,9 +55,9 @@ Place.createPlace = function([name, address, keyword1, keyword2, keyword3, openi
                     // else 성공하면 placeHasKeyword 테이블 insert
                     // request = placeKeywordNumber, keywordNumber
                     const keywordArr = new Array();
-
+                    
                     // 변수선언 var
-                    for(var i = 0; i < 3; i++){
+                    for(var i = 0; i < results.length; i++) {
                         keywordArr[i]= results[i].keywordNumber
                     }
                     
