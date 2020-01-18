@@ -12,7 +12,10 @@ var Search = function(search) {
 Search.searchByName = function(name, response, next) {
     try {
         db((error, connection) => {
-            connection.query("select placeNumber, name, address from place where name like ? order by placeNumber desc limit 5;", '%' + name + '%', function(error, results){
+            let sqlQuery = "SELECT p.placeNumber, p.name, p.address, p.latitude, p.longitude, group_concat(k.name separator '|') AS 'keywordName' " + 
+                                "FROM place p, place_has_keyword phk, keyword k " + 
+                                "WHERE p.placeNumber = phk.placeNumber AND phk.keywordNumber = k.keywordNumber AND p.name like ?"
+            connection.query(sqlQuery, '%' + name + '%', function(error, results){
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
