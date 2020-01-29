@@ -31,17 +31,18 @@ Keyword.selectAllKeyword = function(response) {
 }
 
 /* insert place has keyword query */
-Keyword.insertKeyword = function([setKeywordNameValues], response) {
+Keyword.insertPlaceKeyword = function([setKeywordNameValues], response) {
     try {
         db((error, connection) => {
             const placeHasKeywordSqlQuery = 'INSERT INTO place_has_keyword (`placeNumber`, `keywordNumber`) VALUES ?'
-            connection.query(placeHasKeywordSqlQuery, setKeywordNameValues, function(error, results) {
+            connection.query(placeHasKeywordSqlQuery, [setKeywordNameValues], function(error, results) {
                 if (error) {
                     console.log(__filename + ': placeHasKeywordSqlQuery * error: ', error)
                     connection.release()
                     return response(error, null)
                 }
                 console.log(__filename + ': placeHasKeywordSqlQuery * response: ', results)
+                connection.release()
                 response(null, results)
             })
         })
