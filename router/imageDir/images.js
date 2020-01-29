@@ -4,7 +4,6 @@ const images_controller = require('../../controller/imagesController');
 const express       = require('express');
 const router        = express.Router();
 const multer        = require('multer');
-const fs            = require('fs');
 const path          = require('path');
 
 var storage = multer.diskStorage({
@@ -31,7 +30,7 @@ var upload = multer({
 
 /* ==================== END modules ==================== */
 
-router.get('/:placeNumber', images_controller.images_getImageFile)                                    // 이미지 출력
+router.get('/:placeNumber', images_controller.images_getImageFile)                        // 이미지 출력
 router.post('/', upload.array('photo', 4), images_controller.images_uploadImageFile)      // 장소 이미지 업로드
 
 module.exports = router;
