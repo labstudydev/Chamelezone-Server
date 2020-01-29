@@ -10,10 +10,11 @@ var Keyword = function(keyword) {
     this.name = keyword.name
 }
 
-Keyword.readAllKeyword = function(response, next) {
+Keyword.selectAllKeyword = function(response) {
     try {
         db((error, connection) => {
-            connection.query("SELECT keywordNumber, name FROM keyword", function(error, results) {
+            const keywordSqlQuery = 'SELECT keywordNumber, name FROM keyword'
+            connection.query(keywordSqlQuery, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
@@ -25,8 +26,28 @@ Keyword.readAllKeyword = function(response, next) {
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, error)
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
     }
 }
 
-module.exports= Keyword;
+/* insert place has keyword query */
+Keyword.insertKeyword = function([setKeywordNameValues], response) {
+    try {
+        db((error, connection) => {
+            const placeHasKeywordSqlQuery = 'INSERT INTO place_has_keyword (`placeNumber`, `keywordNumber`) VALUES ?'
+            connection.query(placeHasKeywordSqlQuery, setKeywordNameValues, function(error, results) {
+                if (error) {
+                    console.log(__filename + ': placeHasKeywordSqlQuery * error: ', error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log(__filename + ': placeHasKeywordSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+module.exports = Keyword;
