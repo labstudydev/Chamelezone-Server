@@ -92,6 +92,7 @@ exports.updateById = function(request, response, next) {
             console.log(__filename + ", User.updateById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
+        
         response.status(200).send(user)
     })
 }
@@ -106,11 +107,6 @@ exports.deleteById = function(request, response, next) {
             console.log(__filename + ", User.deleteById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
-
-        if (user.length == 0 || user.length == undefined) {
-            response.status(404).send("User does not exist" )
-        } else {
-            response.status(200).send(user)
-        }
+        response.status(200).send(user)    
     })
 }
