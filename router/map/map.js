@@ -1,11 +1,13 @@
 /* ==================== START modules ==================== */
 
-const express       = require('express');
-const router        = express.Router();
-const bodyParser    = require('body-parser');
-const fs = require('fs');
+const express           = require('express');
+const router            = express.Router();
+const fs                = require('fs');
+const mapController     = require('../../controller/mapController');
 
 /* ==================== END modules ==================== */
+
+router.get('/place/:name', mapController.mapSearchPlaceByName)           // 이름으로 검색
 
 router.get("/map", (request, response) => {
     response.writeHead(200, {
@@ -22,6 +24,5 @@ router.get("/map", (request, response) => {
     response.sendFile(path.join(__dirname, '../views/map.html'));
     response.status(200).end("map get success");
 });
-
 
 module.exports = router;
