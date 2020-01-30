@@ -10,6 +10,7 @@ const images        = require('./imageDir/images')
 const map           = require('./map/map')
 const keyword       = require('./keyword/keyword')
 const search        = require('./search/search')
+const review        = require('./review/review')
 
 /* ==================== END modules ==================== */
 
@@ -26,7 +27,8 @@ router.use("/place", place)           // place
 router.use("/images", images)         // images
 router.use("/map", map)               // map
 router.use("/keyword", keyword)       // keyword
-router.use("/search", search)        // search
+router.use("/search", search)         // search
+router.use("/review", review)         // review
 
 /* ==================== END router ==================== */
 
