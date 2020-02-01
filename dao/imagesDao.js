@@ -73,4 +73,25 @@ Images.insertPlaceImages = function([setImagesValues], response) {
     }
 }
 
+/* insert reivew images query */
+Images.insertReviewImages = function([setImagesValues], response) {
+    try {
+        db((error, connection) => {
+            const reviewImagesSqlQuery = 'INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?'
+            connection.query(reviewImagesSqlQuery, [setImagesValues], function(error, results) {
+                if (error) {
+                    console.log(__filename + ': reviewImagesSqlQuery * error: ', error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log(__filename + ': reviewImagesSqlQuery * response: ', results)
+                connection.release()
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
 module.exports= Images;
