@@ -1,37 +1,31 @@
 /* ==================== START modules ==================== */
 
-const review_controller         = require('../../controller/reviewController');
-const express                   = require('express');
-const router                    = express.Router();
-const util                      = require('../../costomModules/util')
-const multer                    = require('multer');
-const path                      = require('path');
+const review_controller         = require('../../controller/reviewController')
+const express                   = require('express')
+const router                    = express.Router()
 
 /* ==================== END modules ==================== */
 
-let storage = multer.diskStorage({
-    destination: function (request, file, callback) {
-        callback(null, 'public/uploads') // callback 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
-    },
-    filename: function (request, file, callback) {
-        // cb 콜백함수를 통해 전송된 파일 이름 설정
-        //file.originalname 원래 파일이름
-        //callback(null, file.originalname + Date.now())
-        let extension = path.extname(file.originalname)
-        let basename = path.basename(file.originalname, extension)
-        callback(null, basename + '-' + Date.now() + '-' + extension)
-    }    
-})
+router.get('/', review_controller.reviewReadAll)                                                             // 장소의 리뷰목록 조회
 
-let upload = multer({
-    storage: storage,
-    limits: {
-        files: 4,                    // 최대 업로드 개수
-        fileSize: 1024 * 1024 * 1024 // 파일 사이즈
-    }
-})
+// router.post('/:placeNumber/review')
+// router.get('/:placeNumber/review')
+// router.get('/:placeNumber/review/:reviewNumber')
+// 생성
+// /place/:placeNumber/review
 
-router.post('/', upload.array('images', 4), review_controller.reviewCreate)                // 리뷰 생성
-router.get('/', review_controller.reviewReadAll)                                           // 리뷰 전체 조회
+// 조회 : 장소번호, 리뷰번호 get
+// /place/:placeNumber/review
+// /place/:placeNumber/review/:reviewNumber
+// 삭제 : 
+// /place/:placeNumber/review/:reviewNumber
 
-module.exports = router;
+// router.get('/:memberNumber/review')
+// router.get('/:memberNumber/review/:reviewNumber')
+// 조회 : 회원번호, 리뷰번호 get
+// /user/:memberNumber/review
+// /user/:memberNumber/review/:reviewNumber
+// 삭제 : 
+// /user/:memberNumber/review/:reivewNumber
+
+module.exports = router

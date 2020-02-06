@@ -5,21 +5,18 @@ const isEmpty               = require('../costomModules/valueCheck')
 const Review                = require('../dao/reviewDao.js');
 const util                  = require('../costomModules/util')
 
+const http                  = require('http')
+const fs                    = require('fs')
+
 /* ==================== END modules ==================== */
 
 exports.reviewCreate = function(request, response, next) { 
     // let memberNumber = request.params.memberNumber
+    let placeNumber = request.params.placeNumber
     let images = request.files
     const setValues = {
-        content
+        memberNumber, content
     } = request.body
-    // console.log("|||||||||||||||||| " + isLoginCheck(email))
-
-    // console.log("|||||||||||||||||| " + util.isLoginCheck(email))
-    // if (email != util.isLoginCheck(email)) {
-    //     throw new ErrorHandler(404, "User does not 존재")
-    // }
-    // isEmpty('email', email)
     
     isEmpty('images', images[0])
     let originalImageName, savedImageName, mimetype, imageSize
@@ -45,8 +42,12 @@ exports.reviewCreate = function(request, response, next) {
 
     isEmpty('content', content)
     console.log(content)
-
-    Review.insertReview([content, setImagesValues], function(error, results) {
+    // console.log("1111111111111111111111111111")
+    // console.log(isLoginCheck(memberNumber))
+    
+    let parsePlaceNumber = parseInt(placeNumber)
+    console.log(parsePlaceNumber)
+    Review.insertReview([placeNumber, content, setImagesValues], function(error, results) {
         if (error) {
             console.log(__filename + ", Review.insertReview() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
@@ -59,6 +60,43 @@ exports.reviewReadAll = function(request, response, next) {
     Review.selectAllReview(function(error, results) {
         if (error) {
             console.log(__filename + ", Review.selectAllReview() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}
+
+exports.reviewReadByUser = function(request, response, next) {
+    let memberNumber = request.params.memberNumber
+
+    Review.selectByUser([memberNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Review.selectByUser() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}
+
+exports.reviewReadOneByPlace = function(request, response, next) {
+    let placeNumber = request.params.placeNumber
+    let reviewNumber = request.params.reviewNumber
+    
+    Review.selectByReview([placeNumber, reviewNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Review.selectByReview() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results[0])        
+    })
+}
+
+exports.reviewReadByPlace = function(request, response, next) {
+    let placeNumber = request.params.placeNumber
+
+    Review.selectByPlace([placeNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Review.selectByPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)

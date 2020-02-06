@@ -1,10 +1,11 @@
 /* ==================== START modules ==================== */
 
-const place_controller = require('../../controller/placeController');
-const express       = require('express');
-const router        = express.Router();
-const multer        = require('multer');
-const path          = require('path');
+const place_controller          = require('../../controller/placeController')
+const review_controller         = require('../../controller/reviewController')
+const express                   = require('express');
+const router                    = express.Router();
+const multer                    = require('multer');
+const path                      = require('path');
 
 /* ==================== END modules ==================== */
 
@@ -36,5 +37,11 @@ router.get('/', place_controller.place_readAll);                                
 router.put('/:placeNumber', place_controller.place_update);                             // 장소수정
 router.delete('/:placeNumber', place_controller.place_delete);                          // 장소삭제
 router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation);        // 장소 현재위치 
+
+
+/* ==================== review router ==================== */
+router.post('/:placeNumber/review', upload.array('images', 4), review_controller.reviewCreate)    // 리뷰생성
+router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회
+router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회
 
 module.exports = router;
