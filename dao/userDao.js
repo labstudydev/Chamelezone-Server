@@ -34,7 +34,7 @@ User.createUser = function(request, response) {
     }
 }
 
-User.getUserById = function(request, response, next) {
+User.getUserById = function(request, response) {
     try {
         db((error, connection) => {
             connection.query("SELECT * FROM member WHERE memberNumber = ?", request, function(error, results, fields) {
@@ -53,7 +53,7 @@ User.getUserById = function(request, response, next) {
     }
 };
 
-User.getLogin = function([email, password], response, next) {
+User.getLogin = function([email, password], response) {
     console.log(__filename + " - email : " + email)
     console.log(__filename + " - password : " + password)
 
@@ -75,7 +75,7 @@ User.getLogin = function([email, password], response, next) {
     }
 }
 
-User.updateById = function([password, nickName, phoneNumber, memberNumber], response, next) {
+User.updateById = function([password, nickName, phoneNumber, memberNumber], response) {
     try {
         db((error, connection) => {
             connection.query("UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?", [password, nickName, phoneNumber, memberNumber], function(error, results) {
@@ -94,7 +94,7 @@ User.updateById = function([password, nickName, phoneNumber, memberNumber], resp
     }
 }
 
-User.deleteById = function(request, response, next) {
+User.deleteById = function(request, response) {
     try {
         db((error, connection) => {
             connection.query("DELETE FROM member WHERE memberNumber = ?", request, function(error, results) {
@@ -106,6 +106,26 @@ User.deleteById = function(request, response, next) {
                 console.log('response: ', results)
                 response(null, results)
                 connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+User.selectByMemberNumber = function(memberNumber, response) {
+    try {
+        db((error, connection) => {
+            const selectByEamilSqlQuery = 'SELECT memberNumber FROM member WHERE memberNumber = ?'
+            connection.query(selectByEamilSqlQuery, memberNumber, function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': selectByEamilSqlQuery * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': selectByEamilSqlQuery * response: ', results)
+                
+                response(null, results)
             })
         })
     } catch (error) {
