@@ -26,7 +26,8 @@ exports.createPlace = function(request, response, next) {
     const setValues = {
         name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
-
+    
+    isEmpty('images', images[0])
     isEmpty('name', name)
     isEmpty('address', address)
     
