@@ -1,7 +1,7 @@
 /* ==================== START modules ==================== */
 
 const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db');
+const db                    = require('../config/db')
 const Keyword               = require('../dao/keywordDao')
 const Images                = require('../dao/imagesDao')
 
@@ -90,7 +90,19 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            connection.query("SELECT * FROM place WHERE placeNumber = ?", request, function(error, results) {
+            let selectPlaceOne = `select P.placeNumber, P.name, P.address, P.openingTime1, P.openingTime2, P.openingTime3, P.phoneNumber, P.content, P.regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+                                    `group_concat(PI.imageNumber separator ',') AS 'imageNumber', ` +
+                                    `group_concat(PI.originalImageName separator ',') AS 'originalImageName', ` +
+                                    `group_concat(PI.savedImageName separator ',') AS 'savedImageName' ` +
+                                    `from place P ` +
+                                    `left join place_images PI on PI.placeNumber = P.placeNumber ` +
+                                    `left join (select PHK.placeNumber, group_concat(K.keywordNumber separator ',') AS 'keywordNumber', group_concat(K.name separator ',') AS 'keywordName' ` +
+                                    `        from place_has_keyword PHK ` +
+                                    `        join keyword K on K.keywordNumber = PHK.keywordNumber ` +
+                                    `        where PHK.placeNumber = ?) A on A.placeNumber = P.placeNumber ` +
+                                    `where P.placeNumber = ? ` +
+                                    `group by P.placeNumber`
+            connection.query(selectPlaceOne, [request, request], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
