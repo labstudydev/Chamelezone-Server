@@ -31,6 +31,12 @@ let upload = multer({
     }
 })
 
+/* ==================== review router ==================== */
+router.get('/:placeNumber/review', review_controller.reviewReadByPlace) // 장소의 리뷰 전체 조회
+router.post('/:placeNumber/review', upload.array('images', 4), review_controller.reviewCreate)    // 리뷰생성
+router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회
+
+/* ==================== place router ==================== */
 router.post('/', upload.array('images', 4), place_controller.place_create);             // 장소생성 (이미지)
 router.get('/:placeNumber' , place_controller.place_readOne);                           // 장소한개조회
 router.get('/', place_controller.place_readAll);                                        // 장소전체조회
@@ -38,10 +44,5 @@ router.put('/:placeNumber', place_controller.place_update);                     
 router.delete('/:placeNumber', place_controller.place_delete);                          // 장소삭제
 router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation);        // 장소 현재위치 
 
-
-/* ==================== review router ==================== */
-router.post('/:placeNumber/review', upload.array('images', 4), review_controller.reviewCreate)    // 리뷰생성
-router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회
-router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회
 
 module.exports = router;
