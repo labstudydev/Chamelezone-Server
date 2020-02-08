@@ -1,25 +1,13 @@
 /* ==================== START modules ==================== */
-const mysql         = require('mysql');
-const dbConfig      = require('../../config/dbConfig');
-const express       = require('express');
-const app           = express();
-const router        = express.Router();
-const bodyParser    = require('body-parser');
-const crypto        = require('crypto');
+
+const express           = require('express');
+const router            = express.Router();
+const fs                = require('fs');
+const mapController     = require('../../controller/mapController');
+
 /* ==================== END modules ==================== */
 
-/* ==================== START DB Connection ==================== */
-var dbOptions = {
-    host: dbConfig.host,
-    port: dbConfig.port,
-    user: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database
-};
-
-var connection = mysql.createConnection(dbOptions);
-connection.connect();
-/* ==================== END DB Connection ==================== */
+router.get('/place/:name', mapController.mapSearchPlaceByName)           // 이름으로 검색
 
 router.get("/map", (request, response) => {
     response.writeHead(200, {
@@ -30,15 +18,11 @@ router.get("/map", (request, response) => {
             response.writeHead(404);
             response.write("404 not found!");
         }
-        else {
-            response(data);
-        }
-        response.end();
+        response.end(data);
     });
     // response.end(fs.readFileSync(__dirname + './views/map.html'));
     response.sendFile(path.join(__dirname, '../views/map.html'));
     response.status(200).end("map get success");
 });
-
 
 module.exports = router;
