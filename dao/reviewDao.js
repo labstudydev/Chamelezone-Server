@@ -10,9 +10,9 @@ var Review = function(review) {
 
 }
 
-Review.insertReview = function([placeNumber, content, setImagesValues], response){
+Review.insertReview = function([placeNumber, memberNumber, content, setImagesValues], response){
     try {
-        console.log("toString : " + placeNumber, content, setImagesValues)
+        console.log("toString : " + memberNumber, placeNumber, content, setImagesValues)
         db((error, connection) => {
             connection.beginTransaction(function(error) {
                 if (error) {

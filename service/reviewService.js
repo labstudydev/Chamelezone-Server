@@ -11,7 +11,6 @@ const fs                    = require('fs')
 /* ==================== END modules ==================== */
 
 exports.reviewCreate = function(request, response, next) { 
-    // let memberNumber = request.params.memberNumber
     let placeNumber = request.params.placeNumber
     let images = request.files
     const setValues = {
@@ -47,7 +46,7 @@ exports.reviewCreate = function(request, response, next) {
     
     let parsePlaceNumber = parseInt(placeNumber)
     console.log(parsePlaceNumber)
-    Review.insertReview([placeNumber, content, setImagesValues], function(error, results) {
+    Review.insertReview([placeNumber, memberNumber, content, setImagesValues], function(error, results) {
         if (error) {
             console.log(__filename + ", Review.insertReview() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
