@@ -13,10 +13,10 @@ var Search = function(search) {
 Search.selectByPlaceName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByPlaceNameSqlQuery = "SELECT p.placeNumber, p.name, p.address, p.latitude, p.longitude, group_concat(k.name separator '|') AS 'keywordName' " + 
-                                            "FROM place p, place_has_keyword phk, keyword k " + 
-                                            "WHERE p.placeNumber = phk.placeNumber AND phk.keywordNumber = k.keywordNumber AND p.name like ? " +
-                                            "GROUP BY p.placeNumber"
+            let selectByPlaceNameSqlQuery = "SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' " + 
+                                            "FROM place P, place_has_keyword PHK, keyword K " + 
+                                            "WHERE P.placeNumber = PHK.placeNumber AND PHK.keywordNumber = K.keywordNumber AND P.name like ? " +
+                                            "GROUP BY P.placeNumber"
             connection.query(selectByPlaceNameSqlQuery, '%' + name + '%', function(error, results) {
                 if (error) {
                     console.log("error: ", error)
@@ -37,10 +37,10 @@ Search.selectByPlaceName = function(name, response) {
 Search.selectByAreaName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByAreaNameSqlQuery = "SELECT p.placeNumber, p.name, p.address, p.latitude, p.longitude, group_concat(k.name separator '|') AS 'keywordName' " + 
-                                            "FROM place p, place_has_keyword phk, keyword k " + 
-                                            "WHERE p.placeNumber = phk.placeNumber AND phk.keywordNumber = k.keywordNumber AND p.address like ? " +
-                                            "GROUP BY p.placeNumber"
+            let selectByAreaNameSqlQuery = "SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' " + 
+                                            "FROM place P, place_has_keyword PHK, keyword K " + 
+                                            "WHERE P.placeNumber = PHK.placeNumber AND PHK.keywordNumber = K.keywordNumber AND P.address like ? " +
+                                            "GROUP BY P.placeNumber"
             connection.query(selectByAreaNameSqlQuery, '%' + name + '%', function(error, results) {
                 if (error) {
                     console.log("error: ", error)
@@ -61,10 +61,10 @@ Search.selectByAreaName = function(name, response) {
 Search.selectByKeywordName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByKeywordNameSqlQuery = "SELECT p.placeNumber, p.name, p.address, p.latitude, p.longitude, group_concat(k.name separator '|') AS 'keywordName' " + 
-                                                "FROM place p, place_has_keyword phk, keyword k " + 
-                                                "WHERE p.placeNumber = phk.placeNumber AND phk.keywordNumber = k.keywordNumber AND k.name like ? " +
-                                                "GROUP BY p.placeNumber"
+            let selectByKeywordNameSqlQuery = "SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' " + 
+                                                "FROM place P, place_has_keyword PHK, keyword K " + 
+                                                "WHERE P.placeNumber = PHK.placeNumber AND PHK.keywordNumber = K.keywordNumber AND K.name like ? " +
+                                                "GROUP BY P.placeNumber"
             connection.query(selectByKeywordNameSqlQuery, '%' + name + '%', function(error, results) {
                 if (error) {
                     console.log("error: ", error)
