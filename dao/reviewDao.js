@@ -66,7 +66,7 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
 Review.selectAllReview = function(response) {
     try {
         db((error, connection) => {
-            let selectAllReviewSqlQuery = 'select reviewNumber, placeNumber, memberNumber, content, regiDate from review'
+            let selectAllReviewSqlQuery = 'SELECT reviewNumber, placeNumber, memberNumber, content, regiDate FROM review'
             connection.query(selectAllReviewSqlQuery, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
@@ -83,7 +83,7 @@ Review.selectAllReview = function(response) {
     }
 }
 
-// 회원의 리뷰 목록 - 이거 일단 됬고 ok
+// 회원의 리뷰 목록(회원의 리뷰 목록 조회) - 이거 일단 됬고 ok
 Review.selectByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
@@ -112,7 +112,7 @@ Review.selectByUser = function([memberNumber], response) {
     }
 }
 
-// 나의 리뷰에서 리뷰선택시 리뷰 상세화면 - 이거 일단 됬고2 ok
+// 나의 리뷰에서 리뷰선택시 리뷰 상세화면(특정 리뷰 조회) - 이거 일단 됬고2 ok
 Review.selectByReview = function([placeNumber, reviewNumber], response) {
     try {
         db((error, connection) => {
@@ -123,7 +123,7 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
                                             `FROM review R ` + 
                                             `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
                                             `LEFT JOIN review_images RI ON RI.reviewNumber = R.reviewNumber ` + 
-                                            `WHERE P.placeNumber && R.reviewNumber = ? ` + 
+                                            `WHERE P.placeNumber = ? && R.reviewNumber = ? ` + 
                                             `GROUP BY R.reviewNumber`
             connection.query(selectByReviewSqlQuery, [placeNumber, reviewNumber], function(error, results) {
                 if (error) {
@@ -141,18 +141,20 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
     }
 }
 
+// 장소의 리뷰 목록 조회
 Review.selectByPlace = function([placeNumber], response) {
     try {
         db((error, connection) => {
-            let selectByPlaceSqlQuery = "select R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, " +
-                                        "group_concat(I.imageNumber separator ',') AS 'imageNumber', " +
-                                        "group_concat(I.originalImageName separator ',') AS 'originalImageName', " +
-                                        "group_concat(I.savedImageName separator ',') AS 'savedImageName' " +
-                                        "from review R " +
-                                        "left join place P on R.placeNumber = P.placeNumber " +
-                                        "left join review_images I on R.reviewNumber = I.reviewNumber " +
-                                        "where R.placeNumber = ? " +
-                                        "group by R.reviewNumber"
+            let selectByPlaceSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, M.nickName, ` +
+                                        `GROUP_CONCAT(RI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
+                                        `GROUP_CONCAT(RI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
+                                        `GROUP_CONCAT(RI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
+                                        `FROM review R ` +
+                                        `LEFT JOIN place P ON R.placeNumber = P.placeNumber ` +
+                                        `LEFT JOIN review_images RI ON R.reviewNumber = RI.reviewNumber ` +
+                                        `LEFT JOIN member M ON R.memberNumber = M.memberNumber ` +
+                                        `WHERE R.placeNumber = ? ` +
+                                        `GROUP BY R.reviewNumber`
             connection.query(selectByPlaceSqlQuery, [placeNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
