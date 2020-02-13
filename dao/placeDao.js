@@ -3,7 +3,7 @@
 const { ErrorHandler }      = require('../costomModules/customError')
 const db                    = require('../config/db')
 const Keyword               = require('../dao/keywordDao')
-const Images                = require('../dao/imagesDao')
+const Images                = require('./imageDao')
 
 /* ==================== END modules ==================== */
 
@@ -90,18 +90,22 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            let selectPlaceOne = `select P.placeNumber, P.name, P.address, P.openingTime1, P.openingTime2, P.openingTime3, P.phoneNumber, P.content, P.regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
-                                    `group_concat(PI.imageNumber separator ',') AS 'imageNumber', ` +
-                                    `group_concat(PI.originalImageName separator ',') AS 'originalImageName', ` +
-                                    `group_concat(PI.savedImageName separator ',') AS 'savedImageName' ` +
-                                    `from place P ` +
-                                    `left join place_images PI on PI.placeNumber = P.placeNumber ` +
-                                    `left join (select PHK.placeNumber, group_concat(K.keywordNumber separator ',') AS 'keywordNumber', group_concat(K.name separator ',') AS 'keywordName' ` +
-                                    `        from place_has_keyword PHK ` +
-                                    `        join keyword K on K.keywordNumber = PHK.keywordNumber ` +
-                                    `        where PHK.placeNumber = ?) A on A.placeNumber = P.placeNumber ` +
-                                    `where P.placeNumber = ? ` +
-                                    `group by P.placeNumber`
+            let selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
+                                    `P.phoneNumber, P.content, P.regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+                                    `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
+                                    `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
+                                    `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
+                                    `FROM place P ` +
+                                    `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
+                                    `LEFT JOIN (SELECT PHK.placeNumber, ` +
+                                    `            GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', ` +
+                                    `            GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
+                                    `            FROM place_has_keyword PHK ` +
+                                    `            LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                    `            GROUP BY PHK.placeNumber ` +
+                                    `            ORDER BY keywordNumber DESC) A ON A.placeNumber = P.placeNumber ` +
+                                    `WHERE P.placeNumber = ? ` +
+                                    `GROUP BY P.placeNumber`
             connection.query(selectPlaceOne, [request, request], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
