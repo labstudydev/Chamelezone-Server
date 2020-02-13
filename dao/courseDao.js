@@ -8,7 +8,7 @@ const Images                = require('./imageDao')
 
 var Course = function(course) {
 
-};
+}
 
 Course.insertCourse = function([memberNumber, title, content, setImagesValues, setPlaceNumberValues], response) {
     try {
@@ -62,7 +62,7 @@ Course.insertCourse = function([memberNumber, title, content, setImagesValues, s
                                     })
                                 }
 
-                                console.log('Transaction Success !!!');
+                                console.log('Transaction Success !!!')
                                 response(null, results)
                             })  // commit()
                         })  // insertCourseHasPlaceSqlQuery()
@@ -75,4 +75,30 @@ Course.insertCourse = function([memberNumber, title, content, setImagesValues, s
     }
 }
 
-module.exports = Course;
+Course.selectAllCourse = function(response) {
+    try {
+        db((error, connection) => {
+            const selectAllCourseSqlQuery = `SELECT C.courseNumber, C.title, C.regiDate, M.memberNumber, M.nickName , CI.imageNumber, CI.savedImageName ` +
+                                            `FROM course C ` +
+                                            `LEFT JOIN member M ON M.memberNumber = C.memberNumber ` +
+                                            `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
+                                            `ORDER BY C.courseNumber desc ` +
+                                            `LIMIT 50`
+            connection.query(selectAllCourseSqlQuery, function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+
+module.exports = Course

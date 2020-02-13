@@ -4,6 +4,10 @@ const Course = require('../service/courseService.js')
 
 /* ==================== END modules ==================== */
 
-exports.createCourse = function(request, response, next) {
-    Course.createCourse(request, response, next)
+exports.courseCreate = function(request, response, next) {
+    Course.courseCreate(request, response, next)
+}
+
+exports.courseReadAll = function(request, response, next) {
+    Course.courseReadAll(request, response, next)
 }

@@ -6,7 +6,7 @@ const isEmpty               = require('../costomModules/valueCheck')
 
 /* ==================== END modules ==================== */
 
-exports.createCourse = function(request, response, next) {
+exports.courseCreate = function(request, response, next) {
     const images = request.files
     const setValues = {
         memberNumber, title, content, placeNumber
@@ -53,6 +53,16 @@ exports.createCourse = function(request, response, next) {
     Course.insertCourse([memberNumber, title, content, setImagesValues, setPlaceNumberValues], function(error, results) {
         if (error) {
             console.log(__filename + ", Course.insertCourse() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}
+
+exports.courseReadAll = function(request, response, next) {
+    Course.selectAllCourse(function(error, results) {
+        if (error) {
+            console.log(__filename + ", Course.selectAllCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)
