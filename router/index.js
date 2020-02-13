@@ -6,7 +6,7 @@ const path          = require('path')
 
 const user          = require('./user/user')
 const place         = require('./place/place')
-const images        = require('./imageDir/image')
+const image        = require('./imageDir/image')
 const map           = require('./map/map')
 const keyword       = require('./keyword/keyword')
 const search        = require('./search/search')
