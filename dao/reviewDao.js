@@ -2,7 +2,7 @@
 
 const { ErrorHandler }      = require('../costomModules/customError')
 const db                    = require('../config/db')
-const Images                = require('../dao/imagesDao')
+const Images                = require('../dao/imageDao')
 
 /* ==================== END modules ==================== */
 
