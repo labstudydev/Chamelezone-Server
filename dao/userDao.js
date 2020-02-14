@@ -1,19 +1,11 @@
 /* ==================== START modules ==================== */
 
-const db            = require('../config/db');
+const db            = require('../config/db')
 const { ErrorHandler, handleError } = require('../costomModules/customError')
 
 /* ==================== END modules ==================== */
 
-var User = function(user) {
-    this.memberNumber = user.memberNumber;
-    this.email = user.email;
-    this.password = user.password;
-    this.name = user.name;
-    this.nickName = user.nickName;
-    this.phoneNumber = user.phoneNumber;
-    this.regiDate = user.regiDate;
-};
+var User = function(user) { }
 
 User.createUser = function(request, response) {
     try {
@@ -46,17 +38,14 @@ User.getUserById = function(request, response) {
                 console.log('response: ', results)
                 response(null, results)
                 connection.release()
-            });
+            })
         })
     } catch (error) {
         throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
     }
-};
+}
 
 User.getLogin = function([email, password], response) {
-    console.log(__filename + " - email : " + email)
-    console.log(__filename + " - password : " + password)
-
     try {
         db((error, connection) => {
             connection.query("select memberNumber, email, name, nickName, phoneNumber, regiDate from member where email = ? && password = ?", [email, password], function(error, results) {
@@ -124,7 +113,6 @@ User.selectByMemberNumber = function(memberNumber, response) {
                     return response(error, null)
                 }
                 console.log(__filename + ': selectByEamilSqlQuery * response: ', results)
-                
                 response(null, results)
             })
         })
@@ -133,4 +121,4 @@ User.selectByMemberNumber = function(memberNumber, response) {
     }
 }
 
-module.exports= User;
+module.exports = User

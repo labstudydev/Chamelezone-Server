@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 
-const User = require('../dao/userDao.js');
+const User = require('../dao/userDao.js')
 const { ErrorHandler, handleError } = require('../costomModules/customError')
 const isEmpty = require('../costomModules/valueCheck')
 
@@ -25,19 +25,19 @@ exports.createUser = function(request, response, next) {
         throw new ErrorHandler(400, 'phoneNumber size is not valid')
     }
 
-    User.createUser(setValues, function(error, user) {
+    User.createUser(setValues, function(error, results) {
         if (error) {
             console.log(__filename + ", User.createUser() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(user)
+        response.status(200).send(results)
     })
 }
 
 exports.getUserById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
 
-    User.getUserById(memberNumber, function(error, user) {
+    User.getUserById(memberNumber, function(error, results) {
         if (error) {
             console.log(__filename + ", User.getUserById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
@@ -46,7 +46,7 @@ exports.getUserById = function(request, response, next) {
         if(user.length == 0) {
             response.status(404).send("User does not exist")
         } else {
-            response.status(200).send(user[0])
+            response.status(200).send(results[0])
         }
     })
 }
@@ -59,7 +59,7 @@ exports.getLogin = function(request, response, next) {
     isEmpty('email', email)
     isEmpty('password', password)
 
-    User.getLogin([email, password], function(error, user) {
+    User.getLogin([email, password], function(error, results) {
         if (error) {
             console.log(__filename + ", User.getLogin() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
@@ -68,7 +68,7 @@ exports.getLogin = function(request, response, next) {
         if(user.length == 0) {
             response.status(404).send("User does not exist")
         } else {    
-            response.status(200).send(user[0])
+            response.status(200).send(results[0])
         }
     })
 }
@@ -87,13 +87,13 @@ exports.updateById = function(request, response, next) {
     isEmpty('nickName', nickName)
     isEmpty('phoneNumber', phoneNumber)
 
-    User.updateById([password, nickName, phoneNumber, memberNumber], function(error, user) {
+    User.updateById([password, nickName, phoneNumber, memberNumber], function(error, results) {
         if (error) {
             console.log(__filename + ", User.updateById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
         
-        response.status(200).send(user)
+        response.status(200).send(results)
     })
 }
 
@@ -102,11 +102,11 @@ exports.deleteById = function(request, response, next) {
     
     isEmpty('memberNumber', memberNumber)
 
-    User.deleteById(memberNumber, function(error, user) {
+    User.deleteById(memberNumber, function(error, results) {
         if (error) {
             console.log(__filename + ", User.deleteById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
-        response.status(200).send(user)    
+        response.status(200).send(results)    
     })
 }
