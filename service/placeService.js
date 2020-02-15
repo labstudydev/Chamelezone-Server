@@ -34,18 +34,17 @@ exports.createPlace = function(request, response, next) {
     isEmpty('keywordName', keywordName)
     
     let keywordNameArraySize = keywordName.length
-    let setKeywordNameValues = new Array(keywordNameArraySize);
+    let setKeywordNameValues = new Array(keywordNameArraySize)
     for (i = 0; i < keywordNameArraySize; i++) {
-        setKeywordNameValues[i] = new Array(1);
+        setKeywordNameValues[i] = new Array(1)
     }
 
     keywordName.forEach((item, index, array) => {
-        console.log(item)
         setKeywordNameValues[index][0] = item
     })
 
     isEmpty('openingTime', openingTime)
-    let openingTimeArray = splitString(openingTime, separator);
+    let openingTimeArray = splitString(openingTime, separator)
     let openingTime1 = openingTimeArray[0]
     let openingTime2 = openingTimeArray[1]
     let openingTime3 = openingTimeArray[2]
@@ -55,24 +54,22 @@ exports.createPlace = function(request, response, next) {
 
     isEmpty('latitude', latitude)
     isEmpty('longitude', longitude)
-    // var parseLatitude = parseFloat(latitude).toFixed(7)
-    // var parseLongitude = parseFloat(longitude).toFixed(7)
     let parseLatitude = parseFloat(latitude)
     let parseLongitude = parseFloat(longitude)
 
     let originalImageName, savedImageName, mimetype, imageSize
     
     let iamgesArraySize = images.length
-    let setImagesValues = new Array(iamgesArraySize);
+    let setImagesValues = new Array(iamgesArraySize)
     for (i = 0; i < iamgesArraySize; i++) {
-        setImagesValues[i] = new Array(4);
+        setImagesValues[i] = new Array(4)
     }
 
     images.forEach((item, index, array) => {
-        originalImageName = array[index] = item.originalname;
-        savedImageName = array[index] = item.filename;
-        mimetype = array[index] = item.mimetype;
-        imageSize = array[index] = item.size;
+        originalImageName = array[index] = item.originalname
+        savedImageName = array[index] = item.filename
+        mimetype = array[index] = item.mimetype
+        imageSize = array[index] = item.size
         console.log("images toString: " + index + ": " + originalImageName + " || " + savedImageName + " || " + mimetype + " || " + imageSize)
         
         setImagesValues[index][0] = originalImageName
@@ -95,61 +92,64 @@ exports.readOnePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     isEmpty('placeNumber', placeNumber)
 
-    Place.readOnePlace(placeNumber, function(error, place) { 
+    Place.readOnePlace(placeNumber, function(error, results) { 
         if (error) {
             console.log(__filename + ", Place.readOnePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        if (place.length == 0 || place.length == undefined) {
+        if (results.length == 0 || results.length == undefined) {
             response.status(404).send("Place does not exist" )
         } else {
-            response.status(200).send(place[0])
+            response.status(200).send(results[0])
         }
     })
 }
 
 exports.readAllPlace = function(request, response, next) {
-    Place.readAllPlace(function(error, place) { 
+    Place.readAllPlace(function(error, results) { 
         if (error) {
             console.log(__filename + ", Place.readAllPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(place)
+        response.status(200).send(results)
     })
 }
 
 exports.updatePlace = function(request, response, next) {
-    let placeNumber = request.params.placeNumber;
+    let placeNumber = request.params.placeNumber
     const setValues = {
         name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content
     } = request.body
     
     isEmpty('placeNumber', placeNumber)
 
-    Place.updatePlace([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, place) { 
+    Place.updatePlace([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
         if (error) {
             console.log(__filename + ", Place.updatePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
-        if (place.length == 0 || place.length == undefined) {
+        if (results.length == 0 || results.length == undefined) {
             response.status(404).send("Place does not exist" )
         } else {
-            response.status(200).send(place)
+            response.status(200).send(results)
         }
     })
 }
 
 exports.deletePlace = function(request, response, next) {
-    let placeNumber = request.params.placeNumber;
-    isEmpty('placeNumber', placeNumber)
+    let placeNumber = request.params.placeNumber
+    let memberNumber = request.body
 
-    Place.deletePlace(placeNumber, function(error, place) { 
+    isEmpty('placeNumber', placeNumber)
+    isEmpty('memberNumber', memberNumber)
+
+    Place.deletePlace(placeNumber, function(error, results) { 
         if (error) {
             console.log(__filename + ", Place.deletePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(place)
+        response.status(200).send(results)
     })
 }
 
@@ -158,13 +158,11 @@ exports.getCutrrentLocation = function(request, response, next) {
         latitude, longitude, latitude2
     } = request.params
 
-    // [latitude, longitude, latitude2]
-
-    Place.getCutrrentLocation(setValues, function(error, place){
+    Place.getCutrrentLocation(setValues, function(error, results){
         if (error) {
             console.log(__filename + ", Place.getCutrrentLocation() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(place)
+        response.status(200).send(results)
     })
 }

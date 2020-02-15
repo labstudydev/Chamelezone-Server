@@ -7,23 +7,8 @@ const Images                = require('./imageDao')
 
 /* ==================== END modules ==================== */
 
-var Place = function(place) {
-    this.placeNumber = place.placeNumber;
-    this.name = place.name;
-    this.address = place.address;
-    this.openingTime1 = place.openingTime1;
-    this.openingTime2 = place.openingTime2;
-    this.openingTime3 = place.openingTime3;
-    this.phoneNumber = place.phoneNumber;
-    this.content = place.content;
-    this.fileName = place.fileName;
-    this.fileExtension = place.fileExtension;
-    this.regiDate = place.regiDate;
-    this.latitude = place.latitude;
-    this.longitude = place.longitude;
-};
+var Place = function(place) { }
 
-// 장소&키워드에 먼저 값을 insert한다.
 Place.createPlace = function([name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
     try {
         db((error, connection) => {
@@ -31,7 +16,7 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
                 if (error) {
                     response(error, null)
                 }
-                const placeSqlQuery = 'INSERT INTO place (name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                const placeSqlQuery = `INSERT INTO place (name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
                 connection.query(placeSqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
                         return connection.rollback(function() {
@@ -72,7 +57,7 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
                                         response(error, null)
                                     })
                                 }
-                                console.log('Transaction Success !!!');
+                                console.log('Transaction Success !!!')
                                 response(null, results)
 
                             })  // commit()
@@ -90,7 +75,7 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            let selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
+            const selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
                                     `P.phoneNumber, P.content, P.regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
@@ -157,7 +142,7 @@ Place.readAllPlace = function(response, next) {
 Place.updatePlace = function([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], response) {
     try {
         db((error, connection) => {
-            var sqlQuery = "UPDATE place SET name = ?, address = ?, openingTime1 = ?, openingTime2 =?, openingTime3 = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?"
+            const sqlQuery = `UPDATE place SET name = ?, address = ?, openingTime1 = ?, openingTime2 =?, openingTime3 = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?`
             connection.query(sqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
@@ -177,7 +162,8 @@ Place.updatePlace = function([name, address, keywordName, openingTime1, openingT
 Place.deletePlace = function(request, response) {
     try {
         db((error, connection) => {
-            connection.query("DELETE FROM place WHERE placeNumber = ?", request, function(error, results) {
+            const deletePlaceSqlQuery = `DELETE FROM place WHERE placeNumber = ?`
+            connection.query(deletePlaceSqlQuery, request, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
@@ -194,28 +180,31 @@ Place.deletePlace = function(request, response) {
 }
 
 Place.getCutrrentLocation = function([latitude, longitude, latitude2], response) {
-    let sql = "select " +
-                "placeNumber, name, address, " + 
-                "( 6371 * acos( cos( radians( ? ) ) * cos( radians(latitude) ) " +
-                "* cos( radians(longitude) - radians( ? ) ) + sin( radians( ? ) ) " + 
-                "* sin( radians( latitude ) ) ) ) AS distance " +
-                "from place " +
-                "HAVING distance < 1 " +
-                "ORDER BY distance desc " +
-                "LIMIT 0 , 5";
-                
-    db((error, connection) => {
-        connection.query(sql, [latitude, longitude, latitude2], function(error, results) {
-            if (error) {
-                console.log("error: ", error)
+    try {
+        db((error, connection) => {
+            const sql = "select " +
+                        "placeNumber, name, address, " + 
+                        "( 6371 * acos( cos( radians( ? ) ) * cos( radians(latitude) ) " +
+                        "* cos( radians(longitude) - radians( ? ) ) + sin( radians( ? ) ) " + 
+                        "* sin( radians( latitude ) ) ) ) AS distance " +
+                        "from place " +
+                        "HAVING distance < 1 " +
+                        "ORDER BY distance desc " +
+                        "LIMIT 0 , 5" 
+            connection.query(sql, [latitude, longitude, latitude2], function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
                 connection.release()
-                return response(error, null)
-            }
-            console.log('response: ', results)
-            response(null, results)
-            connection.release()
+            })
         })
-    })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
 }
 
-module.exports= Place;
+module.exports= Place
