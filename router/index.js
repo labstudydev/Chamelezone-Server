@@ -6,12 +6,13 @@ const path          = require('path')
 
 const user          = require('./user/user')
 const place         = require('./place/place')
-const image        = require('./imageDir/image')
+const image         = require('./imageDir/image')
 const map           = require('./map/map')
 const keyword       = require('./keyword/keyword')
 const search        = require('./search/search')
 const review        = require('./review/review')
 const course        = require('./course/course')
+const like          = require('./like/like')
 
 /* ==================== END modules ==================== */
 
@@ -31,6 +32,7 @@ router.use("/keyword", keyword)       // keyword
 router.use("/search", search)         // search
 router.use("/review", review)         // review
 router.use("/course", course)         // course
+router.use("/like", like)             // like
 
 /* ==================== END router ==================== */
 

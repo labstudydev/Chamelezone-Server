@@ -2,9 +2,11 @@
 
 const user_controller           = require('../../controller/userController')
 const review_controller         = require('../../controller/reviewController')
-const express                   = require('express');
-const router                    = express.Router();
-const bodyParser                = require('body-parser');
+const like_controller           = require('../../controller/likeController')
+const place_controller          = require('../../controller/placeController')
+const express                   = require('express')
+const router                    = express.Router()
+const bodyParser                = require('body-parser')
 
 /* ==================== END modules ==================== */
 
@@ -17,4 +19,10 @@ router.delete('/:memberNumber', user_controller.user_delete)        // 회원삭
 /* ==================== review router ==================== */
 router.get('/:memberNumber/review', review_controller.reviewReadByUser)    // 회원의 리뷰목록 조회
 
-module.exports = router;
+/* ==================== like router ==================== */
+router.post('/:memberNumber/like', like_controller.likeAddPlace)           // 좋아요 실행
+router.delete('/:memberNumber/like', like_controller.likeCancelPlace)      // 좋아요 취소
+
+/* ==================== place router ==================== */                    
+
+module.exports = router
