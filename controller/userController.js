@@ -13,6 +13,7 @@ exports.user_detail = function(request, response, next) {
 }
 
 exports.user_login = function(request, response, next) {
+    console.log("########################################")
     User.getLogin(request, response, next)
 }
 
