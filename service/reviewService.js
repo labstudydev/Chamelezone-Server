@@ -2,11 +2,8 @@
 
 const { ErrorHandler }      = require('../costomModules/customError')
 const isEmpty               = require('../costomModules/valueCheck')
-const Review                = require('../dao/reviewDao.js');
+const Review                = require('../dao/reviewDao.js')
 const util                  = require('../costomModules/util')
-
-const http                  = require('http')
-const fs                    = require('fs')
 
 /* ==================== END modules ==================== */
 
@@ -21,16 +18,16 @@ exports.reviewCreate = function(request, response, next) {
     let originalImageName, savedImageName, mimetype, imageSize
     
     let iamgesArraySize = images.length
-    let setImagesValues = new Array(iamgesArraySize);
+    let setImagesValues = new Array(iamgesArraySize)
     for (i = 0; i < iamgesArraySize; i++) {
-        setImagesValues[i] = new Array(4);
+        setImagesValues[i] = new Array(4)
     }
 
     images.forEach((item, index, array) => {
-        originalImageName = array[index] = item.originalname;
-        savedImageName = array[index] = item.filename;
-        mimetype = array[index] = item.mimetype;
-        imageSize = array[index] = item.size;
+        originalImageName = array[index] = item.originalname
+        savedImageName = array[index] = item.filename
+        mimetype = array[index] = item.mimetype
+        imageSize = array[index] = item.size
         console.log("images toString: " + index + ": " + originalImageName + " || " + savedImageName + " || " + mimetype + " || " + imageSize)
         
         setImagesValues[index][0] = originalImageName
@@ -96,6 +93,25 @@ exports.reviewReadByPlace = function(request, response, next) {
     Review.selectByPlace([placeNumber], function(error, results) {
         if (error) {
             console.log(__filename + ", Review.selectByPlace() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}
+
+exports.reviewDelete = function(request, response, next) {
+    const setValues = {
+        placeNumber, reviewNumber
+    } = request.params
+    isEmpty('placeNumber', placeNumber)
+    isEmpty('reviewNumber', reviewNumber)
+    
+    let memberNumber = request.body.memberNumber
+    isEmpty('memberNumber', memberNumber)
+
+    Review.deleteReview([placeNumber, reviewNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Review.deleteReview() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)

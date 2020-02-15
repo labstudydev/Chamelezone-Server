@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 
-const Review = require('../service/reviewService.js');
+const Review = require('../service/reviewService.js')
 
 /* ==================== END modules ==================== */
 
@@ -22,4 +22,8 @@ exports.reviewReadOneByPlace = function(request, response, next) {
 
 exports.reviewReadByPlace = function(request, response, next) {
     Review.reviewReadByPlace(request, response, next)
+}
+
+exports.reviewDelete = function(request, response, next) {
+    Review.reviewDelete(request, response, next)
 }

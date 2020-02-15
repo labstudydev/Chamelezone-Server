@@ -15,8 +15,8 @@ let storage = multer.diskStorage({
     },
     filename: function (request, file, callback) {
         // cb 콜백함수를 통해 전송된 파일 이름 설정
-        //file.originalname 원래 파일이름
-        //callback(null, file.originalname + Date.now())
+        // file.originalname 원래 파일이름
+        // callback(null, file.originalname + Date.now())
         let extension = path.extname(file.originalname)
         let basename = path.basename(file.originalname, extension)
         callback(null, basename + '-' + Date.now() + '-' + extension)
@@ -35,14 +35,14 @@ let upload = multer({
 router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
 router.post('/:placeNumber/review', upload.array('images', 4), review_controller.reviewCreate)    // 리뷰생성
 router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회(특정리뷰조회)
+router.delete('/:placeNumber/review/:reviewNumber', review_controller.reviewDelete)               // 장소의 리뷰 삭제
 
 /* ==================== place router ==================== */
-router.post('/', upload.array('images', 4), place_controller.place_create);             // 장소생성 (이미지)
-router.get('/:placeNumber' , place_controller.place_readOne);                           // 장소한개조회
-router.get('/', place_controller.place_readAll);                                        // 장소전체조회
-router.put('/:placeNumber', place_controller.place_update);                             // 장소수정
-router.delete('/:placeNumber', place_controller.place_delete);                          // 장소삭제
-router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation);        // 장소 현재위치 
+router.post('/', upload.array('images', 4), place_controller.place_create)             // 장소생성 (이미지)
+router.get('/:placeNumber' , place_controller.place_readOne)                           // 장소한개조회
+router.get('/', place_controller.place_readAll)                                        // 장소전체조회
+router.put('/:placeNumber', place_controller.place_update)                             // 장소수정
+router.delete('/:placeNumber', place_controller.place_delete)                          // 장소삭제
+router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation)        // 장소 현재위치 
 
-
-module.exports = router;
+module.exports = router
