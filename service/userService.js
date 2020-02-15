@@ -43,7 +43,7 @@ exports.getUserById = function(request, response, next) {
             return next(new ErrorHandler(500, error))   
         }
 
-        if(user.length == 0) {
+        if(results.length == 0) {
             response.status(404).send("User does not exist")
         } else {
             response.status(200).send(results[0])
@@ -65,7 +65,7 @@ exports.getLogin = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
 
-        if(user.length == 0) {
+        if(results.length == 0) {
             response.status(404).send("User does not exist")
         } else {    
             response.status(200).send(results[0])
