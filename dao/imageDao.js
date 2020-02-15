@@ -52,11 +52,11 @@ Images.insertReviewImages = function([setImagesValues], response) {
 }
 
 /* insert course images query */
-Images.insertCourseImages = function([setImagesValues], response) {
+Images.insertCourseImages = function([setImageArray], response) {
     try {
         db((error, connection) => {
-            const insertCourseImagesSqlQuery = 'INSERT INTO course_images (courseNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?'
-            connection.query(insertCourseImagesSqlQuery, [setImagesValues], function(error, results) {
+            const insertCourseImagesSqlQuery = 'INSERT INTO course_images (courseNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES (?)'
+            connection.query(insertCourseImagesSqlQuery, [setImageArray], function(error, results) {
                 if (error) {
                     console.log(__filename + ': insertCourseImagesSqlQuery * error: ', error)
                     connection.release()

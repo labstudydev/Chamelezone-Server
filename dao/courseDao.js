@@ -10,7 +10,7 @@ var Course = function(course) {
 
 }
 
-Course.insertCourse = function([memberNumber, title, content, setImagesValues, setPlaceNumberValues], response) {
+Course.insertCourse = function([memberNumber, title, content, setImageArray, setPlaceNumberValues], response) {
     try {
         db((error, connection) => {
             connection.beginTransaction(function(error) {
@@ -30,17 +30,16 @@ Course.insertCourse = function([memberNumber, title, content, setImagesValues, s
                     connection.release()
 
                     let courseNumber = results.insertId
-                    for (var i in setImagesValues) {
-                        setImagesValues[i].unshift(courseNumber)
-                    }
+                    
                     for (var j in setPlaceNumberValues) {
                         setPlaceNumberValues[j].unshift(courseNumber)
                     }
-
-                    console.log(setImagesValues)
+                    setImageArray.unshift(courseNumber)
+                    
+                    console.log(setImageArray)
                     console.log(setPlaceNumberValues)
 
-                    Images.insertCourseImages([setImagesValues], function(error, results) {
+                    Images.insertCourseImages([setImageArray], function(error, results) {
                         if (error) {
                             return connection.rollback(function() {
                                 response(error, null)
@@ -100,5 +99,24 @@ Course.selectAllCourse = function(response) {
     }
 }
 
+Course.selectOneCourse = function([courseNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectOneCourseSqlQuery = 
+            connection.query(selectOneCourseSqlQuery, function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
 
 module.exports = Course

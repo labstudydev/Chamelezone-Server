@@ -25,12 +25,13 @@ let storage = multer.diskStorage({
 let upload = multer({
     storage: storage,
     limits: {
-        files: 4,                    // 최대 업로드 개수
+        files: 1,                    // 최대 업로드 개수
         fileSize: 1024 * 1024 * 1024 // 파일 사이즈
     }
 })
 
-router.post('/', upload.array('images', 4), course_controller.courseCreate)             // 코스 생성
+router.post('/', upload.single('image'), course_controller.courseCreate)                // 코스 생성
 router.get('/', course_controller.courseReadAll)                                        // 코스 목록 조회
+router.get('/courseNumber', course_controller.courseReadOne)                            // 코스 한개 조회
 
 module.exports = router
