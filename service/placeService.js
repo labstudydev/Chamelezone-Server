@@ -24,9 +24,10 @@ function splitString(stringToSplit, separator) {
 exports.createPlace = function(request, response, next) {
     const images = request.files
     const setValues = {
-        name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
+        memberNumber, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
     
+    isEmpty('memberNumber', memberNumber)
     isEmpty('images', images[0])
     isEmpty('name', name)
     isEmpty('address', address)
@@ -78,7 +79,7 @@ exports.createPlace = function(request, response, next) {
         setImagesValues[index][3] = imageSize
     })
     
-    Place.createPlace([name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
+    Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
         if (error) {
             console.log(__filename + ", Place.createPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
@@ -97,6 +98,7 @@ exports.readOnePlace = function(request, response, next) {
             console.log(__filename + ", Place.readOnePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+
         if (results.length == 0 || results.length == undefined) {
             response.status(404).send("Place does not exist" )
         } else {

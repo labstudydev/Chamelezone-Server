@@ -9,15 +9,15 @@ const Images                = require('./imageDao')
 
 var Place = function(place) { }
 
-Place.createPlace = function([name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
+Place.createPlace = function([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
     try {
         db((error, connection) => {
             connection.beginTransaction(function(error) {
                 if (error) {
                     response(error, null)
                 }
-                const placeSqlQuery = `INSERT INTO place (name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-                connection.query(placeSqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
+                const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                connection.query(placeSqlQuery, [memberNumber, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
                         return connection.rollback(function() {
                             response(error, null)
@@ -66,7 +66,6 @@ Place.createPlace = function([name, address, setKeywordNameValues, openingTime1,
                 })  // placeSqlQuery()
             })  // beginTransaction()
         })  // db connection()
-
     } catch (error) {
         throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
     }
