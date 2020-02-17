@@ -41,3 +41,16 @@ exports.likeCancelPlace = function(request, response, next) {
         response.status(200).send(results)
     })
 }
+
+exports.likeReadAllByUser = function(request, response, next) {
+    let memberNumber = request.params.memberNumber
+    isEmpty('memberNumber', memberNumber)
+
+    Like.selectAllByUserLikes([memberNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Like.selectAllByUserLikes() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}
