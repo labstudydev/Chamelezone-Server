@@ -109,12 +109,13 @@ Place.readOnePlace = function(request, response) {
 Place.readAllPlace = function(response, next) {
     try {
         db((error, connection) => {
-            let selectPlaceAll = `SELECT P.placeNumber, P.name, P.regiDate, A.keywordNumber, A.keywordName, ` +
+            let selectPlaceAll = `SELECT LH.likeNumber, P.placeNumber, P.name, P.regiDate, A.keywordNumber, A.keywordName, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                     `FROM place P ` +
                                     `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
+                                    `LEFT JOIN like_history LH ON LH.placeNumber = P.placeNumber ` +
                                     `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
                                     `        FROM place_has_keyword PHK ` +
                                     `        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
