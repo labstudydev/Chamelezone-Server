@@ -27,3 +27,7 @@ exports.place_delete = function(request, response, next) {
 exports.place_getCutrrentLocation = function(request, response, next) {
     Place.getCutrrentLocation(request, response, next)
 }
+
+exports.placeListUser = function(request, response, next) {
+    Place.placeListUser(request, response, next)
+}

@@ -168,3 +168,16 @@ exports.getCutrrentLocation = function(request, response, next) {
         response.status(200).send(results)
     })
 }
+
+exports.placeListUser = function(request, response, next) {
+    let memberNumber = request.params.memberNumber
+    isEmpty('memberNumber', memberNumber)
+
+    Place.selectAllByUser([memberNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Place.selectAllByUser() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+        response.status(200).send(results)
+    })
+}

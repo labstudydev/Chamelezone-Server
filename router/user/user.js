@@ -23,4 +23,7 @@ router.get('/:memberNumber/review', review_controller.reviewReadByUser)    // �
 router.post('/:memberNumber/like', like_controller.likeAddPlace)                       // 좋아요 실행
 router.delete('/:memberNumber/like/:likeNumber', like_controller.likeCancelPlace)      // 좋아요 취소
 
+/* ==================== place router ==================== */
+router.get('/:memberNumber/place', place_controller.placeListUser)         // 회원의 장소 목록 조회
+
 module.exports = router
