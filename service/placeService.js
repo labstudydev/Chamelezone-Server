@@ -2,7 +2,9 @@
 
 const { ErrorHandler }      = require('../costomModules/customError')
 const Place                 = require('../dao/placeDao.js')
+const Like                   = require('../dao/likeDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
+const Step					= require('../node_modules/step');
 
 /* ==================== END modules ==================== */
 
@@ -93,18 +95,42 @@ exports.readOnePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     isEmpty('placeNumber', placeNumber)
 
-    Place.readOnePlace(placeNumber, function(error, results) { 
-        if (error) {
-            console.log(__filename + ", Place.readOnePlace() error status code 500 !!!")
-            return next(new ErrorHandler(500, error))
+    let memberNumber = request.query.memberNumber
+    isEmpty('memberNumber', memberNumber)
+    Step (
+        function selectLikeByUser() {
+            Like.selectOneByUserLike([placeNumber, memberNumber], this)
+        },
+        function selectLikeByUserResult(error, result){
+            if (error) {
+				throw new ErrorHandler(500, error)
+            } 
+            if (result[0] == null || result[0] == undefined){
+                console.log("Like does not exist")
+                return null
+            } else {
+                return result[0].likeNumber
+            }
+        },
+        function selectPlaceByUser(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            Place.readOnePlace(placeNumber, function(error, results) { 
+                if (error) {
+                    console.log(__filename + ", Place.readOnePlace() error status code 500 !!!")
+                    return next(new ErrorHandler(500, error))
+                }
+        
+                if (results.length == 0 || results.length == undefined) {
+                    response.status(404).send("Place does not exist" )
+                } else {
+                    results[0].likeNumber = result
+                    response.status(200).send(results[0])
+                }
+            })
         }
-
-        if (results.length == 0 || results.length == undefined) {
-            response.status(404).send("Place does not exist" )
-        } else {
-            response.status(200).send(results[0])
-        }
-    })
+    )
 }
 
 exports.readAllPlace = function(request, response, next) {

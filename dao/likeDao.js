@@ -81,4 +81,25 @@ Like.selectAllByUserLikes = function([memberNumber], response) {
     }
 }
 
+// select by user and place => Place.readOnePlace
+Like.selectOneByUserLike = function([placeNumber, memberNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectOneByUserLikeSqlQuery = `SELECT likeNumber, placeNumber, memberNumber FROM like_history WHERE placeNumber = ? and memberNumber = ?`
+            connection.query(selectOneByUserLikeSqlQuery, [placeNumber, memberNumber], function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 module.exports = Like
