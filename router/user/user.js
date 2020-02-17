@@ -20,9 +20,7 @@ router.delete('/:memberNumber', user_controller.user_delete)        // 회원삭
 router.get('/:memberNumber/review', review_controller.reviewReadByUser)    // 회원의 리뷰목록 조회
 
 /* ==================== like router ==================== */
-router.post('/:memberNumber/like', like_controller.likeAddPlace)           // 좋아요 실행
-router.delete('/:memberNumber/like', like_controller.likeCancelPlace)      // 좋아요 취소
-
-/* ==================== place router ==================== */                    
+router.post('/:memberNumber/like', like_controller.likeAddPlace)                       // 좋아요 실행
+router.delete('/:memberNumber/like/:likeNumber', like_controller.likeCancelPlace)      // 좋아요 취소
 
 module.exports = router

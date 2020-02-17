@@ -7,11 +7,11 @@ const db                    = require('../config/db')
 
 var Like = function(like) { }
 
-Like.insertLike = function([memberNumber, placeNumber], response) {
+Like.insertLike = function([placeNumber, memberNumber], response) {
     try {
         db((error, connection) => {
             const insertLikeSqlQuery = `INSERT INTO like_history (placeNumber, memberNumber) VALUES (?, ?)`
-            connection.query(insertLikeSqlQuery, [memberNumber, placeNumber], function(error, results) {
+            connection.query(insertLikeSqlQuery, [placeNumber, memberNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
@@ -27,11 +27,11 @@ Like.insertLike = function([memberNumber, placeNumber], response) {
     }
 }
 
-Like.deleteLike = function([likeNumber, memberNumber, placeNumber], response) {
+Like.deleteLike = function([likeNumber, placeNumber, memberNumber], response) {
     try {
         db((error, connection) => {
-            const deleteLikeSqlQuery = `DELETE FROM review WHERE likeNumber = ? AND placeNumber = ? AND reviewNumber = ?`
-            connection.query(deleteLikeSqlQuery, [likeNumber, memberNumber, placeNumber], function(error, results) {
+            const deleteLikeSqlQuery = `DELETE FROM like_history WHERE likeNumber = ? AND placeNumber = ? AND memberNumber = ?`
+            connection.query(deleteLikeSqlQuery, [likeNumber, placeNumber, memberNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
