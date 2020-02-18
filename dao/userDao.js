@@ -11,14 +11,13 @@ User.createUser = function(request, response) {
     try {
         db((error, connection) => {
             connection.query("INSERT INTO member SET ?", request, function(error, results) {
+                connection.release()
                 if (error) {
                     console.log("error: ", error)
-                    connection.release()
                     return response(error, null)
                 }
                 console.log('response: ', results)
                 response(null, results)
-                connection.release()
             })
         })
     } catch (error) {
@@ -30,14 +29,13 @@ User.getUserById = function(request, response) {
     try {
         db((error, connection) => {
             connection.query("SELECT * FROM member WHERE memberNumber = ?", request, function(error, results, fields) {
+                connection.release()
                 if (error) {
                     console.log("error: ", error)
-                    connection.release()
                     return response(error, null)
                 }
                 console.log('response: ', results)
                 response(null, results)
-                connection.release()
             })
         })
     } catch (error) {
@@ -49,14 +47,13 @@ User.getLogin = function([email, password], response) {
     try {
         db((error, connection) => {
             connection.query("select memberNumber, email, name, nickName, phoneNumber, regiDate from member where email = ? && password = ?", [email, password], function(error, results) {
+                connection.release()
                 if (error) {
                     console.log("error: ", error)
-                    connection.release()
                     return response(error, null)
                 }
                 console.log('response: ', results)
                 response(null, results)
-                connection.release()
             })
         })
     } catch (error) {
@@ -68,14 +65,13 @@ User.updateById = function([password, nickName, phoneNumber, memberNumber], resp
     try {
         db((error, connection) => {
             connection.query("UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?", [password, nickName, phoneNumber, memberNumber], function(error, results) {
+                connection.release()
                 if (error) {
                     console.log("error: ", error)
-                    connection.release()
                     return response(error, null)
                 }
                 console.log('response: ', results)
                 response(null, results)
-                connection.release()
             })
         })
     } catch (error) {
@@ -87,14 +83,13 @@ User.deleteById = function(request, response) {
     try {
         db((error, connection) => {
             connection.query("DELETE FROM member WHERE memberNumber = ?", request, function(error, results) {
+                connection.release()
                 if (error) {
                     console.log("error: ", error)
-                    connection.release()
                     return response(error, null)
                 }
                 console.log('response: ', results)
                 response(null, results)
-                connection.release()
             })
         })
     } catch (error) {
@@ -113,6 +108,25 @@ User.selectByMemberNumber = function(memberNumber, response) {
                     return response(error, null)
                 }
                 console.log(__filename + ': selectByEamilSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+User.selectEmailDuplicateCheck = function(email, response) {
+    try {
+        db((error, connection) => {
+            const selectEmailDuplicateCheckSqlQuery = `SELECT email FROM member WHERE email = ?`
+            connection.query(selectEmailDuplicateCheckSqlQuery, email, function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': selectEmailDuplicateCheck * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': selectEmailDuplicateCheck * response: ', results)
                 response(null, results)
             })
         })

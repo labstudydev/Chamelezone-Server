@@ -74,15 +74,12 @@ exports.getLogin = function(request, response, next) {
 }
 
 exports.updateById = function(request, response, next) {
-    let memberNumber = request.params.memberNumber;
+    let memberNumber = request.params.memberNumber
     const setValues = {
         password, nickName, phoneNumber
     } = request.body
 
-    if (!memberNumber || memberNumber == "") {
-        throw new ErrorHandler(400, 'memberNumber is null !!!')
-    }
-
+    isEmpty('memberNumber', memberNumber)
     isEmpty('password', password)
     isEmpty('nickName', nickName)
     isEmpty('phoneNumber', phoneNumber)
@@ -98,8 +95,7 @@ exports.updateById = function(request, response, next) {
 }
 
 exports.deleteById = function(request, response, next) {
-    let memberNumber = request.params.memberNumber;
-    
+    let memberNumber = request.params.memberNumber
     isEmpty('memberNumber', memberNumber)
 
     User.deleteById(memberNumber, function(error, results) {
@@ -108,5 +104,25 @@ exports.deleteById = function(request, response, next) {
             return next(new ErrorHandler(500, error))   
         }
         response.status(200).send(results)    
+    })
+}
+
+exports.userEmailDuplicateCheck = function(request, response, next) {
+    let email = request.params.email
+    isEmpty('email', email)
+
+    User.selectEmailDuplicateCheck(email, function(error, results) {
+        if (error) {
+            console.log(__filename + ", User.selectEmailDuplicateCheck() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+
+        if(results.length == 0 || results.length == undefined) {
+            results[0] = { status : 200, email_check : "Y", message : "Email is not duplicate"}
+            response.status(200).send(results[0])
+        } else {
+            results[0] = { status : 409, email_check : "N", message : "Email is duplicate"}
+            response.status(409).send(results[0])
+        }  
     })
 }
