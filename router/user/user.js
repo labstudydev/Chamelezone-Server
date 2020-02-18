@@ -16,6 +16,7 @@ router.get('/:memberNumber', user_controller.user_detail)                   // �
 router.put('/:memberNumber', user_controller.user_update)                   // 회원수정
 router.delete('/:memberNumber', user_controller.user_delete)                // 회원삭제
 router.get('/email/:email', user_controller.userEmailDuplicateCheck)        // 회원 이메일 중복확인
+router.get('/nick-name/:nickName', user_controller.userNickNameDuplicateCheck)  // 회원 닉네임 중복확인
 
 /* ==================== review router ==================== */
 router.get('/:memberNumber/review', review_controller.reviewReadByUser)    // 회원의 리뷰목록 조회

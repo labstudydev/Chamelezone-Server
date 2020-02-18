@@ -126,3 +126,23 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
         }  
     })
 }
+
+exports.userNickNameDuplicateCheck = function(request, response, next) {
+    let nickName = request.params.nickName
+    isEmpty('nickName', nickName)
+
+    User.selectNickNameDuplicateCheck(nickName, function(error, results) {
+        if (error) {
+            console.log(__filename + ", User.selectNickNameDuplicateCheck() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+
+        if(results.length == 0 || results.length == undefined) {
+            results[0] = { status : 200, nickName_check : "Y", message : "NickName is not duplicate"}
+            response.status(200).send(results[0])
+        } else {
+            results[0] = { status : 409, nickName_check : "N", message : "NickName is duplicate"}
+            response.status(409).send(results[0])
+        }  
+    })
+}

@@ -27,3 +27,7 @@ exports.user_delete = function(request, response, next) {
 exports.userEmailDuplicateCheck = function(request, response, next) {
     User.userEmailDuplicateCheck(request, response, next)
 }
+
+exports.userNickNameDuplicateCheck = function(request, response, next) {
+    User.userNickNameDuplicateCheck(request, response, next)
+}

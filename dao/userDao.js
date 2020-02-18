@@ -135,4 +135,23 @@ User.selectEmailDuplicateCheck = function(email, response) {
     }
 }
 
+User.selectNickNameDuplicateCheck = function(nickName, response) {
+    try {
+        db((error, connection) => {
+            const selectNickNameDuplicateCheckSqlQuery = `SELECT nickName FROM member WHERE nickName = ?`
+            connection.query(selectNickNameDuplicateCheckSqlQuery, nickName, function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': selectNickNameDuplicateCheckSqlQuery * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': selectNickNameDuplicateCheckSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
 module.exports = User
