@@ -8,7 +8,6 @@ const isEmpty               = require('../costomModules/valueCheck')
 
 exports.mapSearchPlaceByName = function(request, response, next) {
     let name = request.params.name
-
     isEmpty('name', name)
 
     Map.selectPlaceByName(name, function(error, results) {
@@ -16,6 +15,11 @@ exports.mapSearchPlaceByName = function(request, response, next) {
             console.log(__filename + ", Map.selectPlaceByName() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(results)
+
+        if(results.length == 0 || results.length == undefined) {
+            response.status(404).send("No Results Found")
+        } else {
+            response.status(200).send(results)
+        } 
     })
 }
