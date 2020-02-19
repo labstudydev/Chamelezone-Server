@@ -154,4 +154,61 @@ User.selectNickNameDuplicateCheck = function(nickName, response) {
     }
 }
 
+User.selectUserFindEmail = function([name, phoneNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectFindUserEmailSqlQuery = `SELECT name, email, phoneNumber FROM member WHERE name = ? AND phoneNumber = ?`
+            connection.query(selectFindUserEmailSqlQuery, [name, phoneNumber], function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': selectFindUserEmailSqlQuery * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': selectFindUserEmailSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+User.selectOneUserCheckEmail = function([email, phoneNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectOneFindUserCheckEmailSqlQuery = `SELECT memberNumber, name, email, phoneNumber FROM member WHERE email = ? AND phoneNumber = ?`
+            connection.query(selectOneFindUserCheckEmailSqlQuery, [email, phoneNumber], function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': selectOneFindUserCheckEmailSqlQuery * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': selectOneFindUserCheckEmailSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
+User.updatePasswordById = function([password, memberNumber], response) {
+    try {
+        db((error, connection) => {
+            const updateUserPasswordResetSqlQuery = `UPDATE member SET password = ? WHERE memberNumber = ?`
+            connection.query(updateUserPasswordResetSqlQuery, [password, memberNumber], function(error, results) {
+                connection.release()
+                if (error) {
+                    console.log(__filename + ': updateUserPasswordResetSqlQuery * error: ', error)
+                    return response(error, null)
+                }
+                console.log(__filename + ': updateUserPasswordResetSqlQuery * response: ', results)
+                response(null, results)
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
 module.exports = User

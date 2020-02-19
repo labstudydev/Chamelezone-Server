@@ -31,3 +31,16 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
 exports.userNickNameDuplicateCheck = function(request, response, next) {
     User.userNickNameDuplicateCheck(request, response, next)
 }
+
+exports.userEmailFind = function(request, response, next) {
+    User.userEmailFind(request, response, next)
+}
+
+exports.userSendSecurityCode = function(request, response, next) {
+    User.userSendSecurityCode(request, response, next)
+}
+
+exports.userPasswordReset = function(request, response, next) {
+    console.log("수정1223214312513251233432")
+    User.userPasswordReset(request, response, next)
+}
