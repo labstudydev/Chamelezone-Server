@@ -4,7 +4,7 @@ const { ErrorHandler }      = require('../costomModules/customError')
 const Place                 = require('../dao/placeDao.js')
 const Like                   = require('../dao/likeDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
-const Step					= require('../node_modules/step');
+const Step					= require('../node_modules/step')
 
 /* ==================== END modules ==================== */
 
