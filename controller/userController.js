@@ -41,6 +41,5 @@ exports.userSendSecurityCode = function(request, response, next) {
 }
 
 exports.userPasswordReset = function(request, response, next) {
-    console.log("수정1223214312513251233432")
     User.userPasswordReset(request, response, next)
 }
