@@ -81,7 +81,7 @@ exports.updateById = function(request, response, next) {
     const setValues = {
         password, nickName, phoneNumber
     } = request.body
-
+    
     isEmpty('memberNumber', memberNumber)
     isEmpty('password', password)
     isEmpty('nickName', nickName)
@@ -124,8 +124,8 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
             results[0] = { status : 200, email_check : "Y", message : "Email is not duplicate"}
             response.status(200).send(results[0])
         } else {
-            results[0] = { status : 409, email_check : "N", message : "Email is duplicate"}
-            response.status(409).send(results[0])
+            results[0] = { status : 200, email_check : "N", message : "Email is duplicate"}
+            response.status(200).send(results[0])
         }  
     })
 }
@@ -144,8 +144,8 @@ exports.userNickNameDuplicateCheck = function(request, response, next) {
             results[0] = { status : 200, nickName_check : "Y", message : "NickName is not duplicate"}
             response.status(200).send(results[0])
         } else {
-            results[0] = { status : 409, nickName_check : "N", message : "NickName is duplicate"}
-            response.status(409).send(results[0])
+            results[0] = { status : 200, nickName_check : "N", message : "NickName is duplicate"}
+            response.status(200).send(results[0])
         }  
     })
 }
