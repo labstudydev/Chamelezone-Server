@@ -10,7 +10,8 @@ var User = function(user) { }
 User.createUser = function(request, response) {
     try {
         db((error, connection) => {
-            connection.query("INSERT INTO member SET ?", request, function(error, results) {
+            const insertUserSqlQuery = `INSERT INTO member SET ?`
+            connection.query(insertUserSqlQuery, request, function(error, results) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
@@ -28,7 +29,8 @@ User.createUser = function(request, response) {
 User.getUserById = function(request, response) {
     try {
         db((error, connection) => {
-            connection.query("SELECT * FROM member WHERE memberNumber = ?", request, function(error, results, fields) {
+            const selectUserByIdSqlQuery = `SELECT * FROM member WHERE memberNumber = ?`
+            connection.query(selectUserByIdSqlQuery, request, function(error, results, fields) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
@@ -46,7 +48,8 @@ User.getUserById = function(request, response) {
 User.getLogin = function([email, password], response) {
     try {
         db((error, connection) => {
-            connection.query("select memberNumber, email, name, nickName, phoneNumber, regiDate from member where email = ? && password = ?", [email, password], function(error, results) {
+            const selectUserLoginSqlQuery = `SELECT memberNumber, email, name, nickName, phoneNumber, DATE_FORMAT(regiDate, '%Y-%m-%d') FROM member WHERE email = ? && password = ?`
+            connection.query("", [email, password], function(error, results) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
@@ -64,7 +67,8 @@ User.getLogin = function([email, password], response) {
 User.updateById = function([password, nickName, phoneNumber, memberNumber], response) {
     try {
         db((error, connection) => {
-            connection.query("UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?", [password, nickName, phoneNumber, memberNumber], function(error, results) {
+            const updateUserSqlQuery = `UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?`
+            connection.query(updateUserSqlQuery, [password, nickName, phoneNumber, memberNumber], function(error, results) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
@@ -82,7 +86,8 @@ User.updateById = function([password, nickName, phoneNumber, memberNumber], resp
 User.deleteById = function(request, response) {
     try {
         db((error, connection) => {
-            connection.query("DELETE FROM member WHERE memberNumber = ?", request, function(error, results) {
+            const deleteUserById = `DELETE FROM member WHERE memberNumber = ?`
+            connection.query(deleteUserById, request, function(error, results) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
