@@ -19,6 +19,8 @@ exports.likeAddPlace = function(request, response, next) {
             console.log(__filename + ", Like.insertLike() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+        
+        results = { like_status : true }
         response.status(200).send(results)
     })
 }
@@ -38,6 +40,8 @@ exports.likeCancelPlace = function(request, response, next) {
             console.log(__filename + ", Like.deleteLike() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+
+        results = { like_status : false }
         response.status(200).send(results)
     })
 }
