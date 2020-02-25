@@ -75,7 +75,7 @@ Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
             const selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
-                                    `P.phoneNumber, P.content, P.regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+                                    `P.phoneNumber, P.content, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
@@ -109,7 +109,7 @@ Place.readOnePlace = function(request, response) {
 Place.readAllPlace = function(response, next) {
     try {
         db((error, connection) => {
-            let selectPlaceAll = `SELECT LH.likeNumber, P.placeNumber, P.name, P.regiDate, A.keywordNumber, A.keywordName, ` +
+            const selectPlaceAll = `SELECT LH.likeNumber, P.placeNumber, P.name, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, A.keywordNumber, A.keywordName, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
