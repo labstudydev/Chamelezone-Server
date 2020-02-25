@@ -96,7 +96,7 @@ exports.readOnePlace = function(request, response, next) {
     isEmpty('placeNumber', placeNumber)
 
     let memberNumber = request.query.memberNumber
-    isEmpty('memberNumber', memberNumber)
+    // isEmpty('memberNumber', memberNumber)
     Step (
         function selectLikeByUser() {
             Like.selectOneByUserLike([placeNumber, memberNumber], this)
@@ -139,6 +139,7 @@ exports.readAllPlace = function(request, response, next) {
             console.log(__filename + ", Place.readAllPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+
         response.status(200).send(results)
     })
 }
