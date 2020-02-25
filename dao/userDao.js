@@ -49,7 +49,7 @@ User.getLogin = function([email, password], response) {
     try {
         db((error, connection) => {
             const selectUserLoginSqlQuery = `SELECT memberNumber, email, name, nickName, phoneNumber, DATE_FORMAT(regiDate, '%Y-%m-%d') as regiDate FROM member WHERE email = ? && password = ?`
-            connection.query("", [email, password], function(error, results) {
+            connection.query(selectUserLoginSqlQuery, [email, password], function(error, results) {
                 connection.release()
                 if (error) {
                     console.log("error: ", error)
