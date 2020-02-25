@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 
-const db            = require('../config/db');
+const db            = require('../config/db')
 const { ErrorHandler, handleError } = require('../costomModules/customError')
 
 /* ==================== END modules ==================== */
@@ -51,4 +51,4 @@ Keyword.insertPlaceKeyword = function([setKeywordNameValues], response) {
     }
 }
 
-module.exports = Keyword;
+module.exports = Keyword

@@ -72,4 +72,4 @@ Images.insertCourseImages = function([setImageArray], response) {
     }
 }
 
-module.exports= Images;
+module.exports= Images

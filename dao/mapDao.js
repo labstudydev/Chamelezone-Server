@@ -1,7 +1,7 @@
 /* ==================== START modules ==================== */
 
 const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db');
+const db                    = require('../config/db')
 
 /* ==================== END modules ==================== */
 
@@ -43,4 +43,4 @@ Map.selectPlaceByName = function(name, response) {
     }
 }
 
-module.exports = Map;
+module.exports = Map

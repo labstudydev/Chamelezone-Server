@@ -1,7 +1,7 @@
 /* ==================== START modules ==================== */
 
 const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db');
+const db                    = require('../config/db')
 
 /* ==================== END modules ==================== */
 
@@ -114,4 +114,4 @@ Search.selectByKeywordName = function(name, response) {
     }
 }
 
-module.exports = Search;
+module.exports = Search
