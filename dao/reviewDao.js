@@ -63,7 +63,7 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
 Review.selectAllReview = function(response) {
     try {
         db((error, connection) => {
-            const selectAllReviewSqlQuery = `SELECT reviewNumber, placeNumber, memberNumber, content, regiDate FROM review`
+            const selectAllReviewSqlQuery = `SELECT reviewNumber, placeNumber, memberNumber, content, DATE_FORMAT(regiDate, '%Y-%m-%d') as regiDate FROM review`
             connection.query(selectAllReviewSqlQuery, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
@@ -84,7 +84,7 @@ Review.selectAllReview = function(response) {
 Review.selectByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectByUserSqlQuery = `SELECT R.reviewNumber, R.memberNumber, R.placeNumber, R.content, R.regiDate, P.name, ` + 
+            const selectByUserSqlQuery = `SELECT R.reviewNumber, R.memberNumber, R.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, P.name, ` + 
                                             `GROUP_CONCAT(PI.imageNumber separator ',') AS 'imageNumber', ` + 
                                             `GROUP_CONCAT(PI.originalImageName separator ',') AS 'originalImageName', ` + 
                                             `GROUP_CONCAT(PI.savedImageName separator ',') AS 'savedImageName' ` + 
@@ -113,7 +113,7 @@ Review.selectByUser = function([memberNumber], response) {
 Review.selectByReview = function([placeNumber, reviewNumber], response) {
     try {
         db((error, connection) => {
-            const selectByReviewSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, P.name, ` + 
+            const selectByReviewSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, P.name, ` + 
                                             `GROUP_CONCAT(RI.imageNumber separator ',') AS 'imageNumber', ` + 
                                             `GROUP_CONCAT(RI.originalImageName separator ',') AS 'originalImageName', ` + 
                                             `GROUP_CONCAT(RI.savedImageName separator ',') AS 'savedImageName' ` + 
@@ -142,7 +142,7 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
 Review.selectByPlace = function([placeNumber], response) {
     try {
         db((error, connection) => {
-            const selectByPlaceSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, M.nickName, ` +
+            const selectByPlaceSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, M.nickName, ` +
                                             `GROUP_CONCAT(RI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                             `GROUP_CONCAT(RI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                             `GROUP_CONCAT(RI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
