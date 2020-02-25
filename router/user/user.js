@@ -29,7 +29,6 @@ router.get('/:memberNumber/likes', like_controller.likeReadAllByUser)           
 router.delete('/:memberNumber/like/:likeNumber', like_controller.likeCancelPlace)      // 좋아요 취소
 
 /* ==================== place router ==================== */
-router.get('/:memberNumber/place', place_controller.placeListUser)         // 회원의 장소 목록 조회
-
+router.get('/:memberNumber/place', place_controller.placeListUser)              // 회원의 장소 목록 조회
 
 module.exports = router

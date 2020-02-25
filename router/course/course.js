@@ -32,6 +32,6 @@ let upload = multer({
 
 router.post('/', upload.single('image'), course_controller.courseCreate)                // 코스 생성
 router.get('/', course_controller.courseReadAll)                                        // 코스 목록 조회
-router.get('/courseNumber', course_controller.courseReadOne)                            // 코스 한개 조회
+router.get('/:courseNumber', course_controller.courseReadOne)                            // 코스 한개 조회
 
 module.exports = router
