@@ -139,30 +139,43 @@ Course.selectOneCourse = function([courseNumber], response) {
             //                                 `where C.courseNumber = ? ` +
             //                                 `group by C.courseNumber`
 
-            const selectOneCourseSqlQuery = `select C.courseNumber, C.title, C.content, CI.savedImageName, B.placeNumber, B.placeName, B.placeAddress, B.keywordName ` +
-                                            `from course C ` +
-                                            `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
-                                            `left join (select CHP.courseNumber, ` +
-                                            `            group_concat(DISTINCT CHP.placeNumber separator ',') as placeNumber, ` +
-                                            `            group_concat(DISTINCT P.name separator ',') as placeName, ` +
-                                            `            group_concat(DISTINCT P.address separator ',') as placeAddress, ` +
-                                            `            group_concat(DISTINCT A.keywordName separator '|') as keywordName ` +
-                                            `            from course_has_place CHP ` +
-                                            `           left join place P on P.placeNumber = CHP.placeNumber ` +
-                                            `            left join (select DISTINCT PHK.placeNumber, GROUP_CONCAT(DISTINCT K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(DISTINCT K.name SEPARATOR ',') AS 'keywordName' ` +
-                                            `                        FROM place_has_keyword PHK ` +
-                                            `                        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-                                            `                        GROUP BY PHK.placeNumber) A on A.placeNumber = CHP.placeNumber ` +
-                                            `                        group by CHP.placeNumber) B on B.courseNumber = C.courseNumber ` +                      
-                                            `where C.courseNumber = ?`
+            // const selectOneCourseSqlQuery = `select C.courseNumber, C.title, C.content, CI.savedImageName, B.placeNumber, B.placeName, B.placeAddress, B.keywordName ` +
+            //                                 `from course C ` +
+            //                                 `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
+            //                                 `left join (select CHP.courseNumber, ` +
+            //                                 `            group_concat(DISTINCT CHP.placeNumber separator ',') as placeNumber, ` +
+            //                                 `            group_concat(DISTINCT P.name separator ',') as placeName, ` +
+            //                                 `            group_concat(DISTINCT P.address separator ',') as placeAddress, ` +
+            //                                 `            group_concat(DISTINCT A.keywordName separator '|') as keywordName ` +
+            //                                 `            from course_has_place CHP ` +
+            //                                 `           left join place P on P.placeNumber = CHP.placeNumber ` +
+            //                                 `            left join (select DISTINCT PHK.placeNumber, GROUP_CONCAT(DISTINCT K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(DISTINCT K.name SEPARATOR ',') AS 'keywordName' ` +
+            //                                 `                        FROM place_has_keyword PHK ` +
+            //                                 `                        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+            //                                 `                        GROUP BY PHK.placeNumber) A on A.placeNumber = CHP.placeNumber ` +
+            //                                 `                        group by CHP.placeNumber) B on B.courseNumber = C.courseNumber ` +                      
+            //                                 `where C.courseNumber = ?`
 
+            const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'course_regiDate', ` +
+                                            `        PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keyword_name ` +
+                                            `FROM course_has_place CHP ` +
+                                            `LEFT JOIN course C ON C.courseNumber = CHP.courseNumber ` +
+                                            `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
+                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, K.name AS 'keyword_name' ` +
+                                            `            from place_has_keyword PHK ` +
+                                            `            LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
+                                            `            LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
+                                            `            LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                            `            GROUP BY K.name ` +
+                                            `            ORDER BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
+                                            `WHERE CHP.courseNumber = ?`
             connection.query(selectOneCourseSqlQuery,[courseNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
                     return response(error, null)
                 }
-                console.log('response: ', results)
+                // console.log('response: ', results)
                 response(null, results)
                 connection.release()
             })
