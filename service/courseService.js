@@ -3,6 +3,7 @@
 const { ErrorHandler }      = require('../costomModules/customError')
 const Course                = require('../dao/courseDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
+const util                  = require('../costomModules/util')
 
 /* ==================== END modules ==================== */
 
@@ -21,6 +22,7 @@ exports.courseCreate = function(request, response, next) {
     isEmpty('placeNumber', placeNumber)
     let placeNumberArraySize = placeNumber.length
     let setPlaceNumberValues = new Array(placeNumberArraySize)
+
     for (i = 0; i < placeNumberArraySize; i++) {
         setPlaceNumberValues[i] = new Array(1)
     }
@@ -65,62 +67,13 @@ exports.courseReadOne = function(request, response, next) {
             console.log(__filename + ", Course.selectOneCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-
-        /////////////////////////////////////////////////////////////////
-        // const json_list = results.reduce((pre, cur) => {
-        //     if(!pre[pre.courseNumber]) {
-        //         pre[pre.courseNumber] = [{ placeNumber: cur.placeNumber, place_name: cur.place_name }]
-        //     }
-            
-        //     pre[cur.courseNumber].push({ placeNumber: cur.placeNumber, place_name: cur.place_name })
-                        
-        //     return pre
-        // }, )
-        // console.log("############### + ", json_list)
-
-        // const json_test = JSON.parse(results)
-        // console.log("@@@@@@@@@@", json_test)
-
-        // const test = Object.entries(results)
-        // console.log("############", test)
-
-        // const json_list = Object.entries(results).forEach((value) => {
-        //     console.log(value[1])
-        //     return { courseNumber: value.courseNumber}
-        // })
-        // console.log("tjson_listst : " , json_list)
-
-        // let new_result = {}
-        // Object.keys(results).forEach(function(key) {
-        //     var row = results[key];
-        //     console.log(row.title)
-        // });
-
-        response.status(200).send(results)
         
-        /////////////////////////////////////////////////////////////////
+        const array = util.resultStringToArray(results, 'keyword_name')
+        
+        // results.forEach((target) => {
+        //     target.keyword_name  = target.keyword_name.split(",")
+        // })
 
-        // response.status(200).send(results)
+        response.status(200).send(array)
     })
 }
-
-
-        // /////////////////////////////////////////////////////////////////
-        // // const list = results.reduce((pre, cur) => {
-        // //     if(!pre[cur.placeNumber]) {
-        // //         pre[cur.placeNumber] = [{ keywordNumber: cur.keywordNumber, name: cur.name }]
-        // //     }
-        // //     else {
-        // //         pre[cur.placeNumber].push({ keywordNumber: cur.keywordNumber, name: cur.name })
-        // //     }
-        // //     return pre
-        // // }, )
-        // // console.log(list)
-
-        // const json_list = Object.entries(results).map((key, value) => {
-        //     // console.log('key', key)
-        //     return { placeNumber: key[0], keywordList: key[1] }
-        // })
-        
-
-        // response.status(200).send(json_list)
