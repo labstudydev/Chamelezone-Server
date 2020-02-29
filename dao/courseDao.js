@@ -102,72 +102,17 @@ Course.selectAllCourse = function(response) {
 Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
-            // const selectOneCourseSqlQuery = `select JSON_ARRAY(C.courseNumber, C.title, C.content, CI.savedImageName) AS course, B.placeNumber, B.placeName, B.placeAddress, B.keywordName ` +
-            // `from course C ` +
-            // `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
-            // `left join (select CHP.courseNumber, ` +
-            // `            group_concat(CHP.placeNumber separator ',') as placeNumber, ` +
-            // `            group_concat(P.name separator ',') as placeName, ` +
-            // `            group_concat(P.address separator ',') as placeAddress, ` +
-            // `            group_concat(A.keywordName separator '|') as keywordName ` +
-            // `            from course_has_place CHP ` +
-            // `           left join place P on P.placeNumber = CHP.placeNumber ` +
-            // `            left join (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', JSON_OBJECT("keywordName", JSON_ARRAY(GROUP_CONCAT(K.name SEPARATOR ','))) AS 'keywordName' ` +
-            // `                    FROM place_has_keyword PHK ` +
-            // `                    JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-            // `                    GROUP BY PHK.placeNumber) A on A.placeNumber = CHP.placeNumber ` +
-            // `            group by courseNumber) B on B.courseNumber = C.courseNumber ` +
-            // `where C.courseNumber = ? ` +
-            // `group by C.courseNumber`
-
-            //이게원래
-            // const selectOneCourseSqlQuery = `select C.courseNumber, C.title, C.content, CI.savedImageName, B.placeNumber, B.placeName, B.placeAddress, B.keywordName ` +
-            //                                 `from course C ` +
-            //                                 `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
-            //                                 `left join (select CHP.courseNumber, ` +
-            //                                 `            group_concat(CHP.placeNumber separator ',') as placeNumber, ` +
-            //                                 `            group_concat(P.name separator ',') as placeName, ` +
-            //                                 `            group_concat(P.address separator ',') as placeAddress, ` +
-            //                                 `            group_concat(A.keywordName separator '|') as keywordName ` +
-            //                                 `            from course_has_place CHP ` +
-            //                                 `           left join place P on P.placeNumber = CHP.placeNumber ` +
-            //                                 `            left join (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
-            //                                 `                    FROM place_has_keyword PHK ` +
-            //                                 `                    JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-            //                                 `                    GROUP BY PHK.placeNumber) A on A.placeNumber = CHP.placeNumber ` +
-            //                                 `            group by courseNumber) B on B.courseNumber = C.courseNumber ` +
-            //                                 `where C.courseNumber = ? ` +
-            //                                 `group by C.courseNumber`
-
-            // const selectOneCourseSqlQuery = `select C.courseNumber, C.title, C.content, CI.savedImageName, B.placeNumber, B.placeName, B.placeAddress, B.keywordName ` +
-            //                                 `from course C ` +
-            //                                 `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
-            //                                 `left join (select CHP.courseNumber, ` +
-            //                                 `            group_concat(DISTINCT CHP.placeNumber separator ',') as placeNumber, ` +
-            //                                 `            group_concat(DISTINCT P.name separator ',') as placeName, ` +
-            //                                 `            group_concat(DISTINCT P.address separator ',') as placeAddress, ` +
-            //                                 `            group_concat(DISTINCT A.keywordName separator '|') as keywordName ` +
-            //                                 `            from course_has_place CHP ` +
-            //                                 `           left join place P on P.placeNumber = CHP.placeNumber ` +
-            //                                 `            left join (select DISTINCT PHK.placeNumber, GROUP_CONCAT(DISTINCT K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(DISTINCT K.name SEPARATOR ',') AS 'keywordName' ` +
-            //                                 `                        FROM place_has_keyword PHK ` +
-            //                                 `                        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-            //                                 `                        GROUP BY PHK.placeNumber) A on A.placeNumber = CHP.placeNumber ` +
-            //                                 `                        group by CHP.placeNumber) B on B.courseNumber = C.courseNumber ` +                      
-            //                                 `where C.courseNumber = ?`
-
             const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'course_regiDate', ` +
-                                            `        PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keyword_name ` +
+                                            `PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keyword_name AS keyword_name ` +
                                             `FROM course_has_place CHP ` +
-                                            `LEFT JOIN course C ON C.courseNumber = CHP.courseNumber ` +
-                                            `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, K.name AS 'keyword_name' ` +
-                                            `            from place_has_keyword PHK ` +
-                                            `            LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
-                                            `            LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
-                                            `            LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-                                            `            GROUP BY K.name ` +
-                                            `            ORDER BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
+                                            `inner JOIN course C ON C.courseNumber = CHP.courseNumber ` +
+                                            `inner JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
+                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keyword_name' ` +
+                                            `   from place_has_keyword PHK ` +
+                                            `   inner JOIN place P ON P.placeNumber = PHK.placeNumber ` +
+                                            `   inner JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
+                                            `   inner JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                            `   group by PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
                                             `WHERE CHP.courseNumber = ?`
             connection.query(selectOneCourseSqlQuery,[courseNumber], function(error, results) {
                 if (error) {
@@ -175,7 +120,7 @@ Course.selectOneCourse = function([courseNumber], response) {
                     connection.release()
                     return response(error, null)
                 }
-                // console.log('response: ', results)
+                console.log('response: ', results)
                 response(null, results)
                 connection.release()
             })

@@ -48,4 +48,15 @@ module.exports = isLoginCheck = function(memberNumber) {
 	return true
 }
 
+util.resultStringToArray = function(results, keyList) {
+	const list = Array.isArray(keyList) ? keyList : [keyList]
+	const resultList = Array.isArray(results) ? results : [results]
+	resultList.forEach((target) => {
+		list.forEach((key) => {
+			target[key]  = target[key].split(",")
+		})
+	})
+	return results
+}
+
 module.exports = util
