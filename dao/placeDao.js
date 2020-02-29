@@ -210,13 +210,17 @@ Place.getCutrrentLocation = function([latitude, longitude, latitude2], response)
 Place.selectAllByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectAllByUserSqlQuery = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, ` +
+            const selectAllByUserSqlQuery = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, KEYWORD.keywordName, ` +
                                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                                     `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
                                             `LEFT JOIN member M ON M.memberNumber = P.memberNumber ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
+                                            `left join (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
+                                            `FROM place_has_keyword PHK ` +
+                                            `JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                            `GROUP BY PHK.placeNumber) KEYWORD ON KEYWORD.placeNumber = P.placeNumber ` +
                                             `WHERE P.memberNumber = ? ` +
                                             `GROUP BY P.placeNumber ` +
                                             `ORDER BY P.placeNumber DESC`
