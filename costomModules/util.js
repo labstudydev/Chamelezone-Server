@@ -1,10 +1,6 @@
-/* ==================== START modules ==================== */
-
 const ErrorHandler		    = require('../costomModules/customError')
 const User					= require('../dao/userDao')
 const Step					= require('../node_modules/step')
-
-/* ==================== END modules ==================== */
 
 var util = { }
 
@@ -20,7 +16,7 @@ util.createPasswordSecurityCode = function() {
     return securityCode
 }
 
-module.exports = isLoginCheck = function(memberNumber) {	
+util.isLoginCheck = function(memberNumber) {	
 	if(!memberNumber || memberNumber == "" || memberNumber == null || memberNumber == undefined){
         throw new ErrorHandler(400, memberNumber + ' is null')
 	}
@@ -33,15 +29,10 @@ module.exports = isLoginCheck = function(memberNumber) {
 			if (error) {
 				throw new ErrorHandler(500, error)
 			}
-			
-			console.log("memberNumber : " + memberNumber)
-			console.log("result : " + result[0].memberNumber)
 			if (memberNumber != result[0].memberNumber) {
 				throw new ErrorHandler(404, "login memberNumber is not match")
 			}
-
-			console.log("memberNumber : " + memberNumber)
-			console.log("result : " +  result[0].memberNumber)
+			
 			return result[0].memberNumber
 		}
 	)
@@ -51,11 +42,13 @@ module.exports = isLoginCheck = function(memberNumber) {
 util.resultStringToArray = function(results, keyList) {
 	const list = Array.isArray(keyList) ? keyList : [keyList]
 	const resultList = Array.isArray(results) ? results : [results]
+
 	resultList.forEach((target) => {
 		list.forEach((key) => {
 			target[key]  = target[key].split(",")
 		})
 	})
+
 	return results
 }
 
