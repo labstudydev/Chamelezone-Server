@@ -50,9 +50,8 @@ Like.deleteLike = function([placeNumber, memberNumber], response) {
 Like.selectAllByUserLikes = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectAllByUserLikesSqlQuery = `SELECT LH.likeNumber, LH.placeNumber, LH.memberNumber, P.name, P.address, A.keywordNumber, A.keywordName, ` +
+            const selectAllByUserLikesSqlQuery = `SELECT LH.likeNumber, LH.placeNumber, LH.memberNumber, P.name, P.address, A.keywordName, ` +
                                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                                    `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                                     `FROM like_history LH ` +
                                                     `LEFT JOIN place P ON P.placeNumber = LH.placeNumber ` +
