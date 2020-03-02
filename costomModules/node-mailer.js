@@ -3,7 +3,6 @@ const nodemailer            = require('nodemailer')
 
 var mail = { }
 
-// 메일발송 함수
 mail.sendGmail = function(param, next) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -16,14 +15,12 @@ mail.sendGmail = function(param, next) {
             pass: '!dydrnjs94'
         }
     })
-    // 메일 옵션
     var mailOptions = {
             from: 'chldydrnjs94@gmail.com',
-            to: param.toEmail,                                                      // 수신할 이메일
-            subject: '카멜레존 - ' + param.toName + ' 회원님의 인증메일입니다.',       // 메일 제목
-            text: param.text                                                        // 메일 내용
+            to: param.toEmail,
+            subject: '카멜레존 - ' + param.toName + ' 회원님의 인증메일입니다.',
+            text: param.text
     }
-    // 메일 발송    
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
             throw new ErrorHandler(500, error)

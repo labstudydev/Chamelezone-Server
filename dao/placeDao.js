@@ -74,10 +74,10 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            const selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
-                                    `P.phoneNumber, P.content, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+            const selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, P.phoneNumber, P.content, P.latitude, P.longitude, A.keywordName, ` +
+                                    `DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, ` +
+                                    `CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                    `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                     `FROM place P ` +
                                     `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
@@ -90,7 +90,7 @@ Place.readOnePlace = function(request, response) {
                                     `            ORDER BY keywordNumber DESC) A ON A.placeNumber = P.placeNumber ` +
                                     `WHERE P.placeNumber = ? ` +
                                     `GROUP BY P.placeNumber`
-            connection.query(selectPlaceOne, [request, request], function(error, results) {
+            connection.query(selectPlaceOne, request, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
@@ -106,24 +106,24 @@ Place.readOnePlace = function(request, response) {
     }
 }
 
-Place.readAllPlace = function(response, next) {
+Place.readAllPlace = function(memberNumber, response, next) {
     try {
         db((error, connection) => {
-            const selectPlaceAll = `SELECT LH.likeNumber, P.placeNumber, P.name, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, A.keywordNumber, A.keywordName, ` +
-                                    `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                    `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
-                                    `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
-                                    `FROM place P ` +
-                                    `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
-                                    `LEFT JOIN like_history LH ON LH.placeNumber = P.placeNumber ` +
-                                    `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
-                                    `        FROM place_has_keyword PHK ` +
-                                    `        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-                                    `        GROUP BY PHK.placeNumber) A ON A.placeNumber = P.placeNumber ` +
+            const selectPlaceAll = `SELECT PHK.placeNumber, P.memberNumber, LH.likeNumber, P.name, ` +
+                                        `GROUP_CONCAT(DISTINCT K.name SEPARATOR ',') AS 'keywordName', ` +
+                                        `GROUP_CONCAT(DISTINCT PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
+                                        `GROUP_CONCAT(DISTINCT PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
+                                    `FROM place_has_keyword PHK ` +
+                                    `LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
+                                    `LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
+                                    `LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                    `LEFT JOIN (SELECT likeNumber, memberNumber, placeNumber ` +
+                                    `           FROM like_history ` +
+                                    `           WHERE memberNumber = ?) LH ON LH.placeNumber = PHK.placeNumber ` +
                                     `GROUP BY P.placeNumber ` +
                                     `ORDER BY P.placeNumber DESC ` +
-                                    `LIMIT 50`
-            connection.query(selectPlaceAll, function(error, results) {
+                                    `LIMIT 30`
+            connection.query(selectPlaceAll, memberNumber, function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
