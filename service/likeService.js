@@ -58,7 +58,7 @@ exports.likeReadAllByUser = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
         
-        util.resultStringToArray(results, ['keywordNumber', 'keywordName', 'imageNumber', 'originalImageName', 'savedImageName'])
+        util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
         response.status(200).send(results)
     })
 }
