@@ -5,6 +5,7 @@ const Place                 = require('../dao/placeDao.js')
 const Like                   = require('../dao/likeDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
 const Step					= require('../node_modules/step')
+const util                  = require('../costomModules/util')
 
 /* ==================== END modules ==================== */
 
@@ -92,11 +93,10 @@ exports.createPlace = function(request, response, next) {
 }
 
 exports.readOnePlace = function(request, response, next) {
+    let memberNumber = request.query.memberNumber
     let placeNumber = request.params.placeNumber
     isEmpty('placeNumber', placeNumber)
 
-    let memberNumber = request.query.memberNumber
-    // isEmpty('memberNumber', memberNumber)
     Step (
         function selectLikeByUser() {
             Like.selectOneByUserLike([placeNumber, memberNumber], this)
@@ -105,8 +105,7 @@ exports.readOnePlace = function(request, response, next) {
             if (error) {
 				throw new ErrorHandler(500, error)
             } 
-            if (result[0] == null || result[0] == undefined){
-                console.log("Like does not exist")
+            if (result[0] == null || result[0] == undefined) {
                 return null
             } else {
                 return result[0].likeNumber
@@ -125,7 +124,9 @@ exports.readOnePlace = function(request, response, next) {
                 if (results.length == 0 || results.length == undefined) {
                     response.status(404).send("Place does not exist" )
                 } else {
-                    results[0].likeNumber = result
+                    results[0].likeNumber = (result == null) ? false : result
+
+                    util.resultStringToArray(results[0], ['keywordName', 'openingTime', 'imageNumber', 'savedImageName'])
                     response.status(200).send(results[0])
                 }
             })
@@ -134,12 +135,20 @@ exports.readOnePlace = function(request, response, next) {
 }
 
 exports.readAllPlace = function(request, response, next) {
-    Place.readAllPlace(function(error, results) { 
+    let memberNumber = request.query.memberNumber
+
+    Place.readAllPlace(memberNumber, function(error, results) { 
         if (error) {
             console.log(__filename + ", Place.readAllPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
+        results.forEach((item, index, array) => {
+            results[index].likeNumber = (results[index].likeNumber == null) ? false : results[index].likeNumber
+        })
+        
+        util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
+        console.log(results)
         response.status(200).send(results)
     })
 }
@@ -205,6 +214,11 @@ exports.placeListUser = function(request, response, next) {
             console.log(__filename + ", Place.selectAllByUser() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(results)
+        
+        if (results.length == 0 || results.length == undefined) {
+            response.status(404).send("Place does not exist" )
+        } else {
+            response.status(200).send(results)
+        }
     })
 }
