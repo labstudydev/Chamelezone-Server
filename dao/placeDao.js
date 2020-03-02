@@ -212,7 +212,6 @@ Place.selectAllByUser = function([memberNumber], response) {
         db((error, connection) => {
             const selectAllByUserSqlQuery = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, KEYWORD.keywordName, ` +
                                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                                    `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
                                             `LEFT JOIN member M ON M.memberNumber = P.memberNumber ` +
