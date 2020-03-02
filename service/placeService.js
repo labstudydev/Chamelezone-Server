@@ -218,6 +218,7 @@ exports.placeListUser = function(request, response, next) {
         if (results.length == 0 || results.length == undefined) {
             response.status(404).send("Place does not exist" )
         } else {
+            util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
         }
     })
