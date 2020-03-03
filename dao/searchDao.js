@@ -5,17 +5,13 @@ const db                    = require('../config/db')
 
 /* ==================== END modules ==================== */
 
-var Search = function(search) {
+var Search = function(search) { }
 
-}
-
-// 장소명으로 검색
 Search.selectByPlaceName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByPlaceNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+            let selectByPlaceNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordName, ` +
                                             `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                            `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                             `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
@@ -44,13 +40,11 @@ Search.selectByPlaceName = function(name, response) {
     }
 }
 
-// 지역명으로 검색
 Search.selectByAreaName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByAreaNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+            let selectByAreaNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordName, ` +
                                             `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                            `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                             `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
@@ -79,13 +73,11 @@ Search.selectByAreaName = function(name, response) {
     }
 }
 
-// 키워드명으로 검색
 Search.selectByKeywordName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectByKeywordNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+            let selectByKeywordNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordName, ` +
                                                 `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                                `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                                 `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                                 `FROM place P ` +
                                                 `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
