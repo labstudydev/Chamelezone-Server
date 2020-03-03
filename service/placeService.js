@@ -104,7 +104,8 @@ exports.readOnePlace = function(request, response, next) {
         function selectLikeByUserResult(error, result){
             if (error) {
 				throw new ErrorHandler(500, error)
-            } 
+            }
+            
             if (result[0] == null || result[0] == undefined) {
                 return null
             } else {
@@ -124,7 +125,7 @@ exports.readOnePlace = function(request, response, next) {
                 if (results.length == 0 || results.length == undefined) {
                     response.status(404).send("Place does not exist" )
                 } else {
-                    results[0].likeNumber = (result == null) ? false : result
+                    results[0].likeNumber = (result == null) ? false : true
 
                     util.resultStringToArray(results[0], ['keywordName', 'openingTime', 'imageNumber', 'savedImageName'])
                     response.status(200).send(results[0])
@@ -144,11 +145,10 @@ exports.readAllPlace = function(request, response, next) {
         }
 
         results.forEach((item, index, array) => {
-            results[index].likeNumber = (results[index].likeNumber == null) ? false : results[index].likeNumber
+            results[index].likeNumber = (results[index].likeNumber == null) ? false : true
         })
         
         util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
-        console.log(results)
         response.status(200).send(results)
     })
 }

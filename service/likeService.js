@@ -59,6 +59,15 @@ exports.likeReadAllByUser = function(request, response, next) {
         }
         
         util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
-        response.status(200).send(results)
+        
+        results.forEach((item, index, array) => {
+            results[index].likeNumber = (results[index].likeNumber == null) ? false : true
+        })
+        
+        if(results.length == 0 || results.length == undefined) {
+            response.status(404).send("User likes list does not exist")
+        } else {
+            response.status(200).send(results)
+        }
     })
 }
