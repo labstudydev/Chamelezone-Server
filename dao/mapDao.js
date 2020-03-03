@@ -5,16 +5,13 @@ const db                    = require('../config/db')
 
 /* ==================== END modules ==================== */
 
-var Map = function(map) {
-
-}
+var Map = function(map) { }
 
 Map.selectPlaceByName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectPlaceByNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordNumber, A.keywordName, ` +
+            let selectPlaceByNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordName, ` +
                                             `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
-                                            `GROUP_CONCAT(PI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
                                             `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +

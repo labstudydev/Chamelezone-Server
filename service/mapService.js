@@ -3,6 +3,7 @@
 const { ErrorHandler }      = require('../costomModules/customError')
 const Map                   = require('../dao/mapDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
+const util                  = require('../costomModules/util')
 
 /* ==================== END modules ==================== */
 
@@ -19,6 +20,7 @@ exports.mapSearchPlaceByName = function(request, response, next) {
         if(results.length == 0 || results.length == undefined) {
             response.status(404).send("No Results Found")
         } else {
+            util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
         } 
     })
