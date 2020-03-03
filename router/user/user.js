@@ -4,6 +4,7 @@ const user_controller           = require('../../controller/userController')
 const review_controller         = require('../../controller/reviewController')
 const like_controller           = require('../../controller/likeController')
 const place_controller          = require('../../controller/placeController')
+const course_controller         = require('../../controller/courseController')
 const express                   = require('express')
 const router                    = express.Router()
 
@@ -30,5 +31,8 @@ router.delete('/:memberNumber/like', like_controller.likeCancelPlace)           
 
 /* ==================== place router ==================== */
 router.get('/:memberNumber/place', place_controller.placeListUser)              // 회원의 장소 목록 조회
+
+/* ==================== course router ==================== */
+router.get('/:memberNumber/course', course_controller.courseListUser)           // 회원의 코스 목록 조회
 
 module.exports = router

@@ -54,26 +54,36 @@ exports.courseReadAll = function(request, response, next) {
     })
 }
 
-// 코스를 조회할땐 코스번호, 회원번호가 필요하지
 exports.courseReadOne = function(request, response, next) {
     let courseNumber = request.params.courseNumber
     let memberNumber = request.query.memberNumber
-
     isEmpty('courseNumber', courseNumber)
-    console.log("################### request query memberNumber : " + memberNumber)
 
     Course.selectOneCourse([courseNumber], function(error, results) {
         if (error) {
             console.log(__filename + ", Course.selectOneCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        
-        const array = util.resultStringToArray(results, 'keyword_name')
-        
-        // results.forEach((target) => {
-        //     target.keyword_name  = target.keyword_name.split(",")
-        // })
 
-        response.status(200).send(array)
+        util.resultStringToArray(results, ['keywordName'])
+        response.status(200).send(results)
+    })
+}
+
+exports.courseListUser = function(request, response, next) {
+    let memberNumber = request.params.memberNumber
+    isEmpty('memberNumber', memberNumber)
+
+    Course.selectAllByUser([memberNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Course.selectCourseByUser() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+
+        if (results.length == 0 || results.length == undefined) {
+            response.status(404).send("User course list does not exist" )
+        } else {
+            response.status(200).send(results)
+        }
     })
 }
