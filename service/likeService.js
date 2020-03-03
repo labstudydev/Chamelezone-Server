@@ -25,7 +25,7 @@ exports.likeAddPlace = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
         
-        results[0] = { like_status : true }
+        results[0] = { likeStatus : true }
         response.status(200).send(results[0])
     })
 }
@@ -43,7 +43,7 @@ exports.likeCancelPlace = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
 
-        results[0] = { like_status : false }
+        results[0] = { likeStatus : false }
         response.status(200).send(results[0])
     })
 }
@@ -61,7 +61,7 @@ exports.likeReadAllByUser = function(request, response, next) {
         util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
         
         results.forEach((item, index, array) => {
-            results[index].likeNumber = (results[index].likeNumber == null) ? false : true
+            results[index].likeStatus = (results[index].likeNumber == null) ? false : true
         })
         
         if(results.length == 0 || results.length == undefined) {

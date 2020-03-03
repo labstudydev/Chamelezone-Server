@@ -125,7 +125,7 @@ exports.readOnePlace = function(request, response, next) {
                 if (results.length == 0 || results.length == undefined) {
                     response.status(404).send("Place does not exist" )
                 } else {
-                    results[0].likeNumber = (result == null) ? false : true
+                    results[0].likeStatus = (result == null) ? false : true
 
                     util.resultStringToArray(results[0], ['keywordName', 'openingTime', 'imageNumber', 'savedImageName'])
                     response.status(200).send(results[0])
@@ -145,7 +145,7 @@ exports.readAllPlace = function(request, response, next) {
         }
 
         results.forEach((item, index, array) => {
-            results[index].likeNumber = (results[index].likeNumber == null) ? false : true
+            results[index].likeStatus = (results[index].likeNumber == null) ? false : true
         })
         
         util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
@@ -216,7 +216,7 @@ exports.placeListUser = function(request, response, next) {
         }
         
         if (results.length == 0 || results.length == undefined) {
-            response.status(404).send("Place does not exist" )
+            response.status(404).send("User place list does not exist" )
         } else {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)

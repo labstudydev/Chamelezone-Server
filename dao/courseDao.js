@@ -103,18 +103,18 @@ Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
             const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'course_regiDate', ` +
-                                            `PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keyword_name AS keyword_name ` +
+                                            `PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keywordName AS keywordName ` +
                                             `FROM course_has_place CHP ` +
                                             `inner JOIN course C ON C.courseNumber = CHP.courseNumber ` +
                                             `inner JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keyword_name' ` +
+                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keywordName' ` +
                                             `   from place_has_keyword PHK ` +
                                             `   inner JOIN place P ON P.placeNumber = PHK.placeNumber ` +
                                             `   inner JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
                                             `   inner JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                             `   group by PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
                                             `WHERE CHP.courseNumber = ?`
-            connection.query(selectOneCourseSqlQuery,[courseNumber], function(error, results) {
+            connection.query(selectOneCourseSqlQuery, [courseNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()
@@ -130,4 +130,27 @@ Course.selectOneCourse = function([courseNumber], response) {
     }
 }
 
+Course.selectAllByUser = function([memberNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectAllByUserSqlQuery = `SELECT C.courseNumber, C.memberNumber, C.title, C.content, CI.savedImageName ` +
+                                            `FROM course C ` +
+                                            `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
+                                            `WHERE C.memberNumber = ? ` +
+                                            `ORDER BY C.courseNumber DESC`
+            connection.query(selectAllByUserSqlQuery, [memberNumber], function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
 module.exports = Course
