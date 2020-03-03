@@ -24,9 +24,9 @@ router.post('/help-pw-code', user_controller.userSendSecurityCode)              
 router.get('/:memberNumber/review', review_controller.reviewReadByUser)         // 회원의 리뷰목록 조회
 
 /* ==================== like router ==================== */
-router.post('/:memberNumber/like', like_controller.likeAddPlace)                       // 좋아요 실행
-router.get('/:memberNumber/likes', like_controller.likeReadAllByUser)                  // 회원의 좋아요 목록
-router.delete('/:memberNumber/like', like_controller.likeCancelPlace)      // 좋아요 취소
+router.post('/:memberNumber/like', like_controller.likeAddPlace)                // 좋아요 실행
+router.get('/:memberNumber/likes', like_controller.likeReadAllByUser)           // 회원의 좋아요 목록
+router.delete('/:memberNumber/like', like_controller.likeCancelPlace)           // 좋아요 취소
 
 /* ==================== place router ==================== */
 router.get('/:memberNumber/place', place_controller.placeListUser)              // 회원의 장소 목록 조회
