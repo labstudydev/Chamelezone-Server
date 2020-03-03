@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const User                  = require('../dao/userDao.js')
 const Step					= require('../node_modules/step')
 const isEmpty               = require('../costomModules/valueCheck')
@@ -28,13 +28,39 @@ exports.createUser = function(request, response, next) {
         throw new ErrorHandler(400, 'phoneNumber size is not valid')
     }
 
-    User.createUser(setValues, function(error, results) {
-        if (error) {
-            console.log(__filename + ", User.createUser() error status code 500 !!!")
-            return next(new ErrorHandler(500, error))
+    Step (
+        function userEmailCheck() {
+            User.selectEmailDuplicateCheck([email], this)
+        },
+        function userEmailDuplicateCheckResult(error, result) {
+            if (error) {
+                throw new ErrorHandler(500, error)
+            }
+            
+            if (result[0] != null || result[0] != undefined) {
+                response.status(200).send("Email is duplicate")
+            } else {
+                User.selectNickNameDuplicateCheck([nickName], this)
+            }
+        },
+        function userNickNameDuplicateCheckResult(error, result) {
+            if (error) {
+                throw new ErrorHandler(500, error)
+            }
+            
+            if (result[0] != null || result[0] != undefined) {
+                response.status(200).send("NickName is duplicate")
+            } else {
+                User.createUser(setValues, function(error, results) {
+                    if (error) {
+                        console.log(__filename + ", User.createUser() error status code 500 !!!")
+                        return next(new ErrorHandler(500, error))
+                    }
+                    response.status(200).send(results)
+                })
+            }
         }
-        response.status(200).send(results)
-    })
+    )
 }
 
 exports.getUserById = function(request, response, next) {
