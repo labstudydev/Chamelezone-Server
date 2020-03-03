@@ -168,11 +168,11 @@ Review.selectByPlace = function([placeNumber], response) {
     }
 }
 
-Review.deleteReview = function([placeNumber, reviewNumber], response) {
+Review.deleteReview = function([memberNumber, placeNumber, reviewNumber], response) {
     try {
         db((error, connection) => {
-            const deleteReviewSqlQuery = `DELETE FROM review WHERE placeNumber = ? AND reviewNumber = ?`
-            connection.query(deleteReviewSqlQuery, [placeNumber, reviewNumber], function(error, results) {
+            const deleteReviewSqlQuery = `DELETE FROM review WHERE memberNumber = ? AND placeNumber = ? AND reviewNumber = ?`
+            connection.query(deleteReviewSqlQuery, [memberNumber, placeNumber, reviewNumber], function(error, results) {
                 if (error) {
                     console.log("error: ", error)
                     connection.release()

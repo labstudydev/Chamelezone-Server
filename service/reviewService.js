@@ -62,6 +62,7 @@ exports.reviewReadAll = function(request, response, next) {
     })
 }
 
+//회원의 리뷰조회
 exports.reviewReadByUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
 
@@ -70,10 +71,13 @@ exports.reviewReadByUser = function(request, response, next) {
             console.log(__filename + ", Review.selectByUser() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+        
+        // util.resultStringToArray(results, ['imageNumber', 'originalImageName', 'savedImageName'])
         response.status(200).send(results)
     })
 }
 
+//장소의리뷰한개조회
 exports.reviewReadOneByPlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let reviewNumber = request.params.reviewNumber
@@ -83,6 +87,9 @@ exports.reviewReadOneByPlace = function(request, response, next) {
             console.log(__filename + ", Review.selectByReview() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+        
+        // 선애 test image null 해결되면 그때 살릴것
+        // util.resultStringToArray(results[0], ['imageNumber', 'originalImageName', 'savedImageName'])
         response.status(200).send(results[0])        
     })
 }
@@ -95,6 +102,7 @@ exports.reviewReadByPlace = function(request, response, next) {
             console.log(__filename + ", Review.selectByPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
+        // util.resultStringToArray(results, ['originalImageName', 'savedImageName'])
         response.status(200).send(results)
     })
 }
@@ -109,7 +117,7 @@ exports.reviewDelete = function(request, response, next) {
     let memberNumber = request.body.memberNumber
     isEmpty('memberNumber', memberNumber)
 
-    Review.deleteReview([placeNumber, reviewNumber], function(error, results) {
+    Review.deleteReview([memberNumber, placeNumber, reviewNumber], function(error, results) {
         if (error) {
             console.log(__filename + ", Review.deleteReview() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
