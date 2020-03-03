@@ -19,3 +19,7 @@ exports.courseReadOne = function(request, response, next) {
 exports.courseListUser = function(request, response, next) {
     Course.courseListUser(request, response, next)
 }
+
+exports.courseDelete = function(request, response, next) {
+    Course.courseDelete(request, response, next)
+}

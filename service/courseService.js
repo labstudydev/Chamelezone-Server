@@ -81,9 +81,26 @@ exports.courseListUser = function(request, response, next) {
         }
 
         if (results.length == 0 || results.length == undefined) {
-            response.status(404).send("User course list does not exist" )
+            response.status(404).send("User course list does not exist")
         } else {
             response.status(200).send(results)
         }
+    })
+}
+
+exports.courseDelete = function(request, response, next) {
+    let courseNumber = request.params.courseNumber
+    isEmpty('courseNumber', courseNumber)
+
+    let memberNumber = request.query.memberNumber
+    isEmpty('memberNumber', memberNumber)
+
+    Course.deleteCourse([courseNumber, memberNumber], function(error, results) {
+        if (error) {
+            console.log(__filename + ", Course.deleteCourse() error status code 500 !!!")
+            return next(new ErrorHandler(500, error))
+        }
+
+        response.status(200).send(results)
     })
 }

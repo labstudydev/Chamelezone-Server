@@ -1,6 +1,6 @@
 /* ==================== START modules ==================== */
 
-const course_controller          = require('../../controller/courseController')
+const course_controller         = require('../../controller/courseController')
 const express                   = require('express')
 const router                    = express.Router()
 const multer                    = require('multer')
@@ -33,5 +33,6 @@ let upload = multer({
 router.post('/', upload.single('image'), course_controller.courseCreate)  // 코스 생성
 router.get('/', course_controller.courseReadAll)                          // 코스 목록 조회
 router.get('/:courseNumber', course_controller.courseReadOne)             // 코스 한개 조회
+router.delete('/:courseNumber',course_controller.courseDelete)            // 코스 삭제
 
 module.exports = router
