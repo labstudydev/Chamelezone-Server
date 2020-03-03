@@ -153,4 +153,25 @@ Course.selectAllByUser = function([memberNumber], response) {
         throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
     }
 }
+
+Course.deleteCourse = function([courseNumber, memberNumber], response) {
+    try {
+        db((error, connection) => {
+            const deleteCourseSqlQuery = `DELETE FROM course WHERE courseNumber = ? AND memberNumber = ?`
+            connection.query(deleteCourseSqlQuery, [courseNumber, memberNumber], function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
 module.exports = Course
