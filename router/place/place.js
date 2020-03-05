@@ -11,34 +11,56 @@ const path                      = require('path')
 
 let storage = multer.diskStorage({
     destination: function (request, file, callback) {
-        callback(null, 'public/uploads') // callback 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
+        callback(null, 'public/uploads')
     },
     filename: function (request, file, callback) {
-        // cb 콜백함수를 통해 전송된 파일 이름 설정
-        // file.originalname 원래 파일이름
-        // callback(null, file.originalname + Date.now())
         let extension = path.extname(file.originalname)
         let basename = path.basename(file.originalname, extension)
         callback(null, basename + '-' + Date.now() + '-' + extension)
     }    
 })
 
+let fileFilter = function(request, file, callback) {
+    var extension = path.extname(file.originalname).toLocaleLowerCase()
+    if(extension !== '.png' && extension !== '.jpg' && extension !== '.jpeg') {   
+        return callback(new Error('Only images are allowed'))
+    }
+    callback(null, true)
+}
+
 let upload = multer({
     storage: storage,
+    fileFilter: fileFilter,
     limits: {
-        files: 4,                    // 최대 업로드 개수
-        fileSize: 1024 * 1024 * 1024 // 파일 사이즈
+        files: 4,             
+        fileSize: 1024 * 1024 * 1024 
     }
-})
+}).array('images', 4)
 
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
-router.post('/:placeNumber/review', upload.array('images', 4), review_controller.reviewCreate)    // 리뷰생성
+router.post('/:placeNumber/review', (request, response, next) => {
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please images type check')
+        } else {
+            next()
+        }
+    })
+}, review_controller.reviewCreate)                                                                // 리뷰생성
 router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회(특정리뷰조회)
 router.delete('/:placeNumber/review/:reviewNumber', review_controller.reviewDelete)               // 장소의 리뷰 삭제
 
 /* ==================== place router ==================== */
-router.post('/', upload.array('images', 4), place_controller.place_create)             // 장소생성 (이미지)
+router.post('/', (request, response, next) => {
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please images type check')
+        } else {
+            next()
+        }
+    })
+}, place_controller.place_create)                                                      // 장소생성 (이미지)
 router.get('/:placeNumber' , place_controller.place_readOne)                           // 장소한개조회
 router.get('/', place_controller.place_readAll)                                        // 장소전체조회
 router.put('/:placeNumber', place_controller.place_update)                             // 장소수정
