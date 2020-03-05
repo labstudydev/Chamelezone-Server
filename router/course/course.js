@@ -10,27 +10,41 @@ const path                      = require('path')
 
 let storage = multer.diskStorage({
     destination: function (request, file, callback) {
-        callback(null, 'public/uploads') // callback 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
+        callback(null, 'public/uploads')
     },
     filename: function (request, file, callback) {
-        // cb 콜백함수를 통해 전송된 파일 이름 설정
-        //file.originalname 원래 파일이름
-        //callback(null, file.originalname + Date.now())
         let extension = path.extname(file.originalname)
         let basename = path.basename(file.originalname, extension)
         callback(null, basename + '-' + Date.now() + '-' + extension)
     }    
 })
 
+let fileFilter = function(request, file, callback) {
+    var extension = path.extname(file.originalname).toLocaleLowerCase()
+    if(extension !== '.png' && extension !== '.jpg' && extension !== '.jpeg') {   
+        return callback(new Error('Only images are allowed'))
+    }
+    callback(null, true)
+}
+
 let upload = multer({
     storage: storage,
+    fileFilter: fileFilter,
     limits: {
-        files: 1,                    // 최대 업로드 개수
-        fileSize: 1024 * 1024 * 1024 // 파일 사이즈
+        files: 1,
+        fileSize: 1024 * 1024 * 1024
     }
-})
+}).single('image')
 
-router.post('/', upload.single('image'), course_controller.courseCreate)  // 코스 생성
+router.post('/', (request, response, next) => {
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please images type check')
+        } else {
+            next()
+        }
+    })
+}, course_controller.courseCreate)                                        // 코스 생성
 router.get('/', course_controller.courseReadAll)                          // 코스 목록 조회
 router.get('/:courseNumber', course_controller.courseReadOne)             // 코스 한개 조회
 router.delete('/:courseNumber',course_controller.courseDelete)            // 코스 삭제
