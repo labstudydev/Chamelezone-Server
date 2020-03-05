@@ -1,16 +1,16 @@
 /* ==================== START modules ==================== */
 
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const isEmpty               = require('../costomModules/valueCheck')
 const Like                  = require('../dao/likeDao.js')
 const util                  = require('../costomModules/util')
 
 /* ==================== END modules ==================== */
 
-// unlike -> like = like_status: true
-// like -> unlike = like_status: false
-// (likeNumber is null) == unlike = likeNumber: false
-// (likeNumber is not null) == like = likeNumber: likeNumber
+// unlike -> like = likeStatus: true
+// like -> unlike = likeStatus: false
+// (likeNumber is null) == unlike = likeStatus: false
+// (likeNumber is not null) == like = likeStatus: true
 
 exports.likeAddPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
