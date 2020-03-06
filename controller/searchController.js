@@ -1,8 +1,4 @@
-/* ==================== START modules ==================== */
-
-const Search = require('../service/searchService');
-
-/* ==================== END modules ==================== */
+const Search = require('../service/searchService')
 
 exports.searchByPlaceName = function(request, response, next) {
     Search.searchByPlaceName(request, response, next)

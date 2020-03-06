@@ -1,8 +1,4 @@
-/* ==================== START modules ==================== */
-
 const User = require('../service/userService')
-
-/* ==================== END modules ==================== */
 
 exports.user_create = function(request, response, next) {
     User.createUser(request, response, next)
