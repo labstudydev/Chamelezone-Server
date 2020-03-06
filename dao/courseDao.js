@@ -102,12 +102,12 @@ Course.selectAllCourse = function(response) {
 Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
-            const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'course_regiDate', ` +
-                                            `PLACE.place_name, PLACE.address, CI.savedImageName AS 'course_image', PLACE.savedImageName 'place_images' , PLACE.keywordName AS keywordName ` +
+            const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
+                                            `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName 'placeImage' , PLACE.keywordName AS keywordName ` +
                                             `FROM course_has_place CHP ` +
                                             `inner JOIN course C ON C.courseNumber = CHP.courseNumber ` +
                                             `inner JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'place_name', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keywordName' ` +
+                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keywordName' ` +
                                             `   from place_has_keyword PHK ` +
                                             `   inner JOIN place P ON P.placeNumber = PHK.placeNumber ` +
                                             `   inner JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
