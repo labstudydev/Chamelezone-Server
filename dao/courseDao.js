@@ -1,14 +1,8 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const db                    = require('../config/db')
 const Images                = require('./imageDao')
 
-/* ==================== END modules ==================== */
-
-var Course = function(course) {
-
-}
+var Course = function(course) { }
 
 Course.insertCourse = function([memberNumber, title, content, setImageArray, setPlaceNumberValues], response) {
     try {
@@ -25,19 +19,13 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                             response(error, null)
                         })
                     }
-                    
-                    console.log(__filename + ': insertCourseSqlQuery * response: ', results)
                     connection.release()
-
                     let courseNumber = results.insertId
                     
                     for (var j in setPlaceNumberValues) {
                         setPlaceNumberValues[j].unshift(courseNumber)
                     }
                     setImageArray.unshift(courseNumber)
-                    
-                    console.log(setImageArray)
-                    console.log(setPlaceNumberValues)
 
                     Images.insertCourseImages([setImageArray], function(error, results) {
                         if (error) {
@@ -60,8 +48,6 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                                         response(error, null)
                                     })
                                 }
-
-                                console.log('Transaction Success !!!')
                                 response(null, results)
                             })  // commit()
                         })  // insertCourseHasPlaceSqlQuery()
@@ -77,25 +63,20 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
 Course.selectAllCourse = function(response) {
     try {
         db((error, connection) => {
-            const selectAllCourseSqlQuery = `SELECT C.courseNumber, C.title, DATE_FORMAT(C.regiDate, '%Y-%m-%d') as regiDate, M.memberNumber, M.nickName , CI.imageNumber, CI.savedImageName ` +
+            const selectAllCourseSqlQuery = `SELECT C.courseNumber, C.title, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS regiDate, M.memberNumber, M.nickName , CI.imageNumber, CI.savedImageName ` +
                                             `FROM course C ` +
                                             `LEFT JOIN member M ON M.memberNumber = C.memberNumber ` +
                                             `LEFT JOIN course_images CI ON CI.courseNumber = C.courseNumber ` +
                                             `ORDER BY C.courseNumber desc ` +
                                             `LIMIT 50`
             connection.query(selectAllCourseSqlQuery, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -103,30 +84,25 @@ Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
             const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
-                                            `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName 'placeImage' , PLACE.keywordName AS keywordName ` +
+                                            `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS keywordName ` +
                                             `FROM course_has_place CHP ` +
-                                            `inner JOIN course C ON C.courseNumber = CHP.courseNumber ` +
-                                            `inner JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `inner JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, PI.savedImageName, group_concat(DISTINCT K.name separator ',') AS 'keywordName' ` +
-                                            `   from place_has_keyword PHK ` +
-                                            `   inner JOIN place P ON P.placeNumber = PHK.placeNumber ` +
-                                            `   inner JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
-                                            `   inner JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-                                            `   group by PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
+                                            `LEFT JOIN course C ON C.courseNumber = CHP.courseNumber ` +
+                                            `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
+                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name separator ',') AS 'keywordName' ` +
+                                            `   FROM place_has_keyword PHK ` +
+                                            `   LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
+                                            `   LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
+                                            `   LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                            `   GROUP BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
                                             `WHERE CHP.courseNumber = ?`
             connection.query(selectOneCourseSqlQuery, [courseNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -139,18 +115,13 @@ Course.selectAllByUser = function([memberNumber], response) {
                                             `WHERE C.memberNumber = ? ` +
                                             `ORDER BY C.courseNumber DESC`
             connection.query(selectAllByUserSqlQuery, [memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -159,18 +130,13 @@ Course.deleteCourse = function([courseNumber, memberNumber], response) {
         db((error, connection) => {
             const deleteCourseSqlQuery = `DELETE FROM course WHERE courseNumber = ? AND memberNumber = ?`
             connection.query(deleteCourseSqlQuery, [courseNumber, memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 

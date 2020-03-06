@@ -1,9 +1,5 @@
-/* ==================== START modules ==================== */
-
 const { ErrorHandler }      = require('../costomModules/customError')
 const db                    = require('../config/db')
-
-/* ==================== END modules ==================== */
 
 var Like = function(like) { }
 
@@ -12,14 +8,9 @@ Like.insertLike = function([placeNumber, memberNumber], response) {
         db((error, connection) => {
             const insertLikeSqlQuery = `INSERT INTO like_history (placeNumber, memberNumber) VALUES (?, ?)`
             connection.query(insertLikeSqlQuery, [placeNumber, memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -32,14 +23,9 @@ Like.deleteLike = function([placeNumber, memberNumber], response) {
         db((error, connection) => {
             const deleteLikeSqlQuery = `DELETE FROM like_history WHERE placeNumber = ? AND memberNumber = ?`
             connection.query(deleteLikeSqlQuery, [placeNumber, memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -65,14 +51,9 @@ Like.selectAllByUserLikes = function([memberNumber], response) {
                                                     `GROUP BY LH.likeNumber ` +
                                                     `ORDER BY likeNumber DESC`
             connection.query(selectAllByUserLikesSqlQuery, [memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -80,20 +61,14 @@ Like.selectAllByUserLikes = function([memberNumber], response) {
     }
 }
 
-// select by user and place => Place.readOnePlace
 Like.selectOneByUserLike = function([placeNumber, memberNumber], response) {
     try {
         db((error, connection) => {
             const selectOneByUserLikeSqlQuery = `SELECT likeNumber, placeNumber, memberNumber FROM like_history WHERE placeNumber = ? and memberNumber = ?`
             connection.query(selectOneByUserLikeSqlQuery, [placeNumber, memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {

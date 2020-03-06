@@ -1,9 +1,5 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const db                    = require('../config/db')
-
-/* ==================== END modules ==================== */
 
 var Map = function(map) { }
 
@@ -25,14 +21,9 @@ Map.selectPlaceByName = function(name, response) {
                                             `WHERE P.name LIKE ? ` +
                                             `GROUP BY P.placeNumber`
             connection.query(selectPlaceByNameSqlQuery, '%' + name + '%', function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
