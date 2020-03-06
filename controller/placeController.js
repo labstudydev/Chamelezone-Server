@@ -1,8 +1,4 @@
-/* ==================== START modules ==================== */
-
 const Place = require('../service/placeService.js')
-
-/* ==================== END modules ==================== */
 
 exports.place_create = function(request, response, next) {
     Place.createPlace(request, response, next)
