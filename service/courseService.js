@@ -1,11 +1,7 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const Course                = require('../dao/courseDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
 const util                  = require('../costomModules/util')
-
-/* ==================== END modules ==================== */
 
 exports.courseCreate = function(request, response, next) {
     const image = request.file
@@ -37,7 +33,6 @@ exports.courseCreate = function(request, response, next) {
 
     Course.insertCourse([memberNumber, title, content, setImageArray, setPlaceNumberValues], function(error, results) {
         if (error) {
-            console.log(__filename + ", Course.insertCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)
@@ -47,7 +42,6 @@ exports.courseCreate = function(request, response, next) {
 exports.courseReadAll = function(request, response, next) {
     Course.selectAllCourse(function(error, results) {
         if (error) {
-            console.log(__filename + ", Course.selectAllCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)
@@ -61,7 +55,6 @@ exports.courseReadOne = function(request, response, next) {
 
     Course.selectOneCourse([courseNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Course.selectOneCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -76,7 +69,6 @@ exports.courseListUser = function(request, response, next) {
 
     Course.selectAllByUser([memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Course.selectCourseByUser() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -97,7 +89,6 @@ exports.courseDelete = function(request, response, next) {
 
     Course.deleteCourse([courseNumber, memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Course.deleteCourse() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 

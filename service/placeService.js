@@ -1,15 +1,9 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const Place                 = require('../dao/placeDao.js')
 const Like                  = require('../dao/likeDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
 const Step					= require('../node_modules/step')
 const util                  = require('../costomModules/util')
-
-/* ==================== END modules ==================== */
-
-/* ==================== START function ==================== */
 
 const separator = '|'
 function splitString(stringToSplit, separator) {
@@ -21,8 +15,6 @@ function splitString(stringToSplit, separator) {
 
     return arrayOfStrings
 }
-
-/* ==================== END function ==================== */
 
 exports.createPlace = function(request, response, next) {
     const images = request.files
@@ -74,7 +66,6 @@ exports.createPlace = function(request, response, next) {
         savedImageName = array[index] = item.filename
         mimetype = array[index] = item.mimetype
         imageSize = array[index] = item.size
-        console.log("images toString: " + index + ": " + originalImageName + " || " + savedImageName + " || " + mimetype + " || " + imageSize)
         
         setImagesValues[index][0] = originalImageName
         setImagesValues[index][1] = savedImageName
@@ -84,10 +75,8 @@ exports.createPlace = function(request, response, next) {
     
     Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
         if (error) {
-            console.log(__filename + ", Place.createPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
-        console.log("Transaction Service Success !!!")
         response.status(200).send(place)
     })
 }
@@ -118,7 +107,6 @@ exports.readOnePlace = function(request, response, next) {
             }
             Place.readOnePlace(placeNumber, function(error, results) { 
                 if (error) {
-                    console.log(__filename + ", Place.readOnePlace() error status code 500 !!!")
                     return next(new ErrorHandler(500, error))
                 }
         
@@ -140,7 +128,6 @@ exports.readAllPlace = function(request, response, next) {
 
     Place.readAllPlace(memberNumber, function(error, results) { 
         if (error) {
-            console.log(__filename + ", Place.readAllPlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -163,7 +150,6 @@ exports.updatePlace = function(request, response, next) {
 
     Place.updatePlace([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
         if (error) {
-            console.log(__filename + ", Place.updatePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -184,7 +170,6 @@ exports.deletePlace = function(request, response, next) {
 
     Place.deletePlace(placeNumber, function(error, results) { 
         if (error) {
-            console.log(__filename + ", Place.deletePlace() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)
@@ -198,7 +183,6 @@ exports.getCutrrentLocation = function(request, response, next) {
 
     Place.getCutrrentLocation(setValues, function(error, results){
         if (error) {
-            console.log(__filename + ", Place.getCutrrentLocation() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         response.status(200).send(results)
@@ -211,7 +195,6 @@ exports.placeListUser = function(request, response, next) {
 
     Place.selectAllByUser([memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Place.selectAllByUser() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         

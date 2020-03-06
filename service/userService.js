@@ -1,13 +1,9 @@
-/* ==================== START modules ==================== */
-
 const ErrorHandler          = require('../costomModules/customError')
 const User                  = require('../dao/userDao.js')
 const Step					= require('../node_modules/step')
 const isEmpty               = require('../costomModules/valueCheck')
 const util                  = require('../costomModules/util')
 const mail                  = require('../costomModules/node-mailer')             
-
-/* ==================== END modules ==================== */
 
 exports.createUser = function(request, response, next) {
     let setValues = {
@@ -17,7 +13,6 @@ exports.createUser = function(request, response, next) {
     isEmpty('email', email)
     isEmpty('password', password)
     if (password.length < 8 || password.length > 16) {
-        console.log("password : " + password + ", password size : " + password.length)
         throw new ErrorHandler(400, 'password size is not valid')
     }
     
@@ -53,7 +48,6 @@ exports.createUser = function(request, response, next) {
             } else {
                 User.createUser(setValues, function(error, results) {
                     if (error) {
-                        console.log(__filename + ", User.createUser() error status code 500 !!!")
                         return next(new ErrorHandler(500, error))
                     }
                     response.status(200).send(results)
@@ -68,7 +62,6 @@ exports.getUserById = function(request, response, next) {
 
     User.getUserById(memberNumber, function(error, results) {
         if (error) {
-            console.log(__filename + ", User.getUserById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
 
@@ -90,7 +83,6 @@ exports.getLogin = function(request, response, next) {
 
     User.getLogin([email, password], function(error, results) {
         if (error) {
-            console.log(__filename + ", User.getLogin() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -115,7 +107,6 @@ exports.updateById = function(request, response, next) {
 
     User.updateById([password, nickName, phoneNumber, memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", User.updateById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
         
@@ -129,7 +120,6 @@ exports.deleteById = function(request, response, next) {
 
     User.deleteById(memberNumber, function(error, results) {
         if (error) {
-            console.log(__filename + ", User.deleteById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))   
         }
         response.status(200).send(results)    
@@ -142,7 +132,6 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
 
     User.selectEmailDuplicateCheck(email, function(error, results) {
         if (error) {
-            console.log(__filename + ", User.selectEmailDuplicateCheck() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -162,7 +151,6 @@ exports.userNickNameDuplicateCheck = function(request, response, next) {
 
     User.selectNickNameDuplicateCheck(nickName, function(error, results) {
         if (error) {
-            console.log(__filename + ", User.selectNickNameDuplicateCheck() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -185,7 +173,6 @@ exports.userEmailFind = function(request, response, next) {
 
     User.selectUserFindEmail([name, phoneNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", User.selectUserFindEmail() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -249,7 +236,6 @@ exports.userPasswordReset = function(request, response, next) {
 
     User.updatePasswordById([password, memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", User.updatePasswordById() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
