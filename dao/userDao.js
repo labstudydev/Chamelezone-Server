@@ -1,9 +1,5 @@
-/* ==================== START modules ==================== */
-
 const db            = require('../config/db')
-const { ErrorHandler, handleError } = require('../costomModules/customError')
-
-/* ==================== END modules ==================== */
+const ErrorHandler  = require('../costomModules/customError')
 
 var User = function(user) { }
 
@@ -13,16 +9,12 @@ User.createUser = function(request, response) {
             const insertUserSqlQuery = `INSERT INTO member SET ?`
             connection.query(insertUserSqlQuery, request, function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log("error: ", error)
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
-    } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    } catch (error) { 
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -32,16 +24,12 @@ User.getUserById = function(request, response) {
             const selectUserByIdSqlQuery = `SELECT * FROM member WHERE memberNumber = ?`
             connection.query(selectUserByIdSqlQuery, request, function(error, results, fields) {
                 connection.release()
-                if (error) {
-                    console.log("error: ", error)
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -51,16 +39,12 @@ User.getLogin = function([email, password], response) {
             const selectUserLoginSqlQuery = `SELECT memberNumber, email, name, nickName, phoneNumber, DATE_FORMAT(regiDate, '%Y-%m-%d') as regiDate FROM member WHERE email = ? && password = ?`
             connection.query(selectUserLoginSqlQuery, [email, password], function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log("error: ", error)
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -70,16 +54,12 @@ User.updateById = function([password, nickName, phoneNumber, memberNumber], resp
             const updateUserSqlQuery = `UPDATE member SET password=?, nickName=?, phoneNumber=? WHERE memberNumber=?`
             connection.query(updateUserSqlQuery, [password, nickName, phoneNumber, memberNumber], function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log("error: ", error)
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -89,16 +69,12 @@ User.deleteById = function(request, response) {
             const deleteUserById = `DELETE FROM member WHERE memberNumber = ?`
             connection.query(deleteUserById, request, function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log("error: ", error)
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -108,16 +84,12 @@ User.selectByMemberNumber = function(memberNumber, response) {
             const selectByEamilSqlQuery = 'SELECT memberNumber FROM member WHERE memberNumber = ?'
             connection.query(selectByEamilSqlQuery, memberNumber, function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': selectByEamilSqlQuery * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': selectByEamilSqlQuery * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -127,16 +99,12 @@ User.selectEmailDuplicateCheck = function(email, response) {
             const selectEmailDuplicateCheckSqlQuery = `SELECT email FROM member WHERE email = ?`
             connection.query(selectEmailDuplicateCheckSqlQuery, email, function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': selectEmailDuplicateCheck * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': selectEmailDuplicateCheck * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -146,16 +114,12 @@ User.selectNickNameDuplicateCheck = function(nickName, response) {
             const selectNickNameDuplicateCheckSqlQuery = `SELECT nickName FROM member WHERE nickName = ?`
             connection.query(selectNickNameDuplicateCheckSqlQuery, nickName, function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': selectNickNameDuplicateCheckSqlQuery * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': selectNickNameDuplicateCheckSqlQuery * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -165,16 +129,12 @@ User.selectUserFindEmail = function([name, phoneNumber], response) {
             const selectFindUserEmailSqlQuery = `SELECT name, email, phoneNumber FROM member WHERE name = ? AND phoneNumber = ?`
             connection.query(selectFindUserEmailSqlQuery, [name, phoneNumber], function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': selectFindUserEmailSqlQuery * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': selectFindUserEmailSqlQuery * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -184,16 +144,12 @@ User.selectOneUserCheckEmail = function([email, phoneNumber], response) {
             const selectOneFindUserCheckEmailSqlQuery = `SELECT memberNumber, name, email, phoneNumber FROM member WHERE email = ? AND phoneNumber = ?`
             connection.query(selectOneFindUserCheckEmailSqlQuery, [email, phoneNumber], function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': selectOneFindUserCheckEmailSqlQuery * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': selectOneFindUserCheckEmailSqlQuery * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -203,16 +159,42 @@ User.updatePasswordById = function([password, memberNumber], response) {
             const updateUserPasswordResetSqlQuery = `UPDATE member SET password = ? WHERE memberNumber = ?`
             connection.query(updateUserPasswordResetSqlQuery, [password, memberNumber], function(error, results) {
                 connection.release()
-                if (error) {
-                    console.log(__filename + ': updateUserPasswordResetSqlQuery * error: ', error)
-                    return response(error, null)
-                }
-                console.log(__filename + ': updateUserPasswordResetSqlQuery * response: ', results)
-                response(null, results)
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
+    }
+}
+
+User.insertPasswordSecurityCode = function(request, response) {
+    try {
+        db((error, connection) => {
+            const insertPasswordSecurityCodeSqlQuery = `INSERT INTO password_security_code VALUES ?`
+            connection.query(insertPasswordSecurityCodeSqlQuery, request, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+User.selectPasswordSecurityCodeCheck = function(request, response) {
+    try {
+        db((error, connection) => {
+            const selectPasswordSecurityCodeCheckSqlQuery = `SELECT securityCodeNumber, securityCode from password_security_code where password_security_code = ?`
+            connection.query(selectPasswordSecurityCodeCheckSqlQuery, request, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
     }
 }
 
