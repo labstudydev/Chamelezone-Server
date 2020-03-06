@@ -1,13 +1,9 @@
-/* ==================== START modules ==================== */
-
 const place_controller          = require('../../controller/placeController')
 const review_controller         = require('../../controller/reviewController')
 const express                   = require('express')
 const router                    = express.Router()
 const multer                    = require('multer')
 const path                      = require('path')
-
-/* ==================== END modules ==================== */
 
 let storage = multer.diskStorage({
     destination: function (request, file, callback) {
