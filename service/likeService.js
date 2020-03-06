@@ -1,16 +1,12 @@
-/* ==================== START modules ==================== */
-
 const ErrorHandler          = require('../costomModules/customError')
 const isEmpty               = require('../costomModules/valueCheck')
 const Like                  = require('../dao/likeDao.js')
 const util                  = require('../costomModules/util')
 
-/* ==================== END modules ==================== */
-
-// unlike -> like = likeStatus: true
-// like -> unlike = likeStatus: false
-// (likeNumber is null) == unlike = likeStatus: false
-// (likeNumber is not null) == like = likeStatus: true
+/*  unlike -> like = likeStatus: true
+    like -> unlike = likeStatus: false
+    (likeNumber is null) == unlike = likeStatus: false
+    (likeNumber is not null) == like = likeStatus: true */
 
 exports.likeAddPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
@@ -21,7 +17,6 @@ exports.likeAddPlace = function(request, response, next) {
 
     Like.insertLike([placeNumber, memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Like.insertLike() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         
@@ -39,7 +34,6 @@ exports.likeCancelPlace = function(request, response, next) {
 
     Like.deleteLike([placeNumber, memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Like.deleteLike() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
 
@@ -54,7 +48,6 @@ exports.likeReadAllByUser = function(request, response, next) {
 
     Like.selectAllByUserLikes([memberNumber], function(error, results) {
         if (error) {
-            console.log(__filename + ", Like.selectAllByUserLikes() error status code 500 !!!")
             return next(new ErrorHandler(500, error))
         }
         
