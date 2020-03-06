@@ -1,9 +1,5 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const db                    = require('../config/db')
-
-/* ==================== END modules ==================== */
 
 var Search = function(search) { }
 
@@ -25,14 +21,9 @@ Search.selectByPlaceName = function(name, response) {
                                             `WHERE P.name LIKE ? ` +
                                             `GROUP BY P.placeNumber`
             connection.query(selectByPlaceNameSqlQuery, '%' + name + '%', function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -58,14 +49,9 @@ Search.selectByAreaName = function(name, response) {
                                             `WHERE P.address LIKE ? ` +
                                             `GROUP BY P.placeNumber`
             connection.query(selectByAreaNameSqlQuery, '%' + name + '%', function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -91,14 +77,9 @@ Search.selectByKeywordName = function(name, response) {
                                                 `WHERE A.keywordName LIKE ? ` +
                                                 `GROUP BY P.placeNumber`
             connection.query(selectByKeywordNameSqlQuery, '%' + name + '%', function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {

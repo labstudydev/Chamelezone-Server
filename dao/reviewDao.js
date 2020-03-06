@@ -1,10 +1,6 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const db                    = require('../config/db')
 const Images                = require('../dao/imageDao')
-
-/* ==================== END modules ==================== */
 
 var Review = function(review) { }
 
@@ -23,16 +19,12 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
                             response(error, null)
                         })
                     }
-                    
-                    console.log(__filename + ': insertReviewSqlQuery * response: ', results)
                     connection.release()
 
                     let reviewNumber = results.insertId
                     for (var i in setImagesValues) {
                         setImagesValues[i].unshift(reviewNumber)
                     }
-
-                    console.log(setImagesValues)
 
                     // images insert query
                     Images.insertReviewImages([setImagesValues], function(error, results) {
@@ -47,9 +39,7 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
                                     response(error, null)
                                 })
                             }
-                            console.log('Transaction Success !!!')
                             response(null, results)
-
                         })  // commit()
                     })  // Images.insertReviewImages()
                 })  // insertReviewSqlQuery()
@@ -65,14 +55,9 @@ Review.selectAllReview = function(response) {
         db((error, connection) => {
             const selectAllReviewSqlQuery = `SELECT reviewNumber, placeNumber, memberNumber, content, DATE_FORMAT(regiDate, '%Y-%m-%d') as regiDate FROM review`
             connection.query(selectAllReviewSqlQuery, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -80,7 +65,6 @@ Review.selectAllReview = function(response) {
     }
 }
 
-// 회원의 리뷰 목록(회원의 리뷰 목록 조회) - 이거 일단 됬고 ok
 Review.selectByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
@@ -94,14 +78,9 @@ Review.selectByUser = function([memberNumber], response) {
                                             `WHERE R.memberNumber = ? ` + 
                                             `GROUP BY R.reviewNumber`
             connection.query(selectByUserSqlQuery, [memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -109,7 +88,6 @@ Review.selectByUser = function([memberNumber], response) {
     }
 }
 
-// 나의 리뷰에서 리뷰선택시 리뷰 상세화면(특정 리뷰 조회) - 이거 일단 됬고2 ok
 Review.selectByReview = function([placeNumber, reviewNumber], response) {
     try {
         db((error, connection) => {
@@ -123,14 +101,9 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
                                             `WHERE P.placeNumber = ? && R.reviewNumber = ? ` + 
                                             `GROUP BY R.reviewNumber`
             connection.query(selectByReviewSqlQuery, [placeNumber, reviewNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -138,7 +111,6 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
     }
 }
 
-// 장소의 리뷰 목록 조회
 Review.selectByPlace = function([placeNumber], response) {
     try {
         db((error, connection) => {
@@ -153,14 +125,9 @@ Review.selectByPlace = function([placeNumber], response) {
                                             `WHERE R.placeNumber = ? ` +
                                             `GROUP BY R.reviewNumber`
             connection.query(selectByPlaceSqlQuery, [placeNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -173,14 +140,9 @@ Review.deleteReview = function([memberNumber, placeNumber, reviewNumber], respon
         db((error, connection) => {
             const deleteReviewSqlQuery = `DELETE FROM review WHERE memberNumber = ? AND placeNumber = ? AND reviewNumber = ?`
             connection.query(deleteReviewSqlQuery, [memberNumber, placeNumber, reviewNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {

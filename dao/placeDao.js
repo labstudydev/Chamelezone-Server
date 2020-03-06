@@ -1,11 +1,7 @@
-/* ==================== START modules ==================== */
-
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const db                    = require('../config/db')
 const Keyword               = require('../dao/keywordDao')
 const Images                = require('./imageDao')
-
-/* ==================== END modules ==================== */
 
 var Place = function(place) { }
 
@@ -23,7 +19,6 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                             response(error, null)
                         })
                     }
-                    console.log(__filename + ': placeSqlQuery * response: ', results)
                     connection.release()
 
                     let placeNumber = results.insertId
@@ -33,8 +28,6 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                     for (var j in setKeywordNameValues) {
                         setKeywordNameValues[j].unshift(placeNumber)
                     }
-                    console.log(setImagesValues)
-                    console.log(setKeywordNameValues)
 
                     // images insert query
                     Images.insertPlaceImages([setImagesValues], function(error, results) {
@@ -57,9 +50,7 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                                         response(error, null)
                                     })
                                 }
-                                console.log('Transaction Success !!!')
                                 response(null, results)
-
                             })  // commit()
                         })  // Keyword.insertPlaceKeyword()
                     })  // Images.insertPlaceImages()
@@ -91,14 +82,9 @@ Place.readOnePlace = function(request, response) {
                                     `WHERE P.placeNumber = ? ` +
                                     `GROUP BY P.placeNumber`
             connection.query(selectPlaceOne, request, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -124,18 +110,13 @@ Place.readAllPlace = function(memberNumber, response, next) {
                                     `ORDER BY P.placeNumber DESC ` +
                                     `LIMIT 30`
             connection.query(selectPlaceAll, memberNumber, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -144,18 +125,13 @@ Place.updatePlace = function([name, address, keywordName, openingTime1, openingT
         db((error, connection) => {
             const sqlQuery = `UPDATE place SET name = ?, address = ?, openingTime1 = ?, openingTime2 =?, openingTime3 = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?`
             connection.query(sqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -164,46 +140,36 @@ Place.deletePlace = function(request, response) {
         db((error, connection) => {
             const deletePlaceSqlQuery = `DELETE FROM place WHERE placeNumber = ?`
             connection.query(deletePlaceSqlQuery, request, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
 Place.getCutrrentLocation = function([latitude, longitude, latitude2], response) {
     try {
         db((error, connection) => {
-            const sql = "select " +
-                        "placeNumber, name, address, " + 
-                        "( 6371 * acos( cos( radians( ? ) ) * cos( radians(latitude) ) " +
-                        "* cos( radians(longitude) - radians( ? ) ) + sin( radians( ? ) ) " + 
-                        "* sin( radians( latitude ) ) ) ) AS distance " +
-                        "from place " +
-                        "HAVING distance < 1 " +
-                        "ORDER BY distance desc " +
-                        "LIMIT 0 , 5" 
-            connection.query(sql, [latitude, longitude, latitude2], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
+            const getCutrrentLocationSqlQuery = `SELECT ` +
+                                                `placeNumber, name, address, ` + 
+                                                `( 6371 * acos( cos( radians( ? ) ) * cos( radians(latitude) ) ` +
+                                                `* cos( radians(longitude) - radians( ? ) ) + sin( radians( ? ) ) ` + 
+                                                `* sin( radians( latitude ) ) ) ) AS distance ` +
+                                                `FROM place ` +
+                                                `HAVING distance < 1 ` +
+                                                `ORDER BY distance desc ` +
+                                                `LIMIT 0 , 5`
+            connection.query(getCutrrentLocationSqlQuery, [latitude, longitude, latitude2], function(error, results) {
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -216,7 +182,7 @@ Place.selectAllByUser = function([memberNumber], response) {
                                             `FROM place P ` +
                                             `LEFT JOIN member M ON M.memberNumber = P.memberNumber ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
-                                            `left join (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
+                                            `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
                                             `           FROM place_has_keyword PHK ` +
                                             `           JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                             `           GROUP BY PHK.placeNumber) KEYWORD ON KEYWORD.placeNumber = P.placeNumber ` +
@@ -224,18 +190,13 @@ Place.selectAllByUser = function([memberNumber], response) {
                                             `GROUP BY P.placeNumber ` +
                                             `ORDER BY P.placeNumber DESC`
             connection.query(selectAllByUserSqlQuery, [memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -244,18 +205,13 @@ Place.selectPlaceDuplicateCheck = function([name, address], response) {
         db((error, connection) => {
             const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address FROM place WHERE name = ? AND address = ?`
             connection.query(selectPlaceDuplicateCheckSqkQyery, [name, address], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
