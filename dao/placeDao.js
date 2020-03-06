@@ -239,4 +239,24 @@ Place.selectAllByUser = function([memberNumber], response) {
     }
 }
 
+Place.selectPlaceDuplicateCheck = function([name, address], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address FROM place WHERE name = ? AND address = ?`
+            connection.query(selectPlaceDuplicateCheckSqkQyery, [name, address], function(error, results) {
+                if (error) {
+                    console.log("error: ", error)
+                    connection.release()
+                    return response(error, null)
+                }
+                console.log('response: ', results)
+                response(null, results)
+                connection.release()
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+    }
+}
+
 module.exports = Place
