@@ -1,4 +1,4 @@
-const { ErrorHandler }      = require('../costomModules/customError')
+const ErrorHandler          = require('../costomModules/customError')
 const nodemailer            = require('nodemailer')
 
 var mail = { }
@@ -25,7 +25,6 @@ mail.sendGmail = function(param, next) {
         if (error) {
             throw new ErrorHandler(500, error)
         }
-        console.log('Email sent info: ' + info.response)
         next()
     })
 }
