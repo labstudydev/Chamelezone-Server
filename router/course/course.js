@@ -1,12 +1,8 @@
-/* ==================== START modules ==================== */
-
 const course_controller         = require('../../controller/courseController')
 const express                   = require('express')
 const router                    = express.Router()
 const multer                    = require('multer')
 const path                      = require('path')
-
-/* ==================== END modules ==================== */
 
 let storage = multer.diskStorage({
     destination: function (request, file, callback) {

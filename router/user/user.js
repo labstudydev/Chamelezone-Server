@@ -1,5 +1,3 @@
-/* ==================== START modules ==================== */
-
 const user_controller           = require('../../controller/userController')
 const review_controller         = require('../../controller/reviewController')
 const like_controller           = require('../../controller/likeController')
@@ -7,8 +5,6 @@ const place_controller          = require('../../controller/placeController')
 const course_controller         = require('../../controller/courseController')
 const express                   = require('express')
 const router                    = express.Router()
-
-/* ==================== END modules ==================== */
 
 router.put('/password', user_controller.userPasswordReset)                      // 회원의 비밀번호 재설정
 router.post('/', user_controller.user_create)                                   // 회원가입
