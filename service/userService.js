@@ -101,17 +101,38 @@ exports.updateById = function(request, response, next) {
     } = request.body
     
     isEmpty('memberNumber', memberNumber)
-    isEmpty('password', password)
-    isEmpty('nickName', nickName)
-    isEmpty('phoneNumber', phoneNumber)
+    
+    Step (
+        function getUserInfo() {
+            User.getUserById([memberNumber], this)
+        },
+        function getUserInfoResult(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
 
-    User.updateById([password, nickName, phoneNumber, memberNumber], function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))   
+            if (result[0] == null || result[0] == undefined) {
+                response.status(404).send("User does not exist")
+            } else {
+                return result[0]
+            }
+        },
+        function updateUserById(error, result) {
+            if (error) {
+                throw new ErrorHandler(500, error)
+            }
+            password = (!password) ? result.password : password
+            nickName = (!nickName) ? result.nickName : nickName
+            phoneNumber = (!phoneNumber) ? result.phoneNumber : phoneNumber
+
+            User.updateById([password, nickName, phoneNumber, memberNumber], function(error, results) {
+                if (error) {
+                    return next(new ErrorHandler(500, error))
+                }
+                response.status(200).send(results)
+            })
         }
-        
-        response.status(200).send(results)
-    })
+    )
 }
 
 exports.deleteById = function(request, response, next) {
