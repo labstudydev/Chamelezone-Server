@@ -10,15 +10,14 @@ exports.createUser = function(request, response, next) {
         email, password, name, nickName, phoneNumber
     } = request.body
 
-    isEmpty('email', email)
-    isEmpty('password', password)
+    const nullValueCheckObject = {
+        email, password, name, nickName, phoneNumber
+    }
+    isEmpty(nullValueCheckObject)
+
     if (password.length < 8 || password.length > 16) {
         throw new ErrorHandler(400, 'password size is not valid')
     }
-    
-    isEmpty('name', name)
-    isEmpty('nickName', nickName)
-    isEmpty('phoneNumber', phoneNumber)
     if (phoneNumber.length < 11 || phoneNumber.length > 14) {
         throw new ErrorHandler(400, 'phoneNumber size is not valid')
     }
@@ -77,9 +76,10 @@ exports.getLogin = function(request, response, next) {
     const setValues = {
         email, password
     } = request.body
-
-    isEmpty('email', email)
-    isEmpty('password', password)
+    const nullValueCheckObject = {
+        email, password
+    }
+    isEmpty(nullValueCheckObject)
 
     User.getLogin([email, password], function(error, results) {
         if (error) {
@@ -100,8 +100,11 @@ exports.updateById = function(request, response, next) {
         password, nickName, phoneNumber
     } = request.body
     
-    isEmpty('memberNumber', memberNumber)
-    
+    const nullValueCheckObject = {
+        memberNumber
+    }
+    isEmpty(nullValueCheckObject)
+
     Step (
         function getUserInfo() {
             User.getUserById([memberNumber], this)
@@ -137,8 +140,12 @@ exports.updateById = function(request, response, next) {
 
 exports.deleteById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
-
+        
+    const nullValueCheckObject = {
+        memberNumber
+    }
+    isEmpty(nullValueCheckObject)
+    
     User.deleteById(memberNumber, function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))   
@@ -148,8 +155,11 @@ exports.deleteById = function(request, response, next) {
 }
 
 exports.userEmailDuplicateCheck = function(request, response, next) {
-    let email = request.params.email
-    isEmpty('email', email)
+    let email = request.params.email    
+    const nullValueCheckObject = {
+        email
+    }
+    isEmpty(nullValueCheckObject)
 
     User.selectEmailDuplicateCheck(email, function(error, results) {
         if (error) {
@@ -168,7 +178,10 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
 
 exports.userNickNameDuplicateCheck = function(request, response, next) {
     let nickName = request.params.nickName
-    isEmpty('nickName', nickName)
+    const nullValueCheckObject = {
+        nickName
+    }
+    isEmpty(nullValueCheckObject)
 
     User.selectNickNameDuplicateCheck(nickName, function(error, results) {
         if (error) {
@@ -189,8 +202,10 @@ exports.userEmailFind = function(request, response, next) {
     const setValues = {
         name, phoneNumber
     } = request.body
-    isEmpty('name', name)
-    isEmpty('phoneNumber', phoneNumber)
+    const nullValueCheckObject = {
+        name, phoneNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     User.selectUserFindEmail([name, phoneNumber], function(error, results) {
         if (error) {
@@ -209,9 +224,10 @@ exports.userSendSecurityCode = function(request, response, next) {
     const setValues = {
         email, phoneNumber
     } = request.body
-    
-    isEmpty('email', email)
-    isEmpty('phoneNumber', phoneNumber)
+    const nullValueCheckObject = {
+        email, phoneNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Step (
         function selectUserFindEmail() {
@@ -252,8 +268,11 @@ exports.userPasswordReset = function(request, response, next) {
     const setValues = {
         password, memberNumber
     } = request.body
-    isEmpty('password', password)
-    isEmpty('memberNumber', memberNumber)
+    
+    const nullValueCheckObject = {
+        password, memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     User.updatePasswordById([password, memberNumber], function(error, results) {
         if (error) {

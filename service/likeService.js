@@ -10,10 +10,12 @@ const util                  = require('../costomModules/util')
 
 exports.likeAddPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
-    
     let placeNumber = request.body.placeNumber
-    isEmpty('placeNumber', placeNumber)
+    
+    const nullValueCheckObject = {
+        memberNumber, placeNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Like.insertLike([placeNumber, memberNumber], function(error, results) {
         if (error) {
@@ -27,10 +29,12 @@ exports.likeAddPlace = function(request, response, next) {
 
 exports.likeCancelPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
-
     let placeNumber = request.body.placeNumber
-    isEmpty('placeNumber', placeNumber)
+
+    const nullValueCheckObject = {
+        memberNumber, placeNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Like.deleteLike([placeNumber, memberNumber], function(error, results) {
         if (error) {
@@ -44,7 +48,10 @@ exports.likeCancelPlace = function(request, response, next) {
 
 exports.likeReadAllByUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
+    const nullValueCheckObject = {
+        memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Like.selectAllByUserLikes([memberNumber], function(error, results) {
         if (error) {

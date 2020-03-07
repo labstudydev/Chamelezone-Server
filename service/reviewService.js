@@ -10,6 +10,12 @@ exports.reviewCreate = function(request, response, next) {
         memberNumber, content
     } = request.body
     
+    
+    const nullValueCheckObject = {
+        images, content
+    }
+    isEmpty(nullValueCheckObject)
+
     isEmpty('images', images[0])
     let originalImageName, savedImageName, mimetype, imageSize
     
@@ -30,7 +36,7 @@ exports.reviewCreate = function(request, response, next) {
         setImagesValues[index][2] = mimetype
         setImagesValues[index][3] = imageSize
     })
-    isEmpty('content', content)
+
     let parsePlaceNumber = parseInt(placeNumber)
 
     Review.insertReview([placeNumber, memberNumber, content, setImagesValues], function(error, results) {
@@ -91,14 +97,15 @@ exports.reviewReadByPlace = function(request, response, next) {
 }
 
 exports.reviewDelete = function(request, response, next) {
+    let memberNumber = request.body.memberNumber
     const setValues = {
         placeNumber, reviewNumber
     } = request.params
-    isEmpty('placeNumber', placeNumber)
-    isEmpty('reviewNumber', reviewNumber)
     
-    let memberNumber = request.body.memberNumber
-    isEmpty('memberNumber', memberNumber)
+    const nullValueCheckObject = {
+        placeNumber, reviewNumber, memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Review.deleteReview([memberNumber, placeNumber, reviewNumber], function(error, results) {
         if (error) {

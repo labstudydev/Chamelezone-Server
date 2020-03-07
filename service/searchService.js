@@ -5,7 +5,10 @@ const util                  = require('../costomModules/util')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name
-    isEmpty('name', name)
+    const nullValueCheckObject = {
+        name
+    }
+    isEmpty(nullValueCheckObject)
 
     Search.selectByPlaceName(name, function(error, results) {
         if (error) {
@@ -23,7 +26,10 @@ exports.searchByPlaceName = function(request, response, next) {
 
 exports.searchByAreaName = function(request, response, next) {
     let name = request.params.name
-    isEmpty('name', name)
+    const nullValueCheckObject = {
+        name
+    }
+    isEmpty(nullValueCheckObject)
 
     Search.selectByAreaName(name, function(error, results) {
         if (error) {
@@ -41,7 +47,10 @@ exports.searchByAreaName = function(request, response, next) {
 
 exports.searchByKeywordName = function(request, response, next) {
     let name = request.params.name
-    isEmpty('name', name)
+    const nullValueCheckObject = {
+        name
+    }
+    isEmpty(nullValueCheckObject)
 
     Search.selectByKeywordName(name, function(error, results) {
         if (error) {
