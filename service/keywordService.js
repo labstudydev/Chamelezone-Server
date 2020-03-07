@@ -1,4 +1,4 @@
-const ErrorHandler          = require('../costomModules/customError')
+const { ErrorHandler }      = require('../costomModules/customError')
 const Keyword               = require('../dao/keywordDao.js')
 
 exports.keyword_readAll = function(request, response, next) {

@@ -1,4 +1,4 @@
-const ErrorHandler		    = require('../costomModules/customError')
+const { ErrorHandler }  	= require('../costomModules/customError')
 const User					= require('../dao/userDao')
 const Step					= require('../node_modules/step')
 

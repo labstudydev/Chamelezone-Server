@@ -1,4 +1,4 @@
-const ErrorHandler          = require('../costomModules/customError')
+const { ErrorHandler }      = require('../costomModules/customError')
 const Course                = require('../dao/courseDao.js')
 const isEmpty               = require('../costomModules/valueCheck')
 const util                  = require('../costomModules/util')

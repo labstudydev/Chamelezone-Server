@@ -1,4 +1,4 @@
-const ErrorHandler          = require('../costomModules/customError')
+const { ErrorHandler }      = require('../costomModules/customError')
 const nodemailer            = require('nodemailer')
 
 var mail = { }
