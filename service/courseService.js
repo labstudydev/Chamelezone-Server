@@ -8,6 +8,10 @@ exports.courseCreate = function(request, response, next) {
     const setValues = {
         memberNumber, title, content, placeNumber
     } = request.body
+    const nullValueCheckObject = {
+        placeNumber, memberNumber, title, content
+    }
+    isEmpty(nullValueCheckObject)
 
     let setImageArray = new Array(4)
     setImageArray[0] = image.originalname
@@ -15,7 +19,6 @@ exports.courseCreate = function(request, response, next) {
     setImageArray[2] = image.mimetype
     setImageArray[3] = image.size
 
-    isEmpty('placeNumber', placeNumber)
     let placeNumberArraySize = placeNumber.length
     let setPlaceNumberValues = new Array(placeNumberArraySize)
 
@@ -26,10 +29,6 @@ exports.courseCreate = function(request, response, next) {
     placeNumber.forEach((item, index, array) => {
         setPlaceNumberValues[index][0] = item
     })
-
-    isEmpty('memberNumber', memberNumber)
-    isEmpty('title', title)
-    isEmpty('content', content)
 
     Course.insertCourse([memberNumber, title, content, setImageArray, setPlaceNumberValues], function(error, results) {
         if (error) {
@@ -51,7 +50,10 @@ exports.courseReadAll = function(request, response, next) {
 exports.courseReadOne = function(request, response, next) {
     let courseNumber = request.params.courseNumber
     let memberNumber = request.query.memberNumber
-    isEmpty('courseNumber', courseNumber)
+    const nullValueCheckObject = {
+        courseNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Course.selectOneCourse([courseNumber], function(error, results) {
         if (error) {
@@ -65,7 +67,10 @@ exports.courseReadOne = function(request, response, next) {
 
 exports.courseListUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
+    const nullValueCheckObject = {
+        memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Course.selectAllByUser([memberNumber], function(error, results) {
         if (error) {
@@ -82,10 +87,12 @@ exports.courseListUser = function(request, response, next) {
 
 exports.courseDelete = function(request, response, next) {
     let courseNumber = request.params.courseNumber
-    isEmpty('courseNumber', courseNumber)
-
     let memberNumber = request.query.memberNumber
-    isEmpty('memberNumber', memberNumber)
+    
+    const nullValueCheckObject = {
+        courseNumber, memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Course.deleteCourse([courseNumber, memberNumber], function(error, results) {
         if (error) {

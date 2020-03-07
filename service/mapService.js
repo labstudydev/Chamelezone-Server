@@ -5,7 +5,11 @@ const util                  = require('../costomModules/util')
 
 exports.mapSearchPlaceByName = function(request, response, next) {
     let name = request.params.name
-    isEmpty('name', name)
+    
+    const nullValueCheckObject = {
+        name
+    }
+    isEmpty(nullValueCheckObject)
 
     Map.selectPlaceByName(name, function(error, results) {
         if (error) {

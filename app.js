@@ -1,4 +1,4 @@
-const { ErrorHandler, handleError }     = require('./costomModules/customError')
+const { ErrorHandler, handleError , NullCheckErrorHandler, nullCheckHandleError}     = require('./costomModules/customError')
 const express                           = require('express')
 const hbs                               = require('express-handlebars')
 const app                               = express()
@@ -20,8 +20,14 @@ app.use('/image', express.static(__dirname + '/public/uploads'))
 app.use(router)
 
 app.use((error, request, response, next) => {
-    handleError(error, response)
-    console.log(__filename + ' == handleError: ' + error.statusCode + ', message: ' + error.message)
+    if (error instanceof ErrorHandler) {
+        handleError(error, response)
+        console.log(__filename + ' == handleError: ' + error.statusCode + ', message: ' + error.message)
+    } 
+    if (error instanceof NullCheckErrorHandler) {
+        nullCheckHandleError(error, response)
+        console.log(__filename + ' == handleError: ' + error.statusCode + ', key: ' + error.key)
+    }
 })
 
 app.get('/addressSearch', (request, response) => {

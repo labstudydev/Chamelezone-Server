@@ -22,12 +22,10 @@ exports.createPlace = function(request, response, next) {
         memberNumber, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
     
-    isEmpty('memberNumber', memberNumber)
-    isEmpty('images', images[0])
-    isEmpty('name', name)
-    isEmpty('address', address)
-    
-    isEmpty('keywordName', keywordName)
+    const nullValueCheckObject = {
+        memberNumber, images, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
+    }
+    isEmpty(nullValueCheckObject)
     
     let keywordNameArraySize = keywordName.length
     let setKeywordNameValues = new Array(keywordNameArraySize)
@@ -39,17 +37,11 @@ exports.createPlace = function(request, response, next) {
         setKeywordNameValues[index][0] = item
     })
 
-    isEmpty('openingTime', openingTime)
     let openingTimeArray = splitString(openingTime, separator)
     let openingTime1 = openingTimeArray[0]
     let openingTime2 = openingTimeArray[1]
     let openingTime3 = openingTimeArray[2]
 
-    isEmpty('phoneNumber', phoneNumber)
-    isEmpty('content', content)
-
-    isEmpty('latitude', latitude)
-    isEmpty('longitude', longitude)
     let parseLatitude = parseFloat(latitude)
     let parseLongitude = parseFloat(longitude)
 
@@ -84,7 +76,10 @@ exports.createPlace = function(request, response, next) {
 exports.readOnePlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
     let placeNumber = request.params.placeNumber
-    isEmpty('placeNumber', placeNumber)
+    const nullValueCheckObject = {
+        placeNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Step (
         function selectLikeByUser() {
@@ -146,7 +141,10 @@ exports.updatePlace = function(request, response, next) {
         name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content
     } = request.body
     
-    isEmpty('placeNumber', placeNumber)
+    const nullValueCheckObject = {
+        placeNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Place.updatePlace([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
         if (error) {
@@ -165,8 +163,10 @@ exports.deletePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let memberNumber = request.body
 
-    isEmpty('placeNumber', placeNumber)
-    isEmpty('memberNumber', memberNumber)
+    const nullValueCheckObject = {
+        placeNumber, memberNumber
+    }
+    isEmpty(nullValueCheckObject)
 
     Place.deletePlace(placeNumber, function(error, results) { 
         if (error) {
@@ -191,8 +191,12 @@ exports.getCutrrentLocation = function(request, response, next) {
 
 exports.placeListUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    isEmpty('memberNumber', memberNumber)
 
+    const nullValueCheckObject = {
+        memberNumber
+    }
+    isEmpty(nullValueCheckObject)
+    
     Place.selectAllByUser([memberNumber], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
