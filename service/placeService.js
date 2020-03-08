@@ -64,7 +64,7 @@ exports.createPlace = function(request, response, next) {
         setImagesValues[index][2] = mimetype
         setImagesValues[index][3] = imageSize
     })
-    
+
     Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
         if (error) {
             return next(new ErrorHandler(500, error))
@@ -208,5 +208,32 @@ exports.placeListUser = function(request, response, next) {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
         }
+    })
+}
+
+exports.placeDuplicateCheck = function(request, response, next) {
+    const setValues = {
+        name, address
+    } = request.query
+    // let name = requets.query.name
+    // let address = requets.query.name
+
+    const nullValueCheckObject = {
+        name, address
+    }
+    isEmpty(nullValueCheckObject)
+    
+    Place.selectPlaceDuplicateCheck([name, address], function(error, results) {
+        if (error) {
+            return next(new ErrorHandler(500, error))
+        }
+        
+        if(results.length == 0 || results.length == undefined) {
+            results[0] = { status : 200, place_check : "Y", message : "Place is not duplicate"}
+            response.status(200).send(results[0])
+        } else {
+            results[0] = { status : 200, place_check : "N", message : "Place is duplicate"}
+            response.status(200).send(results[0])
+        }  
     })
 }
