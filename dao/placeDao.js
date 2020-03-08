@@ -58,7 +58,7 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
             })  // beginTransaction()
         })  // db connection()
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
@@ -88,7 +88,7 @@ Place.readOnePlace = function(request, response) {
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, 'database error' + error.statusCode + error.message)
+        throw new ErrorHandler(500, error)
     }
 }
 
