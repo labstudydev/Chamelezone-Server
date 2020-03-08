@@ -27,3 +27,7 @@ exports.place_getCutrrentLocation = function(request, response, next) {
 exports.placeListUser = function(request, response, next) {
     Place.placeListUser(request, response, next)
 }
+
+exports.placeDuplicateCheck = function(request, response, next) {
+    Place.placeDuplicateCheck(request, response, next)
+}

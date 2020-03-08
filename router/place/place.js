@@ -33,6 +33,7 @@ let upload = multer({
     }
 }).array('images', 4)
 
+
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
 router.post('/:placeNumber/review', (request, response, next) => {
@@ -57,6 +58,7 @@ router.post('/', (request, response, next) => {
         }
     })
 }, place_controller.place_create)                                                      // 장소생성 (이미지)
+router.get('/duplicate-check', place_controller.placeDuplicateCheck)                   // 장소 중복확인
 router.get('/:placeNumber' , place_controller.place_readOne)                           // 장소한개조회
 router.get('/', place_controller.place_readAll)                                        // 장소전체조회
 router.put('/:placeNumber', place_controller.place_update)                             // 장소수정
