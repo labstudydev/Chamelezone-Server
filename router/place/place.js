@@ -61,7 +61,15 @@ router.post('/', (request, response, next) => {
 router.get('/duplicate-check', place_controller.placeDuplicateCheck)                   // 장소 중복확인
 router.get('/:placeNumber' , place_controller.place_readOne)                           // 장소한개조회
 router.get('/', place_controller.place_readAll)                                        // 장소전체조회
-router.put('/:placeNumber', place_controller.place_update)                             // 장소수정
+router.put('/:placeNumber',(request, response, next) => {
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please images type check')
+        } else {
+            next()
+        }
+    })
+}, place_controller.place_update)                                                      // 장소수정
 router.delete('/:placeNumber', place_controller.place_delete)                          // 장소삭제
 router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation)        // 장소 현재위치 
 

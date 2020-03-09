@@ -137,26 +137,78 @@ exports.readAllPlace = function(request, response, next) {
 
 exports.updatePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
+    let images = request.files
     const setValues = {
-        name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content
+        memberNumber, name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content
     } = request.body
     
     const nullValueCheckObject = {
-        placeNumber
+        placeNumber, memberNumber
     }
     isEmpty(nullValueCheckObject)
 
-    Place.updatePlace([name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
-        if (error) {
-            return next(new ErrorHandler(500, error))
-        }
+    let keywordNameArraySize = keywordName.length
+    let setKeywordNameValues = new Array(keywordNameArraySize)
+    for (i = 0; i < keywordNameArraySize; i++) {
+        setKeywordNameValues[i] = new Array(1)
+    }
 
-        if (results.length == 0 || results.length == undefined) {
-            response.status(404).send("Place does not exist" )
-        } else {
-            response.status(200).send(results)
-        }
+    keywordName.forEach((item, index, array) => {
+        setKeywordNameValues[index][0] = item
     })
+
+    let originalImageName, savedImageName, mimetype, imageSize
+    
+    let iamgesArraySize = images.length
+    let setImagesValues = new Array(iamgesArraySize)
+    for (i = 0; i < iamgesArraySize; i++) {
+        setImagesValues[i] = new Array(4)
+    }
+
+    images.forEach((item, index, array) => {
+        originalImageName = array[index] = item.originalname
+        savedImageName = array[index] = item.filename
+        mimetype = array[index] = item.mimetype
+        imageSize = array[index] = item.size
+        
+        setImagesValues[index][0] = originalImageName
+        setImagesValues[index][1] = savedImageName
+        setImagesValues[index][2] = mimetype
+        setImagesValues[index][3] = imageSize
+    })
+
+    /*
+        1. 회원의 번호와 장소의 번호가 일치하는지 확인
+        2. 장소의 값 수정
+    */
+    Step (
+        function placeEditCheck() {
+            Place.selectPlaceEditCheck([memberNumber, name], this)
+        },
+        function placeEditCheckResult(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+
+            if (result[0] == null || result[0] == undefined) {
+                response.status(404).send("Place does not exist")
+            } else {
+                return result[0]
+            }
+        },
+        function placeUpdate(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+
+            Place.updatePlace([setImagesValues, setKeywordNameValues, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
+                if (error) {
+                    return next(new ErrorHandler(500, error))
+                }
+                response.status(200).send(results)
+            })
+        }
+    )
 }
 
 exports.deletePlace = function(request, response, next) {

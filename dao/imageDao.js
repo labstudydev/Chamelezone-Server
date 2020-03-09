@@ -48,4 +48,19 @@ Images.insertCourseImages = function([setImageArray], response) {
     }
 }
 
+Images.updatePlaceImages = function([setImagesValues], response) {
+    try {
+        db((error, connection) => {
+            const updatePlaceImagesSqlQuery = 'UPDATE place_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ? WHERE placeNumber = ?'
+            connection.query(updatePlaceImagesSqlQuery, [setImagesValues], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 module.exports= Images
