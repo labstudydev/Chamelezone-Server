@@ -36,6 +36,10 @@ exports.userSendSecurityCode = function(request, response, next) {
     User.userSendSecurityCode(request, response, next)
 }
 
+exports.userCheckSecurityCode = function(request, response, next) {
+    User.userCheckSecurityCode(request, response, next)
+}
+
 exports.userPasswordReset = function(request, response, next) {
     User.userPasswordReset(request, response, next)
 }

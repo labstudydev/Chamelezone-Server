@@ -171,7 +171,7 @@ User.updatePasswordById = function([password, memberNumber], response) {
 User.insertPasswordSecurityCode = function(request, response) {
     try {
         db((error, connection) => {
-            const insertPasswordSecurityCodeSqlQuery = `INSERT INTO password_security_code VALUES ?`
+            const insertPasswordSecurityCodeSqlQuery = `INSERT INTO password_security_code (securityCode, email, phoneNumber) VALUES (?, ?, ?)`
             connection.query(insertPasswordSecurityCodeSqlQuery, request, function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
@@ -183,11 +183,12 @@ User.insertPasswordSecurityCode = function(request, response) {
     }
 }
 
-User.selectPasswordSecurityCodeCheck = function(request, response) {
+User.selectPasswordSecurityCodeCheck = function([securityCode, email, phoneNumber], response) {
+    console.log
     try {
         db((error, connection) => {
-            const selectPasswordSecurityCodeCheckSqlQuery = `SELECT securityCodeNumber, securityCode from password_security_code where password_security_code = ?`
-            connection.query(selectPasswordSecurityCodeCheckSqlQuery, request, function(error, results) {
+            const selectPasswordSecurityCodeCheckSqlQuery = `SELECT securityCode, email, phoneNumber FROM password_security_code WHERE securityCode = ? AND email = ? AND phoneNumber = ?`
+            connection.query(selectPasswordSecurityCodeCheckSqlQuery, [securityCode, email, phoneNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }

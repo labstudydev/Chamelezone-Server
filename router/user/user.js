@@ -16,6 +16,7 @@ router.get('/email/:email', user_controller.userEmailDuplicateCheck)            
 router.get('/nick-name/:nickName', user_controller.userNickNameDuplicateCheck)  // 회원 닉네임 중복확인
 router.post('/help-email', user_controller.userEmailFind)                       // 회원의 이메일 찾기
 router.post('/help-pw-code', user_controller.userSendSecurityCode)              // 회원의 비밀번호 찾기 - 보안코드 전송
+router.post('/help-pw-code-check', user_controller.userCheckSecurityCode)       // 회원의 비밀번호 찾기 - 보안코드 확인
 
 /* ==================== review router ==================== */
 router.get('/:memberNumber/review', review_controller.reviewReadByUser)         // 회원의 리뷰목록 조회

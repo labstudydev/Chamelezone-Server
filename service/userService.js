@@ -220,6 +220,25 @@ exports.userEmailFind = function(request, response, next) {
     })
 }
 
+exports.userPasswordReset = function(request, response, next) {
+    const setValues = {
+        password, memberNumber
+    } = request.body
+    
+    const nullValueCheckObject = {
+        password, memberNumber
+    }
+    isEmpty(nullValueCheckObject)
+
+    User.updatePasswordById([password, memberNumber], function(error, results) {
+        if (error) {
+            return next(new ErrorHandler(500, error))
+        }
+
+        response.status(200).send(results)
+    })
+}
+
 exports.userSendSecurityCode = function(request, response, next) {
     const setValues = {
         email, phoneNumber
@@ -252,33 +271,54 @@ exports.userSendSecurityCode = function(request, response, next) {
 
             mail.sendGmail(emailParam, this)
             
+            result[0].passwordSecurityCode = passwordSecurityCode
             return result[0]
         },
         function sendGmailResult(error, result) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
-            result = { memberNumber : result.memberNumber, email : result.email, name : result.name, message : "Email send success !!!"}
-            response.status(200).send(result)
+
+            return result = { memberNumber : result.memberNumber, email : result.email, name : result.name, passwordSecurityCode : result.passwordSecurityCode, message : "Email send success !!!"}
+        },
+        function insertPasswordSecurityCode(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            
+            User.insertPasswordSecurityCode([result.passwordSecurityCode, email, phoneNumber], function(error, results) {
+                if (error) {
+                    return next(new ErrorHandler(500, error))
+                }
+                delete result.passwordSecurityCode
+                results.emailSendResult = result
+                response.status(200).send(results)
+            })
         }
     )
 }
 
-exports.userPasswordReset = function(request, response, next) {
+exports.userCheckSecurityCode = function(request, response, next) {
     const setValues = {
-        password, memberNumber
+        securityCode, email, phoneNumber
     } = request.body
     
     const nullValueCheckObject = {
-        password, memberNumber
+        securityCode, email, phoneNumber
     }
     isEmpty(nullValueCheckObject)
 
-    User.updatePasswordById([password, memberNumber], function(error, results) {
+    User.selectPasswordSecurityCodeCheck([securityCode, email, phoneNumber], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
-
-        response.status(200).send(results)
+        
+        if(results.length == 0 || results.length == undefined) {
+            response.status(404).send(results[0])
+        } else {
+            delete results[0].securityCode
+            results[0].matchResult = true
+            response.status(200).send(results[0])
+        }
     })
 }
