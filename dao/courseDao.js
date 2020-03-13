@@ -83,18 +83,21 @@ Course.selectAllCourse = function(response) {
 Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
-            const selectOneCourseSqlQuery = `SELECT  CHP.courseNumber, CHP.placeNumber, C.memberNumber, C.title, C.content, DATE_FORMAT(C.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
-                                            `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS keywordName ` +
+            const selectOneCourseSqlQuery = `SELECT CHP.courseNumber, CHP.placeNumber, COURSE.memberNumber, COURSE.nickName, COURSE.title, COURSE.content, DATE_FORMAT(COURSE.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
+                                                    `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
                                             `FROM course_has_place CHP ` +
-                                            `LEFT JOIN course C ON C.courseNumber = CHP.courseNumber ` +
+                                            `LEFT JOIN (SELECT C.courseNumber, C.memberNumber, C.title, C.content, C.regiDate, M.nickName ` +
+                                            `            FROM course C ` +
+                                            `            LEFT JOIN member M ON M.memberNumber = C.memberNumber) COURSE ON COURSE.courseNumber = CHP.courseNumber ` +
                                             `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
                                             `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name separator ',') AS 'keywordName' ` +
-                                            `   FROM place_has_keyword PHK ` +
-                                            `   LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
-                                            `   LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
-                                            `   LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
-                                            `   GROUP BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
-                                            `WHERE CHP.courseNumber = ?`
+                                            `           FROM place_has_keyword PHK ` +
+                                            `           LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
+                                            `           LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
+                                            `           LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
+                                            `           GROUP BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
+                                            `WHERE CHP.courseNumber = ?;`
+    
             connection.query(selectOneCourseSqlQuery, [courseNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
