@@ -5,15 +5,15 @@ const Images                = require('./imageDao')
 
 var Place = function(place) { }
 
-Place.createPlace = function([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
+Place.createPlace = function([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
     try {
         db((error, connection) => {
             connection.beginTransaction(function(error) {
                 if (error) {
                     response(error, null)
                 }
-                const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-                connection.query(placeSqlQuery, [memberNumber, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
+                const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+                connection.query(placeSqlQuery, [memberNumber, name, address, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
                         return connection.rollback(function() {
                             response(error, null)
@@ -67,7 +67,7 @@ Place.readOnePlace = function(request, response) {
         db((error, connection) => {
             const selectPlaceOne = `SELECT P.placeNumber, P.name, P.address, P.phoneNumber, P.content, P.latitude, P.longitude, A.keywordName, ` +
                                     `DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, ` +
-                                    `CONCAT_WS(",", P.openingTime1, P.openingTime2, P.openingTime3) AS openingTime, ` +
+                                    `P.openingTime, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                     `FROM place P ` +
@@ -120,9 +120,6 @@ Place.readAllPlace = function(memberNumber, response, next) {
     }
 }
 
-// 장소 내용 바꾸고
-// 장소 이미지 바꾸고
-// 장소 키워드 바꾸고
 Place.updatePlace = function([setImagesValues, setKeywordNameValues, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], response) {
     try {
         db((error, connection) => {

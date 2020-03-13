@@ -37,10 +37,7 @@ exports.createPlace = function(request, response, next) {
         setKeywordNameValues[index][0] = item
     })
 
-    let openingTimeArray = splitString(openingTime, separator)
-    let openingTime1 = openingTimeArray[0]
-    let openingTime2 = openingTimeArray[1]
-    let openingTime3 = openingTimeArray[2]
+    let openingTimeString = openingTime.toString()
 
     let parseLatitude = parseFloat(latitude)
     let parseLongitude = parseFloat(longitude)
@@ -65,7 +62,7 @@ exports.createPlace = function(request, response, next) {
         setImagesValues[index][3] = imageSize
     })
 
-    Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTime1, openingTime2, openingTime3, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
+    Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
         if (error) {
             return next(new ErrorHandler(500, error))
         }
