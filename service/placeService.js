@@ -117,6 +117,9 @@ exports.readOnePlace = function(request, response, next) {
 
 exports.readAllPlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
+    if (memberNumber == null || memberNumber == undefined) {
+        memberNumber = 0
+    }
 
     Place.readAllPlace(memberNumber, function(error, results) { 
         if (error) {
