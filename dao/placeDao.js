@@ -241,11 +241,11 @@ Place.selectAllByUser = function([memberNumber], response) {
     }
 }
 
-Place.selectPlaceDuplicateCheck = function([name, address], response) {
+Place.selectPlaceDuplicateCheck = function([name, latitude, longitude], response) {
     try {
         db((error, connection) => {
-            const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address FROM place WHERE name = ? AND address = ?`
-            connection.query(selectPlaceDuplicateCheckSqkQyery, [name, address], function(error, results) {
+            const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address, latitude, longitude FROM place WHERE name = ? AND latitude = ? AND longitude = ?;`
+            connection.query(selectPlaceDuplicateCheckSqkQyery, [name, latitude, longitude], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }

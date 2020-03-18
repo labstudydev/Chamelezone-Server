@@ -265,17 +265,17 @@ exports.placeListUser = function(request, response, next) {
 
 exports.placeDuplicateCheck = function(request, response, next) {
     const setValues = {
-        name, address
+        name, latitude, longitude
     } = request.query
     // let name = requets.query.name
     // let address = requets.query.name
 
     const nullValueCheckObject = {
-        name, address
+        name, latitude, longitude
     }
     isEmpty(nullValueCheckObject)
     
-    Place.selectPlaceDuplicateCheck([name, address], function(error, results) {
+    Place.selectPlaceDuplicateCheck([name, latitude, longitude], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
