@@ -28,7 +28,6 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                     for (var j in setKeywordNameValues) {
                         setKeywordNameValues[j].unshift(placeNumber)
                     }
-
                     // images insert query
                     Images.insertPlaceImages([setImagesValues], function(error, results) {
                         if (error) {
