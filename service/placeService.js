@@ -137,53 +137,26 @@ exports.readAllPlace = function(request, response, next) {
 
 exports.updatePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
-    let images = request.files
     const setValues = {
-        memberNumber, name, address, keywordName, openingTime1, openingTime2, openingTime3, phoneNumber, content
+        memberNumber, name, address, openingTime, phoneNumber, content, keywordNumber, placeKeywordNumber
     } = request.body
-    
+
     const nullValueCheckObject = {
         placeNumber, memberNumber
     }
     isEmpty(nullValueCheckObject)
-
-    let keywordNameArraySize = keywordName.length
-    let setKeywordNameValues = new Array(keywordNameArraySize)
-    for (i = 0; i < keywordNameArraySize; i++) {
-        setKeywordNameValues[i] = new Array(1)
-    }
-
-    keywordName.forEach((item, index, array) => {
-        setKeywordNameValues[index][0] = item
-    })
-
-    let originalImageName, savedImageName, mimetype, imageSize
     
-    let iamgesArraySize = images.length
-    let setImagesValues = new Array(iamgesArraySize)
-    for (i = 0; i < iamgesArraySize; i++) {
-        setImagesValues[i] = new Array(4)
-    }
-
-    images.forEach((item, index, array) => {
-        originalImageName = array[index] = item.originalname
-        savedImageName = array[index] = item.filename
-        mimetype = array[index] = item.mimetype
-        imageSize = array[index] = item.size
-        
-        setImagesValues[index][0] = originalImageName
-        setImagesValues[index][1] = savedImageName
-        setImagesValues[index][2] = mimetype
-        setImagesValues[index][3] = imageSize
-    })
-
+    let openingTimeString = openingTime.toString()
+    
     /*
-        1. 회원의 번호와 장소의 번호가 일치하는지 확인
-        2. 장소의 값 수정
+        순차적으로 수정 굳이 query를 실행할 필요 없음
+        1. place table 수정
+        2. place_keyword 수정
+        3. place_images 수정
     */
     Step (
         function placeEditCheck() {
-            Place.selectPlaceEditCheck([memberNumber, name], this)
+            Place.selectPlaceEditCheck([placeNumber, memberNumber], this)
         },
         function placeEditCheckResult(error, result) {
             if (error) {
@@ -195,18 +168,120 @@ exports.updatePlace = function(request, response, next) {
             } else {
                 return result[0]
             }
-        },
+        },  // 수정 가능한 장소인지 확인 여부
         function placeUpdate(error, result) {
             if (error) {
-				throw new ErrorHandler(500, error)
+                throw new ErrorHandler(500, error)
             }
 
-            Place.updatePlace([setImagesValues, setKeywordNameValues, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) { 
-                if (error) {
-                    return next(new ErrorHandler(500, error))
+            Step (
+                /*
+                * place table update
+                */
+                function placeUpdateCheck() {
+                    Place.updatePlaceCheck([placeNumber], this)
+                },
+                function placeUpdateCheckResult(error, result) {
+                    if (error) {
+                        throw new ErrorHandler(500, error)
+                    }
+                    setValues.openingTime = openingTimeString
+                    delete setValues.memberNumber
+                    delete setValues.keywordNumber
+                    delete setValues.placeKeywordNumber
+
+                    const setValuesToArray = Object.values(setValues)
+                    const resultToArray = Object.values(result[0])
+                    
+                    console.log("setValuesToArray ", setValuesToArray)
+                    console.log("resultToArray ", resultToArray)
+
+                    for (i = 0; i < setValuesToArray.length; i++) {
+                        if (setValuesToArray[i] != setValuesToArray[i]) {
+                            return false
+                        }
+                    }
+                    return true
+                },
+                function placeUpdateResult(error, result) {
+                    if (error) {
+                        throw new ErrorHandler(500, error)
+                    }
+
+                    // 값이 변한게 없으면 true
+                    // 값이 변한게 있으면 false
+                    if (result == false) {
+                        Place.updatePlace([name, address, openingTimeString, phoneNumber, content, placeNumber], function(error, results) { 
+                            if (error) {
+                                return next(new ErrorHandler(500, error))
+                            }
+                            console.log("place update results: " + results)
+                            // response.status(200).send(results)
+                        })
+                    }
+                    return true
+                },
+                /*
+                * place has keyword table update
+                */
+                function placeHasKeywordUpdateCheck(error, result) {
+                    if (error) {
+                        throw new ErrorHandler(500, error)
+                    }
+                    console.log(placeKeywordNumber)
+                    Place.updatePlaceHasKeywordCheck([placeKeywordNumber, keywordNumber, placeNumber], this)
+                },
+                function placeHasKeywordUpdateCheckResult(error, result) {
+                    if (error) {
+                        throw new ErrorHandler(500, error)
+                    }
+                    
+                    console.log(placeKeywordNumber)
+                    console.log(keywordNumber)
+                    console.log("=======================================")
+                    console.log(result)
+                    
+                    console.log("=======================================")
+                    
+                    // body의 키워드 값이 결과 개수랑 변함이 없으면 - 수정 x
+                    // 개수의 변함이 없는데 값이 다르면 수정 o
+                    if (keywordNumber.length == result.length) {
+                        return ture
+                    } else {
+                        console.log("update ++++++++++++++++++++++++++++++++++++++++++")
+                        Place.updatePlaceHasKeyword([keywordNumber, placeKeywordNumber], this)
+                    }
+                    // body의 키워드 값이 결과 개수 보다 적으면 - delete
+                    if (keywordNumber.length < result.length) {
+                        console.log("delete ++++++++++++++++++++++++++++++++++++++++++")
+                        Place.deletePlaceHasKeyword([placeNumber, keywordNumber], this)
+                    }
+                    
+                    // body의 키워드 값이 결과의 개수 보다 많으면 - insert
+                    if (keywordNumber.length > result.length) {
+                        console.log("insert ++++++++++++++++++++++++++++++++++++++++++")
+                        Place.insertPlaceHasKeyword([placeNumber, keywordNumber], this)
+                    }
+
+                    console.log(aaaaaaaaaaaaaaaaaaaaaaaa)
+                },
+                function placeHasKeywordUpdateResult(error, result) {
+                    if (error) {
+                        throw new ErrorHandler(500, error)
+                    }
+                    // 값이 변한게 없으면 true
+                    // 값이 변한게 있으면 false
+                    if (result == false) {
+                        Place.updatePlaceHasKeyword([keywordNumber, placeKeywordNumber], function(error, results) { 
+                            if (error) {
+                                return next(new ErrorHandler(500, error))
+                            }
+                            console.log("place update results: " + results)
+                            // response.status(200).send(results)
+                        })
+                    }
                 }
-                response.status(200).send(results)
-            })
+            )   // Step()
         }
     )
 }

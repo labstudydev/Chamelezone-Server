@@ -63,4 +63,4 @@ Images.updatePlaceImages = function([setImagesValues], response) {
     }
 }
 
-module.exports= Images
+module.exports = Images

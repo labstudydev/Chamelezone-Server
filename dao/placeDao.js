@@ -119,62 +119,6 @@ Place.readAllPlace = function(memberNumber, response, next) {
     }
 }
 
-Place.updatePlace = function([setImagesValues, setKeywordNameValues, name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], response) {
-    try {
-        db((error, connection) => {
-            connection.beginTransaction(function(error) {
-                if (error) {
-                    response(error, null)
-                }
-                
-                const sqlQuery = `UPDATE place SET name = ?, address = ?, openingTime1 = ?, openingTime2 =?, openingTime3 = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?`
-                connection.query(sqlQuery, [name, address, openingTime1, openingTime2, openingTime3, phoneNumber, content, placeNumber], function(error, results) {
-                    if (error) {
-                        return connection.rollback(function() {
-                            response(error, null)
-                        })
-                    }
-                    connection.release()
-
-                    let placeNumber = results.insertId
-                    for (var i in setImagesValues) {
-                        setImagesValues[i].unshift(placeNumber)
-                    }
-                    for (var j in setKeywordNameValues) {
-                        setKeywordNameValues[j].unshift(placeNumber)
-                    }
-
-                    Images.updatePlaceImages([setImagesValues], function(error, results) {
-                        if (error) {
-                            return connection.rollback(function() {
-                                response(error, null)
-                            })
-                        }
-
-                        Keyword.updatePlaceKeyword([setKeywordNameValues], function(error, results) {
-                            if (error) {
-                                return connection.rollback(function() {
-                                    response(error, null)
-                                })
-                            }
-                            connection.commit(function(error) {
-                                if (error) {
-                                    return connection.rollback(function() {
-                                        response(error, null)
-                                    })
-                                }
-                                response(null, results)
-                            })  // commit()
-                        })  // Keyword.updatePlaceKeyword()
-                    })  // Images.updatePlaceImages()
-                })  // placeSqlQuery()
-            })  // beginTransaction()
-        })  // db connection()
-    } catch (error) {
-        throw new ErrorHandler(500, error)
-    }
-}
-
 Place.deletePlace = function(request, response) {
     try {
         db((error, connection) => {
@@ -255,11 +199,99 @@ Place.selectPlaceDuplicateCheck = function([name, latitude, longitude], response
     }
 }
 
-Place.selectPlaceEditCheck = function([memberNumber, name], response) {
+Place.selectPlaceEditCheck = function([placeNumber, memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectPlaceEditCheckSqlQuery = `SELECT memberNumber, name FROM place WHERE memberNumber = ? AND name = ?`
-            connection.query(selectPlaceEditCheckSqlQuery, [memberNumber, name], function(error, results) {
+            const selectPlaceEditCheckSqlQuery = `SELECT placeNumber, memberNumber, name FROM place WHERE placeNumber = ? AND memberNumber = ?`
+            connection.query(selectPlaceEditCheckSqlQuery, [placeNumber, memberNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.updatePlace = function([name, address, openingTimeString, phoneNumber, content, placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const updatePlaceSqlQuery = `UPDATE place SET name = ?, address = ?, openingTime = ?, phoneNumber = ?, content = ? WHERE placeNumber = ?`
+            connection.query(updatePlaceSqlQuery, [name, address, openingTimeString, phoneNumber, content, placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.updatePlaceCheck = function(placeNumber, response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceCheckSqlQuery = `SELECT name, address, phoneNumber, content, openingTime FROM place WHERE placeNumber = ?`
+            connection.query(selectPlaceCheckSqlQuery, placeNumber, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.updatePlaceHasKeywordCheck = function([placeKeywordNumber, keywordNumber, placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceHasKeywordCheckSqlQuery = `SELECT placeKeywordNumber, keywordNumber, placeNumber FROM place_has_keyword WHERE placeKeywordNumber IN (?) AND keywordNumber IN (?) AND placeNumber = ?`
+            connection.query(selectPlaceHasKeywordCheckSqlQuery, [placeKeywordNumber, keywordNumber, placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.insertPlaceHasKeyword = function([placeNumber, keywordNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceHasKeywordCheckSqlQuery = `insert into place_has_keyword (placeNumber, keywordNumber) values (?, ?)`
+            connection.query(selectPlaceHasKeywordCheckSqlQuery, [placeNumber, keywordNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+Place.deletePlaceHasKeyword = function([placeNumber, keywordNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceHasKeywordCheckSqlQuery = `delete from place_has_keyword where placeNumber = ? AND keywordNumber = ?`
+            connection.query(selectPlaceHasKeywordCheckSqlQuery, [placeNumber, keywordNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+Place.updatePlaceHasKeyword = function([keywordNumber, placeKeywordNumber], response) {
+    try {
+        db((error, connection) => {
+            const updatePlaceHasKeywordSqlQuery = `UPDATE place_has_keyword SET keywordNumber = ? WHERE placeKeywordNumber = ?`
+            connection.query(updatePlaceHasKeywordSqlQuery, [keywordNumber, placeKeywordNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }
