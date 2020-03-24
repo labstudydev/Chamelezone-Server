@@ -14,13 +14,13 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                 }
                 const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
                 connection.query(placeSqlQuery, [memberNumber, name, address, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
+                    connection.release()
                     if (error) {
                         return connection.rollback(function() {
                             response(error, null)
                         })
                     }
-                    connection.release()
-
+                    console.log("######################")
                     let placeNumber = results.insertId
                     for (var i in setImagesValues) {
                         setImagesValues[i].unshift(placeNumber)
@@ -28,21 +28,28 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                     for (var j in setKeywordNameValues) {
                         setKeywordNameValues[j].unshift(placeNumber)
                     }
+                    
                     // images insert query
-                    Images.insertPlaceImages([setImagesValues], function(error, results) {
+                    connection.query(`INSERT INTO place_images (placeNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`, [setImagesValues], function(error, results) {
+                    // Images.insertPlaceImages([setImagesValues], function(error, results) {
                         if (error) {
                             return connection.rollback(function() {
                                 response(error, null)
                             })
                         }
+                        console.log("images : " + Object.values(results))
 
                         // keyword insert query
-                        Keyword.insertPlaceKeyword([setKeywordNameValues], function(error, results) {
+                        connection.query(`INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`, [setKeywordNameValues], function(error, results) {
+                        // Keyword.insertPlaceKeyword([setKeywordNameValues], function(error, results) {
                             if (error) {
                                 return connection.rollback(function() {
                                     response(error, null)
                                 })
                             }
+
+                            console.log("keyword : " + results)
+
                             connection.commit(function(error) {
                                 if (error) {
                                     return connection.rollback(function() {
