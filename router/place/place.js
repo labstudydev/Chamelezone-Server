@@ -10,8 +10,12 @@ let storage = multer.diskStorage({
         callback(null, 'public/uploads')
     },
     filename: function (request, file, callback) {
+        let decodeOriginalName = decodeURI(file.originalname)
+        console.log("TEST -- decodeOriginalName: ", decodeOriginalName)
         let extension = path.extname(file.originalname)
-        let basename = path.basename(file.originalname, extension)
+        // let basename = path.basename(file.originalname, extension)
+        let basename = path.basename(decodeOriginalName, extension)
+        console.log("TEST -- basename: ", basename)
         callback(null, basename + '-' + Date.now() + '-' + extension)
     }    
 })
