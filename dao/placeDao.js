@@ -14,13 +14,15 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                 }
                 const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
                 connection.query(placeSqlQuery, [memberNumber, name, address, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
-                    connection.release()
+                    console.log("connection place -- success !!!")
                     if (error) {
+                        connection.release()
                         return connection.rollback(function() {
+                            console.log("connection place == fail !!!")
                             response(error, null)
                         })
                     }
-                    console.log("######################")
+
                     let placeNumber = results.insertId
                     for (var i in setImagesValues) {
                         setImagesValues[i].unshift(placeNumber)
@@ -30,32 +32,40 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                     }
                     
                     // images insert query
-                    connection.query(`INSERT INTO place_images (placeNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`, [setImagesValues], function(error, results) {
+                    const placeImageSqlQuery = `INSERT INTO place_images (placeNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`
+                    connection.query(placeImageSqlQuery, [setImagesValues], function(error, results) {
                     // Images.insertPlaceImages([setImagesValues], function(error, results) {
+                        console.log("connection image -- success !!!")
                         if (error) {
+                            connection.release()
                             return connection.rollback(function() {
+                                console.log("connection image == fail !!!")
                                 response(error, null)
                             })
                         }
-                        console.log("images : " + Object.values(results))
-
+                        
                         // keyword insert query
-                        connection.query(`INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`, [setKeywordNameValues], function(error, results) {
+                        const placeHasKeywordSqlQuery = `INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`
+                        connection.query(placeHasKeywordSqlQuery, [setKeywordNameValues], function(error, results) {
                         // Keyword.insertPlaceKeyword([setKeywordNameValues], function(error, results) {
+                            console.log("connection keyword -- success !!!")
                             if (error) {
+                                connection.release()
                                 return connection.rollback(function() {
+                                    console.log("connection keyword == fail !!!")
                                     response(error, null)
                                 })
                             }
 
-                            console.log("keyword : " + results)
-
                             connection.commit(function(error) {
                                 if (error) {
                                     return connection.rollback(function() {
+                                        console.log("transaction commit == fail !!!")
                                         response(error, null)
                                     })
                                 }
+                                console.log("transaction commit -- success !!!")
+                                connection.release()
                                 response(null, results)
                             })  // commit()
                         })  // Keyword.insertPlaceKeyword()
