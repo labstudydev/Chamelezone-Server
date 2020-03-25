@@ -47,5 +47,14 @@ router.post('/', (request, response, next) => {
 router.get('/', course_controller.courseReadAll)                          // 코스 목록 조회
 router.get('/:courseNumber', course_controller.courseReadOne)             // 코스 한개 조회
 router.delete('/:courseNumber',course_controller.courseDelete)            // 코스 삭제
+router.put('/:courseNumber', (request, response, next) => {               // 코스 수정
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please image type check')
+        } else {
+            next()
+        }
+    })
+}, course_controller.courseUpdate)                                  
 
 module.exports = router

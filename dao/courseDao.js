@@ -143,4 +143,95 @@ Course.deleteCourse = function([courseNumber, memberNumber], response) {
     }
 }
 
+Course.updateCourse = function(request, response) {
+    try {
+        db((error, connection) => {
+            const updateCourseSqlQuery = `UPDATE course SET title = ?, content = ? WHERE courseNumber = ? AND memberNumber = ?`
+            connection.query(updateCourseSqlQuery, request, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.updateCourseImage = function([originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], response) {
+    try {
+        db((error, connection) => {
+            const updateCourseImageSqlQuery = `UPDATE course_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE courseNumber = ? AND imageNumber = ?`
+            connection.query(updateCourseImageSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNumber], response) {
+    try {
+        db((error, connection) => {
+            console.log("DAO ^^^^^^^^^^^^^^^^^^^ : ", placeNumber, courseNumber, coursePlaceNumber)
+            const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND  coursePlaceNumber = ?`
+            connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.selectCheckCourse = function(courseNumber, response) {
+    try {
+        db((error, connection) => {
+            const selectCheckCourseSqlQuery = `SELECT courseNumber, memberNumber, title, content FROM course WHERE courseNumber = ?`
+            connection.query(selectCheckCourseSqlQuery, courseNumber, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error) 
+    }
+}
+
+Course.selectCheckCourseImage = function(courseNumber, response) {
+    try {
+        db((error, connection) => {
+            const selectCheckCourseImageSqlQuery = `SELECT imageNumber, courseNumber, originalImageName, savedImageName, mimetype, imageSize FROM course_images WHERE courseNumber = ?`
+            connection.query(selectCheckCourseImageSqlQuery, courseNumber, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error) 
+    }
+}
+
+Course.selectCheckCourseHasPlace = function(courseNumber, response) {
+    try {
+        db((error, connection) => {
+            const selectCheckCourseHasPlaceSqlQuery = `SELECT coursePlaceNumber, courseNumber, placeNumber FROM course_has_place WHERE courseNumber = ?`
+            connection.query(selectCheckCourseHasPlaceSqlQuery, courseNumber, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error) 
+    }
+}
+
 module.exports = Course
