@@ -26,7 +26,8 @@ exports.createPlace = function(request, response, next) {
         memberNumber, images, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     }
     isEmpty(nullValueCheckObject)
-    
+    console.log("Place create images == ", images)
+
     let keywordNameArraySize = keywordName.length
     let setKeywordNameValues = new Array(keywordNameArraySize)
     for (i = 0; i < keywordNameArraySize; i++) {

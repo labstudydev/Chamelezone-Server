@@ -13,6 +13,8 @@ exports.courseCreate = function(request, response, next) {
     }
     isEmpty(nullValueCheckObject)
 
+    console.log("Course create images == ", images)
+
     let setImageArray = new Array(4)
     setImageArray[0] = image.originalname
     setImageArray[1] = image.filename

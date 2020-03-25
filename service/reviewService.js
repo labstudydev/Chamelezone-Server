@@ -10,11 +10,11 @@ exports.reviewCreate = function(request, response, next) {
         memberNumber, content
     } = request.body
     
-    
     const nullValueCheckObject = {
         images, content
     }
     isEmpty(nullValueCheckObject)
+    console.log("Review create images == ", images)
 
     isEmpty('images', images[0])
     let originalImageName, savedImageName, mimetype, imageSize
