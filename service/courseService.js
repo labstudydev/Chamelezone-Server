@@ -233,6 +233,7 @@ exports.courseUpdate = function(request, response, next) {
                 Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], this)
             }
 
+            console.log("Update Success !!!")
             response.status(200).send("Success !!!")
         }
     )
