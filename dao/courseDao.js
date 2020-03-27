@@ -176,7 +176,7 @@ Course.updateCourseImage = function([originalImageName, savedImageName, mimetype
 Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNumber], response) {
     try {
         db((error, connection) => {
-            console.log("DAO ^^^^^^^^^^^^^^^^^^^ : ", placeNumber, courseNumber, coursePlaceNumber)
+            console.log("UPDATE DAO ^^^^^^^^^^^^^^^^^^^ : ", placeNumber, courseNumber, coursePlaceNumber)
             const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND  coursePlaceNumber = ?`
             connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
                 connection.release()
@@ -230,7 +230,39 @@ Course.selectCheckCourseHasPlace = function(courseNumber, response) {
             })
         })
     } catch (error) {
-        throw new ErrorHandler(500, error) 
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.deleteCourseHasPlace = function([newCourseNumberArray], response) {
+    try {
+        db((error, connection) => {
+            console.log("DELETE DAO ^^^^^^^^^^^^^^^^^^^ : ", newCourseNumberArray)
+            const deleteCourseHasPlaceSqlQuery = `DELETE FROM course_has_place WHERE coursePlaceNumber = ?`
+            connection.query(deleteCourseHasPlaceSqlQuery, [newCourseNumberArray], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.insertCourseHasPlace = function([setCourseHasPlaceNumberArray], response) {
+    try {
+        db((error, connection) => {
+            console.log("INSERT DAO ^^^^^^^^^^^^^^^^^^^ : ", setCourseHasPlaceNumberArray)
+            const insertCourseHasPlaceSqlQuery = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES ?`
+            connection.query(insertCourseHasPlaceSqlQuery, [setCourseHasPlaceNumberArray], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
     }
 }
 

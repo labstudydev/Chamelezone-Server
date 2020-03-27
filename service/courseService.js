@@ -128,11 +128,10 @@ exports.courseUpdate = function(request, response, next) {
     setImageArray[1] = image.filename
     setImageArray[2] = image.mimetype
     setImageArray[3] = image.size
-    
-    console.log("placeNumber : ", placeNumber)
 
     Step (
         function courseEditCheck() {
+            console.log("1111 ::course = courseEctiCheck()")
             Course.selectCheckCourse([courseNumber], this)
         },
         function courseEditCheckResult(error, result) {
@@ -140,6 +139,7 @@ exports.courseUpdate = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
 
+            console.log("2222 ::course = courseEditCheckResult()")
             if (result[0] == null || result[0] == undefined) {
                 response.status(404).send("Course does not exist")
             } else {
@@ -152,11 +152,9 @@ exports.courseUpdate = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
             
+            console.log("3333 ::course = updateCourse()")
             title = (!title) ? result.title : title
             content = (!content) ? result.content : content
-            console.log("update course= ============================================ ")
-            console.log("Original Values == ", result.title, ", ", result.content)
-            console.log("Update Values == ", title, ", ", content)
             
             Course.updateCourse([title, content, courseNumber, memberNumber], this)
         },
@@ -166,6 +164,7 @@ exports.courseUpdate = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
 
+            console.log("4444 ::course = courseImageEditCheck()")
             Course.selectCheckCourseImage([courseNumber], this)
         },
         function courseImageEditCheckResult(error, result) {
@@ -173,6 +172,7 @@ exports.courseUpdate = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
             
+            console.log("5555 ::course = courseImageEditCheckResult()")
             if (result[0] == null || result[0] == undefined) {
                 response.status(404).send("Course Image does not exist")
             } else {
@@ -184,14 +184,12 @@ exports.courseUpdate = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
             
+            console.log("6666 ::course = updateCourseImage()")
+
             originalImageName = (!setImageArray[0]) ? result.originalImageName : setImageArray[0]
             savedImageName = (!setImageArray[1]) ? result.savedImageName : setImageArray[1]
             mimetype = (!setImageArray[2]) ? result.mimetype : setImageArray[2]
             imageSize = (!setImageArray[3]) ? result.imageSize : setImageArray[3]
-
-            console.log("update course image ============================================== ")
-            console.log("Original Values == ", result.originalImageName, ", ", result.savedImageName, ", ", result.mimetype, ", ", result.imageSize)
-            console.log("Update Values == ", originalImageName, ", ", savedImageName, ", ", mimetype, ", ", imageSize)
 
             Course.updateCourseImage([originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], this)
         },
@@ -200,41 +198,107 @@ exports.courseUpdate = function(request, response, next) {
             if (error) {
                 throw new ErrorHandler(500, error)
             }
-
+            
+            console.log("7777 ::course = courseHasPlaceEditCheck()")
+            console.log("1111111111111111111111111111111111111111111111111111111")
             Course.selectCheckCourseHasPlace([courseNumber], this)
         },
         function courseHasPlaceEditCheckResult(error, result) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
-            
+
+            console.log("8888 ::course = courseHasPlaceEditCheckResult()")
+            console.log("22222222222222222222222222222222222222222222222222222222")
             if (result[0] == null || result[0] == undefined) {
                 response.status(404).send("Course Has Place does not exist")
             } else {
                 return result
             }
-        }, function updateCourseHasPlace(error, result) {
+        },
+        function updateCourseTest(error, result) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
 
-            console.log(result)
-            console.log(placeNumber)
-            console.log(coursePlaceNumber)
+            console.log("9999 ::course = updateCourseTest()")
+            console.log("3333333333333333333333333333333333333333333")
             placeNumber.forEach((item, index, array) => {
                 placeNumber[index] = (!placeNumber[index]) ? result[index].placeNumber : placeNumber[index]
-                console.log("update course has place ============================================== ")
-                console.log("Original Values == ", result[index].placeNumber)
-                console.log("Update Values == ", placeNumber[index])
-                console.log("coursePlaceNumber == ", coursePlaceNumber[index])
             })
 
             for(i = 0; i < placeNumber.length; i++) {
-                Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], this)
+                Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], function(error, results) {
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    console.log("course update results: " + results)
+                })
+            }
+            return result
+        },
+        function deleteCourseHasPlace(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            
+            console.log("10 ::course = deleteCourseHasPlace()")
+            console.log(result)
+            console.log("66666666666666666666666666666666666666666666")
+            // result.length 결과값이 > placeNumber.length 이면 delete query
+            if (result.length > placeNumber.length) {
+                var newCourseNumberArray = new Array()
+                for (i = 0; i < result.length; i++) {
+                    if (result[i].coursePlaceNumber != coursePlaceNumber[i]) {
+                        newCourseNumberArray.push(result[i].coursePlaceNumber)
+                    }
+                }
+                Course.deleteCourseHasPlace([newCourseNumberArray], function(error, results) {
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    console.log("course update results: " + results)
+                })
+            }
+            return result
+        },
+        function insertCourseHasPlace(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
             }
 
+            console.log("11 ::course = insertCourseHasPlace()")
+            console.log("777777777777777777777777777777777777")
+            // result.length 결과값이 < placeNumber.length 이면 insert query
+            if (result.length < placeNumber.length) {
+                const placeNumberMap = result.map(result => `${result.placeNumber}`)
+                const placeNumberMapArray = new Array()
+                for(i = 0; i < placeNumber.length; i++) {
+                    if(placeNumber[i] != placeNumberMap[i]) {
+                        placeNumberMapArray.push(placeNumber[i])
+                    }
+                }
+
+                let setCourseHasPlaceNumberArray = new Array(placeNumberMapArray.length)
+                for(j = 0; j < placeNumberMapArray.length; j++) {
+                    setCourseHasPlaceNumberArray[j] = new Array(1)
+                }
+
+                placeNumberMapArray.forEach((item, index, array) => {
+                    setCourseHasPlaceNumberArray[index][0] = item
+                    setCourseHasPlaceNumberArray[index].unshift(courseNumber)
+                })
+
+                Course.insertCourseHasPlace([setCourseHasPlaceNumberArray], function(error, results) {
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    console.log("course update results: " + results)
+                })
+            }
+            
             console.log("Update Success !!!")
-            response.status(200).send("Success !!!")
+            return response.status(200).send("Success !!!")
         }
     )
 }
