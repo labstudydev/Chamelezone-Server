@@ -62,13 +62,36 @@ exports.createPlace = function(request, response, next) {
         setImagesValues[index][2] = mimetype
         setImagesValues[index][3] = imageSize
     })
+    Step (
+        function placeDuplicateCheck() {
+            Place.selectPlaceDuplicateCheck([name, latitude, longitude], this)
+        },
+        function placeDuplcateCheckResult(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
 
-    Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
-        if (error) {
-            return next(new ErrorHandler(500, error))
+            if(result.length == 0 || result.length == undefined) {
+                result[0] = { status : 200, place_check : "Y", message : "Place is not duplicate"}
+                response.status(200).send(result[0])
+            } else {
+                result[0] = { status : 200, place_check : "N", message : "Place is duplicate"}
+                response.status(200).send(result[0])
+            }
+        },
+        function createPlace(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            
+            Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
+                if (error) {
+                    return next(new ErrorHandler(500, error))
+                }
+                response.status(200).send(place)
+            })
         }
-        response.status(200).send(place)
-    })
+    )
 }
 
 exports.readOnePlace = function(request, response, next) {
