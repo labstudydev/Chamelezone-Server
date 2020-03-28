@@ -142,7 +142,7 @@ exports.courseUpdate = function(request, response, next) {
     let image = request.file
     let courseNumber = request.params.courseNumber
     const setValues = {
-        coursePlaceNumber, imageNumber, memberNumber, title, content, placeNumber
+        imageNumber, memberNumber, title, content, placeNumber
     } = request.body
 
     const nullValueCheckObject = {
@@ -240,6 +240,63 @@ exports.courseUpdate = function(request, response, next) {
             if (result[0] == null || result[0] == undefined) {
                 response.status(404).send("Course Has Place does not exist")
             } else {
+                result.updateResult = true
+                return result
+            }
+        },
+        function insertCourseHasPlace(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            console.log("11 ::course = insertCourseHasPlace()")
+            console.log("777777777777777777777777777777777777")
+            if (result.updateResult == true) {
+                // result.length 결과값이 < placeNumber.length 이면 insert query
+                if (result.length < placeNumber.length) {
+                    const placeNumberMap = result.map(result => `${result.placeNumber}`)
+                    const placeNumberMapArray = new Array()
+                    for(i = 0; i < placeNumber.length; i++) {
+                        if(placeNumber[i] != placeNumberMap[i]) {
+                            placeNumberMapArray.push(placeNumber[i])
+                        }
+                    }
+
+                    let setCourseHasPlaceNumberArray = new Array(placeNumberMapArray.length)
+                    for(j = 0; j < placeNumberMapArray.length; j++) {
+                        setCourseHasPlaceNumberArray[j] = new Array(1)
+                    }
+
+                    placeNumberMapArray.forEach((item, index, array) => {
+                        setCourseHasPlaceNumberArray[index][0] = item
+                        setCourseHasPlaceNumberArray[index].unshift(courseNumber)
+                    })
+
+                    Course.insertCourseHasPlace([setCourseHasPlaceNumberArray], function(error, results) {
+                        if (error) {
+                            return next(new ErrorHandler(500, error))
+                        }
+                        console.log("course update results: " + results)
+                    })
+                }
+
+                if (result.length > placeNumber.length) {
+                    var newCourseNumberArray = new Array()
+                    for (i = 0; i < result.length; i++) {
+                        if (result[i].placeNumber != placeNumber[i]) {
+                        // if (result[i].coursePlaceNumber != coursePlaceNumber[i]) {
+                            newCourseNumberArray.push(result[i].coursePlaceNumber)
+                        }
+                    }
+
+                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& " + newCourseNumberArray)
+                    Course.deleteCourseHasPlace([newCourseNumberArray], function(error, results) {
+                        if (error) {
+                            return next(new ErrorHandler(500, error))
+                        }
+                        console.log("course update results: " + results)
+                    })
+                }
+                result.updateResult = true
                 return result
             }
         },
@@ -247,85 +304,64 @@ exports.courseUpdate = function(request, response, next) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
-
+            console.log(result)
             console.log("9999 ::course = updateCourseTest()")
             console.log("3333333333333333333333333333333333333333333")
-            placeNumber.forEach((item, index, array) => {
-                placeNumber[index] = (!placeNumber[index]) ? result[index].placeNumber : placeNumber[index]
-            })
-
-            for(i = 0; i < placeNumber.length; i++) {
-                Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], function(error, results) {
-                    if (error) {
-                        return next(new ErrorHandler(500, error))
-                    }
-                    console.log("course update results: " + results)
+            if (result.updateResult == true) {
+                placeNumber.forEach((item, index, array) => {
+                    placeNumber[index] = (!placeNumber[index]) ? result[index].placeNumber : placeNumber[index]
                 })
-            }
-            return result
-        },
-        function deleteCourseHasPlace(error, result) {
-            if (error) {
-				throw new ErrorHandler(500, error)
-            }
-            
-            console.log("10 ::course = deleteCourseHasPlace()")
-            console.log(result)
-            console.log("66666666666666666666666666666666666666666666")
-            // result.length 결과값이 > placeNumber.length 이면 delete query
-            if (result.length > placeNumber.length) {
-                var newCourseNumberArray = new Array()
-                for (i = 0; i < result.length; i++) {
-                    if (result[i].coursePlaceNumber != coursePlaceNumber[i]) {
-                        newCourseNumberArray.push(result[i].coursePlaceNumber)
-                    }
-                }
-                Course.deleteCourseHasPlace([newCourseNumberArray], function(error, results) {
-                    if (error) {
-                        return next(new ErrorHandler(500, error))
-                    }
-                    console.log("course update results: " + results)
+                
+                let coursePlaceNumber = new Array(result.length)
+                result.forEach((item, index, array) => {
+                    coursePlaceNumber[index] = result[index].coursePlaceNumber
                 })
-            }
-            return result
-        },
-        function insertCourseHasPlace(error, result) {
-            if (error) {
-				throw new ErrorHandler(500, error)
-            }
 
-            console.log("11 ::course = insertCourseHasPlace()")
-            console.log("777777777777777777777777777777777777")
-            // result.length 결과값이 < placeNumber.length 이면 insert query
-            if (result.length < placeNumber.length) {
-                const placeNumberMap = result.map(result => `${result.placeNumber}`)
-                const placeNumberMapArray = new Array()
                 for(i = 0; i < placeNumber.length; i++) {
-                    if(placeNumber[i] != placeNumberMap[i]) {
-                        placeNumberMapArray.push(placeNumber[i])
-                    }
+                    Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], function(error, results) {
+                    // Course.updateCourseHasPlace([placeNumber[i], courseNumber], function(error, results) {
+                        if (error) {
+                            return next(new ErrorHandler(500, error))
+                        }
+                        console.log("course update results: " + results)
+                    })
                 }
-
-                let setCourseHasPlaceNumberArray = new Array(placeNumberMapArray.length)
-                for(j = 0; j < placeNumberMapArray.length; j++) {
-                    setCourseHasPlaceNumberArray[j] = new Array(1)
-                }
-
-                placeNumberMapArray.forEach((item, index, array) => {
-                    setCourseHasPlaceNumberArray[index][0] = item
-                    setCourseHasPlaceNumberArray[index].unshift(courseNumber)
-                })
-
-                Course.insertCourseHasPlace([setCourseHasPlaceNumberArray], function(error, results) {
-                    if (error) {
-                        return next(new ErrorHandler(500, error))
-                    }
-                    console.log("course update results: " + results)
-                })
             }
-            
             console.log("Update Success !!!")
             return response.status(200).send("Success !!!")
         }
+        
+        
+        // function deleteCourseHasPlace(error, result) {
+        //     if (error) {
+		// 		throw new ErrorHandler(500, error)
+        //     }
+            
+        //     console.log("10 ::course = deleteCourseHasPlace()")
+        //     console.log("66666666666666666666666666666666666666666666")
+        //     // result.length 결과값이 > placeNumber.length 이면 delete query
+        //     console.log(result)
+        //     if (result.length > placeNumber.length) {
+        //         var newCourseNumberArray = new Array()
+        //         for (i = 0; i < result.length; i++) {
+        //             if (result[i].placeNumber != placeNumber[i]) {
+        //             // if (result[i].coursePlaceNumber != coursePlaceNumber[i]) {
+        //                 newCourseNumberArray.push(result[i].coursePlaceNumber)
+        //             }
+        //         }
+
+        //         console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& " + newCourseNumberArray)
+        //         Course.deleteCourseHasPlace([newCourseNumberArray], function(error, results) {
+        //             if (error) {
+        //                 return next(new ErrorHandler(500, error))
+        //             }
+        //             console.log("course update results: " + results)
+        //         })
+        //     }
+            
+            
+        //     console.log("Update Success !!!")
+        //     return response.status(200).send("Success !!!")
+        // }
     )
 }

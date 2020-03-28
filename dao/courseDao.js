@@ -192,7 +192,7 @@ Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNu
     try {
         db((error, connection) => {
             console.log("UPDATE DAO ^^^^^^^^^^^^^^^^^^^ : ", placeNumber, courseNumber, coursePlaceNumber)
-            const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND  coursePlaceNumber = ?`
+            const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
             connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
