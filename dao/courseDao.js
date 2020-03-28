@@ -84,7 +84,7 @@ Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
             const selectOneCourseSqlQuery = `SELECT CHP.courseNumber, CHP.placeNumber, COURSE.memberNumber, COURSE.nickName, COURSE.title, COURSE.content, DATE_FORMAT(COURSE.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
-                                                    `PLACE.placeName, PLACE.address, CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
+                                                    `PLACE.placeName, PLACE.address, CI.imageNumber AS 'courseImageNumber', CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
                                             `FROM course_has_place CHP ` +
                                             `LEFT JOIN (SELECT C.courseNumber, C.memberNumber, C.title, C.content, C.regiDate, M.nickName ` +
                                             `            FROM course C ` +
