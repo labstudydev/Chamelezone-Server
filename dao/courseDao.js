@@ -143,6 +143,21 @@ Course.deleteCourse = function([courseNumber, memberNumber], response) {
     }
 }
 
+Course.selectCourseDuplicateCheck = function([memberNumber, title, content], response) {
+    try {
+        db((error, connection) => {
+            const selectCourseDuplicateCheckSqkQyery = `SELECT memberNumber, title, content FROM course WHERE memberNumber = ? AND title = ? AND content = ?`
+            connection.query(selectCourseDuplicateCheckSqkQyery, [memberNumber, title, content], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 Course.updateCourse = function(request, response) {
     try {
         db((error, connection) => {

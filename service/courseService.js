@@ -32,13 +32,40 @@ exports.courseCreate = function(request, response, next) {
     placeNumber.forEach((item, index, array) => {
         setPlaceNumberValues[index][0] = item
     })
+    Step (
+        function courseDuplicateCheck() {
+            Course.selectCourseDuplicateCheck([memberNumber, title, content], this)
+        },
+        function courseDuplicateCheckResult(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
 
-    Course.insertCourse([memberNumber, title, content, setImageArray, setPlaceNumberValues], function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))
+            if(result.length == 0 || result.length == undefined) {
+                return true
+            } else {
+                return false
+            }
+        },
+        function createCourse(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+
+            if (result == false) {
+                response.status(400).send("Create course duplicate")
+            }
+
+            if (result == true) {
+                Course.insertCourse([memberNumber, title, content, setImageArray, setPlaceNumberValues], function(error, results) {
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    response.status(200).send(results)
+                })
+            }
         }
-        response.status(200).send(results)
-    })
+    )
 }
 
 exports.courseReadAll = function(request, response, next) {

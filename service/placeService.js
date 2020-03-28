@@ -72,24 +72,28 @@ exports.createPlace = function(request, response, next) {
             }
 
             if(result.length == 0 || result.length == undefined) {
-                result[0] = { status : 200, place_check : "Y", message : "Place is not duplicate"}
-                response.status(200).send(result[0])
+                return true
             } else {
-                result[0] = { status : 200, place_check : "N", message : "Place is duplicate"}
-                response.status(200).send(result[0])
+                return false
             }
         },
         function createPlace(error, result) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
-            
-            Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
-                if (error) {
-                    return next(new ErrorHandler(500, error))
-                }
-                response.status(200).send(place)
-            })
+
+            if (result == false) {
+                response.status(400).send("Create place duplicate")
+            }
+
+            if (result == true) {
+                Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    response.status(200).send(place)
+                })
+            }
         }
     )
 }
