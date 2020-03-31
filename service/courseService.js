@@ -143,6 +143,8 @@ exports.courseUpdate = function(request, response, next) {
     const nullValueCheckObject = {
         courseNumber
     }
+    console.log("Request values : ", image, ", ", courseNumber, ", ", imageNumber, ", ", memberNumber, ", ", title, ", ", content, ", ", placeNumber)
+
     isEmpty(nullValueCheckObject)
     
     let setImageArray = new Array(4)
