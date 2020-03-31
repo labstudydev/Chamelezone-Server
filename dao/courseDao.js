@@ -1,6 +1,7 @@
 const { ErrorHandler }      = require('../costomModules/customError')
 const db                    = require('../config/db')
 const Images                = require('./imageDao')
+const Step					= require('../node_modules/step')
 
 var Course = function(course) { }
 
@@ -83,7 +84,7 @@ Course.selectAllCourse = function(response) {
 Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
-            const selectOneCourseSqlQuery = `SELECT CHP.courseNumber, CHP.placeNumber, COURSE.memberNumber, COURSE.nickName, COURSE.title, COURSE.content, DATE_FORMAT(COURSE.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
+            const selectOneCourseSqlQuery = `SELECT CHP.coursePlaceNumber, CHP.courseNumber, CHP.placeNumber, COURSE.memberNumber, COURSE.nickName, COURSE.title, COURSE.content, DATE_FORMAT(COURSE.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
                                                     `PLACE.placeName, PLACE.address, CI.imageNumber AS 'courseImageNumber', CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
                                             `FROM course_has_place CHP ` +
                                             `LEFT JOIN (SELECT C.courseNumber, C.memberNumber, C.title, C.content, C.regiDate, M.nickName ` +
@@ -188,22 +189,6 @@ Course.updateCourseImage = function([originalImageName, savedImageName, mimetype
     }
 }
 
-Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNumber], response) {
-    try {
-        db((error, connection) => {
-            console.log("UPDATE DAO ^^^^^^^^^^^^^^^^^^^ : ", placeNumber, courseNumber, coursePlaceNumber)
-            const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
-            connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
-                connection.release()
-                if (error) { return response(error, null) }
-                else { response(null, results) }
-            })
-        })
-    } catch (error) {
-        throw new ErrorHandler(500, error)
-    }
-}
-
 Course.selectCheckCourse = function(courseNumber, response) {
     try {
         db((error, connection) => {
@@ -249,12 +234,74 @@ Course.selectCheckCourseHasPlace = function(courseNumber, response) {
     }
 }
 
-Course.deleteCourseHasPlace = function([newCourseNumberArray], response) {
+Course.updateCourseTransaction = function([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], response) {
     try {
         db((error, connection) => {
-            console.log("DELETE DAO ^^^^^^^^^^^^^^^^^^^ : ", newCourseNumberArray)
+            connection.beginTransaction(function(error) {
+                if (error) {
+                    connection.release()
+                    reesponse(error, null)
+                }
+            
+                const updateCourseSqlQuery = `UPDATE course SET title = ?, content = ? WHERE courseNumber = ? AND memberNumber = ?`
+                connection.query(updateCourseSqlQuery, [title, content, courseNumber, memberNumber], function(error, results) {
+                    if (error) {
+                        connection.release()
+                        return connection.rollback(function() {
+                            response(error, null)
+                        })
+                    }
+
+                    const updateCourseImageSqlQuery = `UPDATE course_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE courseNumber = ? AND imageNumber = ?`
+                    connection.query(updateCourseImageSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], function(error, results) {
+                        if (error) {
+                            connection.release()
+                            return connection.rollback(function() {
+                                response(error, null)
+                            })
+                        }
+                        
+                        connection.commit(function(error) {
+                            if (error) {
+                                connection.release()
+                                return connection.rollback(function() {
+                                    response(error, null)
+                                })
+                            }
+                            response(null, results)
+                            connection.release()
+                        })  // commit()
+                    })
+                })
+            })  // beginTransaction()
+        })  // db connection()
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNumber], response) {
+    try {
+        db((error, connection) => {
+            console.log("Dao update : ", placeNumber, ", courseNumber", courseNumber, ", coursePlaceNumber", coursePlaceNumber)
+            const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
+            connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Course.deleteCourseHasPlace = function([coursePlaceNumberFlag], response) {
+    try {
+        db((error, connection) => {
+            console.log("Dao Delete : ", coursePlaceNumberFlag)
             const deleteCourseHasPlaceSqlQuery = `DELETE FROM course_has_place WHERE coursePlaceNumber = ?`
-            connection.query(deleteCourseHasPlaceSqlQuery, [newCourseNumberArray], function(error, results) {
+            connection.query(deleteCourseHasPlaceSqlQuery, [coursePlaceNumberFlag], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }
@@ -265,12 +312,12 @@ Course.deleteCourseHasPlace = function([newCourseNumberArray], response) {
     }
 }
 
-Course.insertCourseHasPlace = function([setCourseHasPlaceNumberArray], response) {
+Course.insertCourseHasPlace = function([courseNumber, coursePlaceNumberFlag], response) {
     try {
         db((error, connection) => {
-            console.log("INSERT DAO ^^^^^^^^^^^^^^^^^^^ : ", setCourseHasPlaceNumberArray)
-            const insertCourseHasPlaceSqlQuery = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES ?`
-            connection.query(insertCourseHasPlaceSqlQuery, [setCourseHasPlaceNumberArray], function(error, results) {
+            console.log("Dao Insert : ", courseNumber, ", ", coursePlaceNumberFlag)
+            const insertCourseHasPlaceSqlQuery = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES (?, ?)`
+            connection.query(insertCourseHasPlaceSqlQuery, [courseNumber, coursePlaceNumberFlag], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }
@@ -280,5 +327,109 @@ Course.insertCourseHasPlace = function([setCourseHasPlaceNumberArray], response)
         throw new ErrorHandler(500, error)
     }
 }
-
+ 
 module.exports = Course
+
+// Course.updateCourseHasPlace = function([title, content, memberNumber, originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber, setCourseHasPlaceNumberArray, updateFlag, coursePlaceNumberFlag], response) {
+//     try {
+//         db((error, connection) => {
+//             connection.beginTransaction(function(error) {
+//                 if (error) {
+//                     reesponse(error, null)
+//                 }
+            
+//                 const updateCourseSqlQuery = `UPDATE course SET title = ?, content = ? WHERE courseNumber = ? AND memberNumber = ?`
+//                 connection.query(updateCourseSqlQuery, [title, content, courseNumber, memberNumber], function(error, results) {
+//                     if (error) {
+//                         connection.release()
+//                         return connection.rollback(function() {
+//                             response(error, null)
+//                         })
+//                     }
+
+//                     const updateCourseImageSqlQuery = `UPDATE course_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE courseNumber = ? AND imageNumber = ?`
+//                     connection.query(updateCourseImageSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], function(error, results) {
+//                         if (error) {
+//                             connection.release()
+//                             return connection.rollback(function() {
+//                                 response(error, null)
+//                             })
+//                         }
+                        
+//                         console.log(placeNumber, ", updateFlag", updateFlag, ", coursePlaceNumberFlag", coursePlaceNumberFlag)
+//                         const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
+//                         let data = [3, 65, 98]
+//                         connection.query(updateCourseHasPlaceSqlQuery, data, function(error, results) {
+//                             if (error) {
+//                                 connection.release()
+//                                 return connection.rollback(function() {
+//                                     response(error, null)
+//                                 })
+//                             }
+
+//                             if (updateFlag == true) {
+//                                 //insert
+//                                 const insertCourseHasPlace = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES ?`
+//                                 connection.query(insertCourseHasPlace, [courseNumber, coursePlaceNumberFlag], function(error, results) {
+//                                     if (error) {
+//                                         connection.release()
+//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     return connection.rollback(function() {
+//                                             response(error, null)
+//                                         })
+//                                     }
+
+//                                     connection.commit(function(error) {
+//                                         if (error) {
+//                                             connection.release()
+//                                             return connection.rollback(function() {
+//                                                 response(error, null)
+//                                             })
+//                                         }
+//                                         response(null, results)
+//                                         connection.release()
+//                                     })  // commit()
+//                                 })
+//                             }
+
+//                             if (updateFlag == false) {
+//                                 //delete
+//                                 const deleteCourseHasPlace = `DELETE FROM course_has_place WHERE coursePlaceNumber = ?`
+//                                 connection.query(deleteCourseHasPlace, [coursePlaceNumberFlag], function(error, results) {
+//                                     if (error) {
+//                                         connection.release()
+//                                         return connection.rollback(function() {
+//                                             response(error, null)
+//                                         })
+//                                     }
+
+//                                     connection.commit(function(error) {
+//                                         if (error) {
+//                                             connection.release()
+//                                             return connection.rollback(function() {
+//                                                 response(error, null)
+//                                             })
+//                                         }
+//                                         response(null, results)
+//                                         connection.release()
+//                                     })  // commit()
+//                                 })
+//                             }
+                                    
+//                             connection.commit(function(error) {
+//                                 if (error) {
+//                                     connection.release()
+//                                     return connection.rollback(function() {
+//                                         response(error, null)
+//                                     })
+//                                 }
+//                                 response(null, results)
+//                             })  // commit()
+//                         })
+//                     })  // sdafdfasasdf
+//                 })  // insertCourseSqlQuery()
+//             })  // beginTransaction()
+//         })  // db connection()
+//     } catch (error) {
+//         throw new ErrorHandler(500, error)
+//     }
+// }
