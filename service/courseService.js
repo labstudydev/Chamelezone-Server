@@ -141,7 +141,7 @@ exports.courseUpdate = function(request, response, next) {
     } = request.body
 
     const nullValueCheckObject = {
-        courseNumber
+        courseNumber, memberNumber, title, content, placeNumber
     }
     console.log("Request values : ", image, ", ", courseNumber, ", ", imageNumber, ", ", memberNumber, ", ", title, ", ", content, ", ", placeNumber)
 
