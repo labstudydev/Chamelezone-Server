@@ -150,4 +150,81 @@ Review.deleteReview = function([memberNumber, placeNumber, reviewNumber], respon
     }
 }
 
+Review.updateReview = function([content, reviewNumber], response) {
+    try {
+        db((error, connection) => {
+            const updateReviewSqlQuery = `UPDATE review SET content = ? WHERE reviewNumber =?`
+            connection.query(updateReviewSqlQuery, [content, reviewNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.updateReviewImages = function([originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], response) {
+    try {
+        db((error, connection) => {
+            console.log("Dao update ToString : ", originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber)
+            const updateReviewImagesSqlQuery = `UPDATE review_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE reviewNumber = ? AND imageNumber = ?`
+            connection.query(updateReviewImagesSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+
+Review.selectReviewImages = function([reviewNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectReviewImagesSqlQuery = `select * from review_images where reviewNumber = ?`
+            connection.query(selectReviewImagesSqlQuery, [reviewNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.insertReviewImages = function([setImagesValues], response) {
+    try {
+        db((error, connection) => {
+            const insertReviewImagesSqlQuery = `INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`
+            connection.query(insertReviewImagesSqlQuery, [setImagesValues], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.deleteReviewImages = function([reviewNumber, imageNumber], response) {
+    try {
+        db((error, connection) => {
+            const deleteReviewImagesSqlQuery = `DELETE FROM review_images WHERE reviewNumber in (?) AND imageNumber in (?)`
+            connection.query(deleteReviewImagesSqlQuery, [reviewNumber, imageNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 module.exports = Review

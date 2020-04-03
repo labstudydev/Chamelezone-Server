@@ -49,6 +49,15 @@ router.post('/:placeNumber/review', (request, response, next) => {
     })
 }, review_controller.reviewCreate)                                                                // 리뷰생성
 router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회(특정리뷰조회)
+router.put('/:placeNumber/review/:reviewNumber', (request, response, next) => {                   // 장소의 리뷰 수정
+    upload(request, response, (error) => {
+        if(error) {
+            response.status(404).send('Please images type check')
+        } else {
+            next()
+        }
+    })
+}, review_controller.reviewUpdate)    
 router.delete('/:placeNumber/review/:reviewNumber', review_controller.reviewDelete)               // 장소의 리뷰 삭제
 
 /* ==================== place router ==================== */
