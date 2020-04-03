@@ -157,7 +157,7 @@ exports.courseUpdate = function(request, response, next) {
         function placeNumberCheck() {
             Course.selectOneCourse([courseNumber], this)
         },
-        function placeNumberCheckResult(error, result) {
+        function updateCourse(error, result) {
             if (error) {
                 throw new ErrorHandler(404, "Course list does not exist")
             }
@@ -201,29 +201,25 @@ exports.courseUpdate = function(request, response, next) {
 
             let updateFlag, updateCnt, coursePlaceNumberFlag
             if (placeNumber.length == placeNumberMap.length) {
-                // 입력값이 같으면 update
                 updateFlag = 0
                 updateCnt = placeNumber.length
             }
             if (placeNumber.length > placeNumberMap.length) {
-                // 입력값이 많으면 insert
                 updateFlag = true
                 updateCnt = 2
                 coursePlaceNumberFlag = placeNumber[2]
             }
             if (placeNumber.length < placeNumberMap.length) {
-                // 입력값이 적으면 delete
                 updateFlag = false
                 updateCnt = 2
                 coursePlaceNumberFlag = result[2].coursePlaceNumber
             }
-            console.log("updateCnt : ", updateCnt)
+            
             for(i = 0; i < updateCnt; i++) {
                 console.log("update service : ", placeNumber[i], courseNumber, coursePlaceNumber[i])
                 Course.updateCourseHasPlace([placeNumber[i], courseNumber, coursePlaceNumber[i]], function(error, results) {
-                    if (error) {
-                        return next(new ErrorHandler(500, error))
-                    }
+                    if (error) { return next(new ErrorHandler(500, error)) }
+                    console.log("Update course success !!!")
                 })
             }
 
@@ -236,7 +232,7 @@ exports.courseUpdate = function(request, response, next) {
 
             return resultValue
         },
-        function update2CourseHasPlace(error, result) {
+        function updateCourseHasPlaceTransaction(error, result) {
             if (error) {
                 throw new ErrorHandler(500, error)
             }
@@ -249,6 +245,7 @@ exports.courseUpdate = function(request, response, next) {
                     response.status(200).send("Course update success !!!")
                 })
             }
+
             if (result.updateFlag === false) {
                 console.log("delete service")
                 Course.deleteCourseHasPlace([result.coursePlaceNumberFlag], function(error, results) {
