@@ -36,7 +36,6 @@ let upload = multer({
     }
 }).array('images', 4)
 
-
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
 router.post('/:placeNumber/review', (request, response, next) => {

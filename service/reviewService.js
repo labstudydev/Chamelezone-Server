@@ -168,7 +168,8 @@ exports.reviewUpdate = function(request, response, next) {
             let imagesArraySize = (images.length > result.length) ? images.length - result.length : 0
             let setImagesValues = new Array(imagesArraySize)
 
-            let deleteImageNumber = new Array()
+            let imageNumberList = new Array()
+            let deleteImageList = new Array()
 
             if (images.length == result.length) {
                 updateFlag = 0
@@ -199,11 +200,14 @@ exports.reviewUpdate = function(request, response, next) {
                 updateFlag = false
                 updateCnt = images.length
 
-                for(i = 0; i < result.length; i++) {
-                    if (imageNumber[i] != result[i].imageNumber) {
-                        deleteImageNumber.push(result[i].imageNumber)
-                    }
-                }
+                // for(i = 0; i < result.length; i++) {
+                //     if (imageNumber[i] != result[i].imageNumber) {
+                //         deleteImageNumber.push(result[i].imageNumber)
+                //     }
+                // }
+                
+                imageNumberList = result.map((target) => target['imageNumber'].toString())
+                deleteImageList = imageNumberList.filter((target) => !imageNumber.includes(target))
             }
 
             for(i = 0; i < updateCnt; i++) {
@@ -217,7 +221,7 @@ exports.reviewUpdate = function(request, response, next) {
                 updateFlag,
                 reviewNumber,
                 setImagesValues,
-                deleteImageNumber
+                deleteImageList
             }
 
             return resultValue
@@ -238,7 +242,7 @@ exports.reviewUpdate = function(request, response, next) {
 
             if (result.updateFlag === false) {
                 console.log("delete service")
-                Review.deleteReviewImages([result.reviewNumber, result.deleteImageNumber], function(error, results) {
+                Review.deleteReviewImages([result.reviewNumber, result.deleteImageList], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }
                     response.status(200).send("Review update success !!!")
                 })
