@@ -135,7 +135,7 @@ exports.readOnePlace = function(request, response, next) {
                 } else {
                     results[0].likeStatus = (result == null) ? false : true
 
-                    util.resultStringToArray(results[0], ['keywordName', 'openingTime', 'imageNumber', 'savedImageName'])
+                    util.resultStringToArray(results[0], ['placeKeywordNumber', 'keywordName', 'openingTime', 'imageNumber', 'savedImageName'])
                     response.status(200).send(results[0])
                 }
             })
@@ -400,7 +400,7 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
             if (error) {
                 throw new ErrorHandler(404, 'Place Has Keyword does not exsit')
             }
-
+            
             let updateFlag, updateCnt
             let keywordNameArraySize = (keywordName.length > result.length) ? keywordName.length - result.length : 0
             let setKeywordNameValues = new Array(keywordNameArraySize)
@@ -414,7 +414,7 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
             if (keywordName.length > result.length){
                 updateFlag = true
                 updateCnt = result.length
-                
+
                 for (i = 0; i < keywordNameArraySize; i++) {
                     setKeywordNameValues[i] = new Array(1)
                 }

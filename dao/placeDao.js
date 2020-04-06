@@ -81,14 +81,16 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            const selectPlaceOne = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, P.phoneNumber, P.content, P.latitude, P.longitude, A.keywordName, ` +
-                                    `DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, ` +
+            const selectPlaceOne = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, P.phoneNumber, P.content, P.latitude, P.longitude, ` +
+                                    `GROUP_CONCAT(DISTINCT A.placeKeywordNumber SEPARATOR ',') AS 'placeKeywordNumber', ` +
+                                    `A.keywordName, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, ` +
                                     `P.openingTime, ` +
                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                     `FROM place P ` +
                                     `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
                                     `LEFT JOIN (SELECT PHK.placeNumber, ` +
+                                    `            GROUP_CONCAT(PHK.placeKeywordNumber SEPARATOR ',') AS 'placeKeywordNumber', ` +
                                     `            GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', ` +
                                     `            GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
                                     `            FROM place_has_keyword PHK ` +
