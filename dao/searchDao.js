@@ -18,7 +18,7 @@ Search.selectByPlaceName = function(name, response) {
                                             `            LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                             `            GROUP BY PHK.placeNumber ` +
                                             `            ORDER BY keywordNumber DESC) A ON A.placeNumber = P.placeNumber ` +
-                                            `WHERE P.name LIKE ? ` +
+                                            `WHERE REPLACE(name,' ','') LIKE ? ` +
                                             `GROUP BY P.placeNumber`
             connection.query(selectByPlaceNameSqlQuery, '%' + name + '%', function(error, results) {
                 connection.release()
