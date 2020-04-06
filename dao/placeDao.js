@@ -114,7 +114,7 @@ Place.readAllPlace = function(memberNumber, response, next) {
     try {
         db((error, connection) => {
             const selectPlaceAll = `SELECT PHK.placeNumber, P.memberNumber, LH.likeNumber, P.name, P.latitude, P.longitude,` +
-                                        `GROUP_CONCAT(DISTINCT K.name SEPARATOR ',') AS 'keywordName', ` +
+                                        `GROUP_CONCAT(DISTINCT K.name ORDER BY placeKeywordNumber SEPARATOR ',') AS 'keywordName', ` +
                                         `GROUP_CONCAT(DISTINCT PI.imageNumber ORDER BY PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                         `GROUP_CONCAT(DISTINCT PI.savedImageName ORDER BY PI.imageNumber SEPARATOR ',') AS 'savedImageName' ` +
                                     `FROM place_has_keyword PHK ` +
