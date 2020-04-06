@@ -65,7 +65,7 @@ exports.reviewReadByUser = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
         
-        // util.resultStringToArray(results, ['imageNumber', 'originalImageName', 'savedImageName'])
+        util.resultStringToArray(results, ['imageNumber', 'originalImageName', 'savedImageName'])
         response.status(200).send(results)
     })
 }
@@ -79,8 +79,7 @@ exports.reviewReadOneByPlace = function(request, response, next) {
             return next(new ErrorHandler(500, error))
         }
         
-        // 선애 test image null 해결되면 그때 살릴것
-        // util.resultStringToArray(results[0], ['imageNumber', 'originalImageName', 'savedImageName'])
+        util.resultStringToArray(results[0], ['imageNumber', 'originalImageName', 'savedImageName'])
         response.status(200).send(results[0])        
     })
 }
@@ -92,7 +91,7 @@ exports.reviewReadByPlace = function(request, response, next) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
-        // util.resultStringToArray(results, ['originalImageName', 'savedImageName'])
+        util.resultStringToArray(results, ['imageNumber', 'originalImageName', 'savedImageName'])
         response.status(200).send(results)
     })
 }
