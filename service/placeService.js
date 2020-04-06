@@ -384,6 +384,102 @@ exports.updatePlace = function(request, response, next) {
     )
 }
 
+exports.updatePlaceHasKeyword = function(request, response, next) {
+    let placeNumber = request.params.placeNumber
+    const setValues = { keywordName, placeKeywordNumber } = request.body
+    const nullValueCheckObject = { placeNumber, keywordName }
+    isEmpty(nullValueCheckObject)
+
+    console.log("Update PlaceHasKeyword ToString : ", keywordName, ", placeKeywordNumber : ", placeKeywordNumber)
+
+    Step (
+        function test1() {
+            Place.selectPlaceHasKeyword([placeNumber], this)
+        },
+        function test2(error, result) {
+            if (error) {
+                throw new ErrorHandler(404, 'Place Has Keyword does not exsit')
+            }
+
+            let updateFlag, updateCnt
+            let keywordNameArraySize = (keywordName.length > result.length) ? keywordName.length - result.length : 0
+            let setKeywordNameValues = new Array(keywordNameArraySize)
+
+            let keywordNumberList = new Array()
+            let deleteKeywordList = new Array()
+            if (keywordName.length == result.length) {
+                updateFlag = 0
+                updateCnt = result.length
+            }
+            if (keywordName.length > result.length){
+                updateFlag = true
+                updateCnt = result.length
+                
+                for (i = 0; i < keywordNameArraySize; i++) {
+                    setKeywordNameValues[i] = new Array(1)
+                }
+                
+                for (i = 0; i < keywordName.length - result.length; i++) {
+                    setKeywordNameValues[i][0] = keywordName[result.length + i]
+                    setKeywordNameValues[i].unshift(placeNumber)
+                }
+            }
+
+            if (keywordName.length < result.length) {
+                updateFlag = false
+                updateCnt = keywordName.length                 
+                
+                keywordNumberList = result.map((target) => target['placeKeywordNumber'].toString())
+                deleteKeywordList = keywordNumberList.filter((target) => !placeKeywordNumber.includes(target))
+            }
+
+            console.log("updateCnt : ", updateCnt)
+            for(i = 0; i < updateCnt; i++) {
+                Place.updatePlaceHasKeyword([keywordName[i], placeKeywordNumber[i], placeNumber], function(error, results) {
+                    if (error) { return next(new ErrorHandler(500, error)) }
+                    console.log("Update place_has_keyword success !!!")
+                })
+            }
+                
+            let resultValue = {
+                updateFlag,
+                placeNumber,
+                setKeywordNameValues,
+                deleteKeywordList
+            }
+
+            return resultValue
+        },
+        function test3(error, result) {
+            if (error) {
+                throw new ErrorHandler(500, error)
+            }
+
+            console.log("result ToString : ", result)
+            if (result.updateFlag === true) {
+                console.log("insert service")
+                Place.insertPlaceHasKeyowrd([result.setKeywordNameValues], function(error, results) {
+                    if (error) { return next(new ErrorHandler(500, error)) }
+                    response.status(200).send("Place update success !!!")
+                })
+            }
+
+            if (result.updateFlag === false) {
+                console.log("delete service")
+                Place.deletePlaceHasKeyowrd([result.placeNumber, result.deleteKeywordList], function(error, results) {
+                    if (error) { return next(new ErrorHandler(500, error)) }
+                    response.status(200).send("Place update success !!!")
+                })
+            }
+
+            if (result.updateFlag === 0) {
+                console.log("Not insert and delete service")
+                response.status(200).send("Place_Has_Keyword update success !!!")
+            }
+        }
+    )
+}
+
 // exports.updatePlace = function(request, response, next) {
 //     let placeNumber = request.params.placeNumber
 //     const setValues = {

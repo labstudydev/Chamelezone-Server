@@ -290,6 +290,67 @@ Place.deletePlaceImages = function([placeNumber, imageNumber], response) {
         throw new ErrorHandler(500, error)
     }
 }
+
+Place.selectPlaceHasKeyword = function([placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceHasKeywordSqlQuery = `SELECT * FROM place_has_keyword WHERE placeNumber = ?`
+            connection.query(selectPlaceHasKeywordSqlQuery, [placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.updatePlaceHasKeyword = function([keywordNumber, placeKeywordNumber, placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const updatePlaceHasKeywordSqlQuery = `UPDATE place_has_keyword SET keywordNumber = ? WHERE placeKeywordNumber = ? AND placeNumber = ?`
+            connection.query(updatePlaceHasKeywordSqlQuery, [keywordNumber, placeKeywordNumber, placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.insertPlaceHasKeyowrd = function([setKeywordNameValues], response) {
+    try {
+        db((error, connection) => {
+            const insertPlaceHasKeywordSqlQuery = `INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`
+            connection.query(insertPlaceHasKeywordSqlQuery, [setKeywordNameValues], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.deletePlaceHasKeyowrd = function([placeNumber, placeKeywordNumber], response) {
+    try {
+        db((error, connection) => {
+            const deletePlaceHasKeyowrdSqlQuery = `DELETE FROM place_has_keyword WHERE placeNumber in (?) AND placeKeywordNumber in (?)`
+            connection.query(deletePlaceHasKeyowrdSqlQuery, [placeNumber, placeKeywordNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 // Place.selectPlaceEditCheck = function([placeNumber, memberNumber], response) {
 //     try {
 //         db((error, connection) => {

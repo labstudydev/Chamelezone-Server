@@ -31,3 +31,7 @@ exports.placeListUser = function(request, response, next) {
 exports.placeDuplicateCheck = function(request, response, next) {
     Place.placeDuplicateCheck(request, response, next)
 }
+
+exports.placeKeyword_update = function(request, response, next) {
+    Place.updatePlaceHasKeyword(request, response, next)
+}
