@@ -351,6 +351,36 @@ Place.deletePlaceHasKeyowrd = function([placeNumber, placeKeywordNumber], respon
     }
 }
 
+Place.selectPlaceOpeningTime = function([placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectPlaceOpeningTimeSqlQuery = `SELECT placeNumber, memberNumber, name, openingTime FROM place WHERE placeNumber = ?`
+            connection.query(selectPlaceOpeningTimeSqlQuery, [placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Place.updatePlaceOpeningTime = function([openingTime, placeNumber], response) {
+    try {
+        db((error, connection) => {
+            const updatePlaceOpeningTimeSqlQuery = `UPDATE place SET openingTime = ? WHERE placeNumber = ?`
+            connection.query(updatePlaceOpeningTimeSqlQuery, [openingTime, placeNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 // Place.selectPlaceEditCheck = function([placeNumber, memberNumber], response) {
 //     try {
 //         db((error, connection) => {

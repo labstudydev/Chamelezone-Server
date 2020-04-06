@@ -480,6 +480,34 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
     )
 }
 
+exports.updatePlaceOpeningTime = function(request,response, next) {
+    let placeNumber = request.params.placeNumber
+    const setValues = { openingTime } = request.body
+    const nullValueCheckObject = { openingTime }
+    isEmpty(nullValueCheckObject)
+
+    console.log("Update placeOpeningTime ToString : ", placeNumber, ", openingTime : ", openingTime)
+
+    Step (
+        function test1() {
+            Place.selectPlaceOpeningTime([placeNumber], this)
+        },
+        function test2(error, result) {
+            if(error) {
+                throw new ErrorHandler(404, 'Place opeingTime does not exsit')
+            }
+
+            let openingTimeString = openingTime.toString()
+            openingTimeString = (openingTimeString == result[0].openingTime) ? result[0].phoneNumber : openingTimeString
+            
+            Place.updatePlaceOpeningTime([openingTimeString, placeNumber], function(error, results) {
+                if (error) { return next(new ErrorHandler(500, error)) }
+                response.status(200).send("Place update success !!!")
+            })
+        }
+    )
+}
+
 // exports.updatePlace = function(request, response, next) {
 //     let placeNumber = request.params.placeNumber
 //     const setValues = {

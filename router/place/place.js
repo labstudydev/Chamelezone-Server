@@ -84,7 +84,6 @@ router.put('/:placeNumber',(request, response, next) => {
 router.delete('/:placeNumber', place_controller.place_delete)                          // 장소삭제
 router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation)        // 장소 현재위치 
 router.put('/:placeNumber/keyword', place_controller.placeKeyword_update)              // 장소의 키워드 수정
-
-// 키워드, 영업시간
+router.put('/:placeNumber/openingTime', place_controller.placeOpeningTimeUpdate)       // 장소의 영업시간 수정
 
 module.exports = router

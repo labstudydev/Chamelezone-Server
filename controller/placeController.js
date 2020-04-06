@@ -35,3 +35,7 @@ exports.placeDuplicateCheck = function(request, response, next) {
 exports.placeKeyword_update = function(request, response, next) {
     Place.updatePlaceHasKeyword(request, response, next)
 }
+
+exports.placeOpeningTimeUpdate = function(request, response, next) {
+    Place.updatePlaceOpeningTime(request, response, next)
+}
