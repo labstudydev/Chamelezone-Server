@@ -15,11 +15,11 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
                 const insertReviewSqlQuery = `INSERT INTO review (memberNumber, placeNumber, content) VALUES (?, ?, ?)`
                 connection.query(insertReviewSqlQuery, [memberNumber, placeNumber, content], function(error, results) {
                     if (error) {
+                        connection.release()
                         return connection.rollback(function() {
                             response(error, null)
                         })
                     }
-                    connection.release()
 
                     let reviewNumber = results.insertId
                     for (var i in setImagesValues) {
@@ -27,18 +27,23 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
                     }
 
                     // images insert query
-                    Images.insertReviewImages([setImagesValues], function(error, results) {
+                    const insertReviewImagesSqlQuery = 'INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?'
+                    connection.query(insertReviewImagesSqlQuery, [setImagesValues], function(error, results) {
+                    // Images.insertReviewImages([setImagesValues], function(error, results) {
                         if (error) {
+                            connection.release()
                             return connection.rollback(function() {
                                 response(error, null)
                             })
                         }
                         connection.commit(function(error) {
                             if (error) {
+                                connection.release()
                                 return connection.rollback(function() {
                                     response(error, null)
                                 })
                             }
+                            connection.release()
                             response(null, results)
                         })  // commit()
                     })  // Images.insertReviewImages()
