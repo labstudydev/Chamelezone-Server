@@ -28,7 +28,9 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                     }
                     setImageArray.unshift(courseNumber)
 
-                    Images.insertCourseImages([setImageArray], function(error, results) {
+                    // Images.insertCourseImages([setImageArray], function(error, results) {
+                    const insertCourseImagesSqlQuery = 'INSERT INTO course_images (courseNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES (?)'
+                    connection.query(insertCourseImagesSqlQuery, [setImageArray], function(error, results) {
                         if (error) {
                             return connection.rollback(function() {
                                 response(error, null)
