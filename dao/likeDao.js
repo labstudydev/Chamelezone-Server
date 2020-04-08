@@ -36,13 +36,13 @@ Like.deleteLike = function([placeNumber, memberNumber], response) {
 Like.selectAllByUserLikes = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectAllByUserLikesSqlQuery = `SELECT LH.likeNumber, LH.placeNumber, LH.memberNumber, P.name, P.address, A.keywordName, ` +
+            const selectAllByUserLikesSqlQuery = `SELECT LH.likeNumber, LH.placeNumber, LH.memberNumber, P.name, P.address, A.keywordNumber, A.keywordName, ` +
                                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                                     `FROM like_history LH ` +
                                                     `LEFT JOIN place P ON P.placeNumber = LH.placeNumber ` +
                                                     `LEFT JOIN place_images PI ON PI.placeNumber = LH.placeNumber ` +
-                                                    `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
+                                                    `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber ORDER BY PHK.placeKeywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name ORDER BY PHK.placeKeywordNumber SEPARATOR ',') AS 'keywordName' ` +
                                                     `       FROM place_has_keyword PHK ` +
                                                     `        JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                                     `        GROUP BY placeNumber ` +
