@@ -15,9 +15,7 @@ exports.reviewCreate = function(request, response, next) {
         images, content
     }
     isEmpty(nullValueCheckObject)
-    console.log("Review create images == ", images)
 
-    // isEmpty('images', images[0])
     let originalImageName, savedImageName, mimetype, imageSize
     
     let iamgesArraySize = images.length
@@ -39,13 +37,27 @@ exports.reviewCreate = function(request, response, next) {
     })
 
     let parsePlaceNumber = parseInt(placeNumber)
-
-    Review.insertReview([placeNumber, memberNumber, content, setImagesValues], function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))
+    Step (
+        function reviewDuplicateCheck() {
+            Review.selectReviewDuplicateCheck([memberNumber, placeNumber, content], this)
+        },
+        function reviewInsert(error, result) {
+            if (error) {
+				throw new ErrorHandler(500, error)
+            }
+            
+            if(result.length == 0 || result.length == undefined) {
+                Review.insertReview([placeNumber, memberNumber, content, setImagesValues], function(error, results) {
+                    if (error) {
+                        return next(new ErrorHandler(500, error))
+                    }
+                    response.status(200).send(results)
+                })
+            } else {
+                response.status(400).send("Create place duplicate")
+            }
         }
-        response.status(200).send(results)
-    })
+    )
 }
 
 exports.reviewReadAll = function(request, response, next) {

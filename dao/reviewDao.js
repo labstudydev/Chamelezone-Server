@@ -155,6 +155,21 @@ Review.deleteReview = function([memberNumber, placeNumber, reviewNumber], respon
     }
 }
 
+Review.selectReviewDuplicateCheck = function([memberNumber, placeNumber, content], response) {
+    try {
+        db((error, connection) => {
+            const selectReviewDuplicateCheckSqkQyery = `SELECT reviewNumber, memberNumber, placeNumber, content FROM review where memberNumber = ? AND placeNumber = ? AND content =?`
+            connection.query(selectReviewDuplicateCheckSqkQyery, [memberNumber, placeNumber, content], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 Review.updateReview = function([content, reviewNumber], response) {
     try {
         db((error, connection) => {
