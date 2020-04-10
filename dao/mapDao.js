@@ -6,7 +6,7 @@ var Map = function(map) { }
 Map.selectPlaceByName = function(name, response) {
     try {
         db((error, connection) => {
-            let selectPlaceByNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.latitude, P.longitude, A.keywordName, ` +
+            let selectPlaceByNameSqlQuery = `SELECT P.placeNumber, P.name, P.address, P.addressDetail, P.latitude, P.longitude, A.keywordName, ` +
                                             `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                             `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +

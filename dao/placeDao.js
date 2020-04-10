@@ -5,20 +5,18 @@ const Images                = require('./imageDao')
 
 var Place = function(place) { }
 
-Place.createPlace = function([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
+Place.createPlace = function([memberNumber, name, address, addressDetail, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], response) {
     try {
         db((error, connection) => {
             connection.beginTransaction(function(error) {
                 if (error) {
                     response(error, null)
                 }
-                const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-                connection.query(placeSqlQuery, [memberNumber, name, address, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
-                    console.log("connection place -- success !!!")
+                const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, addressDetail, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                connection.query(placeSqlQuery, [memberNumber, name, address, addressDetail, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
                         connection.release()
                         return connection.rollback(function() {
-                            console.log("connection place == fail !!!")
                             response(error, null)
                         })
                     }
@@ -31,11 +29,8 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                         setKeywordNameValues[j].unshift(placeNumber)
                     }
                     
-                    // images insert query
                     const placeImageSqlQuery = `INSERT INTO place_images (placeNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`
                     connection.query(placeImageSqlQuery, [setImagesValues], function(error, results) {
-                    // Images.insertPlaceImages([setImagesValues], function(error, results) {
-                        console.log("connection image -- success !!!")
                         if (error) {
                             connection.release()
                             return connection.rollback(function() {
@@ -44,11 +39,8 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                             })
                         }
                         
-                        // keyword insert query
                         const placeHasKeywordSqlQuery = `INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`
                         connection.query(placeHasKeywordSqlQuery, [setKeywordNameValues], function(error, results) {
-                        // Keyword.insertPlaceKeyword([setKeywordNameValues], function(error, results) {
-                            console.log("connection keyword -- success !!!")
                             if (error) {
                                 connection.release()
                                 return connection.rollback(function() {
@@ -60,7 +52,7 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
                             connection.commit(function(error) {
                                 if (error) {
                                     return connection.rollback(function() {
-                                        console.log("transaction commit == fail !!!")
+                                        connection.release()
                                         response(error, null)
                                     })
                                 }
@@ -81,7 +73,7 @@ Place.createPlace = function([memberNumber, name, address, setKeywordNameValues,
 Place.readOnePlace = function(request, response) {
     try {
         db((error, connection) => {
-            const selectPlaceOne = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, P.phoneNumber, P.content, P.latitude, P.longitude, ` +
+            const selectPlaceOne = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, P.addressDetail, P.phoneNumber, P.content, P.latitude, P.longitude, ` +
                                     `GROUP_CONCAT(DISTINCT A.placeKeywordNumber SEPARATOR ',') AS 'placeKeywordNumber', ` +
                                     `A.keywordName, DATE_FORMAT(P.regiDate, '%Y-%m-%d') as regiDate, ` +
                                     `P.openingTime, ` +
@@ -179,7 +171,7 @@ Place.getCutrrentLocation = function([latitude, longitude, latitude2], response)
 Place.selectAllByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            const selectAllByUserSqlQuery = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, KEYWORD.keywordName, ` +
+            const selectAllByUserSqlQuery = `SELECT P.placeNumber, P.memberNumber, P.name, P.address, P.addressDetail, KEYWORD.keywordName, ` +
                                                     `GROUP_CONCAT(PI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
                                                     `GROUP_CONCAT(PI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
                                             `FROM place P ` +
@@ -206,7 +198,7 @@ Place.selectAllByUser = function([memberNumber], response) {
 Place.selectPlaceDuplicateCheck = function([name, latitude, longitude], response) {
     try {
         db((error, connection) => {
-            const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address, latitude, longitude FROM place WHERE name = ? AND latitude = ? AND longitude = ?;`
+            const selectPlaceDuplicateCheckSqkQyery = `SELECT placeNumber, name, address, addressDetail, latitude, longitude FROM place WHERE name = ? AND latitude = ? AND longitude = ?`
             connection.query(selectPlaceDuplicateCheckSqkQyery, [name, latitude, longitude], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
@@ -218,11 +210,11 @@ Place.selectPlaceDuplicateCheck = function([name, latitude, longitude], response
     }
 }
 
-Place.updatePlace = function([address, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], response) {
+Place.updatePlace = function([address, addressDetail, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], response) {
     try {
         db((error, connection) => {
-            const updatePlaceSqlQuery = `UPDATE place SET address = ?, phoneNumber = ?, content = ?, latitude = ?, longitude = ? WHERE placeNumber = ? AND memberNumber = ?`
-            connection.query(updatePlaceSqlQuery, [address, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], function(error, results) {
+            const updatePlaceSqlQuery = `UPDATE place SET address = ?, addressDetail = ?, phoneNumber = ?, content = ?, latitude = ?, longitude = ? WHERE placeNumber = ? AND memberNumber = ?`
+            connection.query(updatePlaceSqlQuery, [address, addressDetail, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }

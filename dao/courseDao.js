@@ -16,11 +16,12 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                 const insertCourseSqlQuery = `INSERT INTO course (memberNumber, title, content) VALUES (?, ?, ?)`
                 connection.query(insertCourseSqlQuery, [memberNumber, title, content], function(error, results) {
                     if (error) {
+                        connection.release()
                         return connection.rollback(function() {
                             response(error, null)
                         })
                     }
-                    connection.release()
+
                     let courseNumber = results.insertId
                     
                     for (var j in setPlaceNumberValues) {
@@ -28,10 +29,10 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                     }
                     setImageArray.unshift(courseNumber)
 
-                    // Images.insertCourseImages([setImageArray], function(error, results) {
                     const insertCourseImagesSqlQuery = 'INSERT INTO course_images (courseNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES (?)'
                     connection.query(insertCourseImagesSqlQuery, [setImageArray], function(error, results) {
                         if (error) {
+                            connection.release()
                             return connection.rollback(function() {
                                 response(error, null)
                             })
@@ -40,6 +41,7 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
                         const insertCourseHasPlaceSqlQuery = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES ?`
                         connection.query(insertCourseHasPlaceSqlQuery, [setPlaceNumberValues], function(error, results) {
                             if (error) {
+                                connection.release()
                                 return connection.rollback(function() {
                                     response(error, null)
                                 })
@@ -47,10 +49,12 @@ Course.insertCourse = function([memberNumber, title, content, setImageArray, set
 
                             connection.commit(function(error) {
                                 if (error) {
+                                    connection.release()
                                     return connection.rollback(function() {
                                         response(error, null)
                                     })
                                 }
+                                connection.release()
                                 response(null, results)
                             })  // commit()
                         })  // insertCourseHasPlaceSqlQuery()
@@ -87,20 +91,19 @@ Course.selectOneCourse = function([courseNumber], response) {
     try {
         db((error, connection) => {
             const selectOneCourseSqlQuery = `SELECT CHP.coursePlaceNumber, CHP.courseNumber, CHP.placeNumber, COURSE.memberNumber, COURSE.nickName, COURSE.title, COURSE.content, DATE_FORMAT(COURSE.regiDate, '%Y-%m-%d') AS 'regiDate', ` +
-                                                    `PLACE.placeName, PLACE.address, CI.imageNumber AS 'courseImageNumber', CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
+                                                    `PLACE.placeName, PLACE.address, PLACE.addressDetail, CI.imageNumber AS 'courseImageNumber', CI.savedImageName AS 'courseImage', PLACE.savedImageName AS 'placeImage', PLACE.keywordName AS 'keywordName' ` +
                                             `FROM course_has_place CHP ` +
                                             `LEFT JOIN (SELECT C.courseNumber, C.memberNumber, C.title, C.content, C.regiDate, M.nickName ` +
                                             `            FROM course C ` +
                                             `            LEFT JOIN member M ON M.memberNumber = C.memberNumber) COURSE ON COURSE.courseNumber = CHP.courseNumber ` +
                                             `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name separator ',') AS 'keywordName' ` +
+                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, P.addressDetail, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name separator ',') AS 'keywordName' ` +
                                             `           FROM place_has_keyword PHK ` +
                                             `           LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
                                             `           LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
                                             `           LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                             `           GROUP BY PHK.placeNumber) PLACE ON PLACE.placeNumber = CHP.placeNumber ` +
-                                            `WHERE CHP.courseNumber = ?;`
-    
+                                            `WHERE CHP.courseNumber = ?`
             connection.query(selectOneCourseSqlQuery, [courseNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
