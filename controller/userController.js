@@ -1,22 +1,22 @@
 const User = require('../service/userService')
 
-exports.user_create = function(request, response, next) {
+exports.userCreate = function(request, response, next) {
     User.createUser(request, response, next)
 }
 
-exports.user_detail = function(request, response, next) {
+exports.userDetail = function(request, response, next) {
     User.getUserById(request, response, next)
 }
 
-exports.user_login = function(request, response, next) {
+exports.userLogin = function(request, response, next) {
     User.getLogin(request, response, next)
 }
 
-exports.user_update = function(request, response, next) {
+exports.userUpdate = function(request, response, next) {
     User.updateById(request, response, next)
 }
 
-exports.user_delete = function(request, response, next) {
+exports.userDelete = function(request, response, next) {
     User.deleteById(request, response, next)
 }
 

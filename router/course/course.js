@@ -1,4 +1,4 @@
-const course_controller         = require('../../controller/courseController')
+const courseController          = require('../../controller/courseController')
 const express                   = require('express')
 const router                    = express.Router()
 const multer                    = require('multer')
@@ -43,10 +43,10 @@ router.post('/', (request, response, next) => {
             next()
         }
     })
-}, course_controller.courseCreate)                                        // 코스 생성
-router.get('/', course_controller.courseReadAll)                          // 코스 목록 조회
-router.get('/:courseNumber', course_controller.courseReadOne)             // 코스 한개 조회
-router.delete('/:courseNumber',course_controller.courseDelete)            // 코스 삭제
+}, courseController.courseCreate)                                        // 코스 생성
+router.get('/', courseController.courseReadAll)                          // 코스 목록 조회
+router.get('/:courseNumber', courseController.courseReadOne)             // 코스 한개 조회
+router.delete('/:courseNumber',courseController.courseDelete)            // 코스 삭제
 router.put('/:courseNumber', (request, response, next) => {               // 코스 수정
     upload(request, response, (error) => {
         if(error) {
@@ -55,6 +55,6 @@ router.put('/:courseNumber', (request, response, next) => {               // 코
             next()
         }
     })
-}, course_controller.courseUpdate)                                  
+}, courseController.courseUpdate)                                  
 
 module.exports = router

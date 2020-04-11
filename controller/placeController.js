@@ -1,26 +1,26 @@
 const Place = require('../service/placeService.js')
 
-exports.place_create = function(request, response, next) {
+exports.placeCreate = function(request, response, next) {
     Place.createPlace(request, response, next)
 }
 
-exports.place_readOne = function(request, response, next) {
+exports.placeReadOne = function(request, response, next) {
     Place.readOnePlace(request, response, next)
 }
 
-exports.place_readAll = function(request, response, next) {
+exports.placeReadAll = function(request, response, next) {
     Place.readAllPlace(request, response, next)
 }
 
-exports.place_update = function(request, response, next) {
+exports.placeUpdate = function(request, response, next) {
     Place.updatePlace(request, response, next)
 }
 
-exports.place_delete = function(request, response, next) {
+exports.placeDelete = function(request, response, next) {
     Place.deletePlace(request, response, next)
 }
 
-exports.place_getCutrrentLocation = function(request, response, next) {
+exports.placeGetCutrrentLocation = function(request, response, next) {
     Place.getCutrrentLocation(request, response, next)
 }
 
@@ -32,7 +32,7 @@ exports.placeDuplicateCheck = function(request, response, next) {
     Place.placeDuplicateCheck(request, response, next)
 }
 
-exports.placeKeyword_update = function(request, response, next) {
+exports.placeKeywordUpdate = function(request, response, next) {
     Place.updatePlaceHasKeyword(request, response, next)
 }
 

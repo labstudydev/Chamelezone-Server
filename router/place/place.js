@@ -1,5 +1,5 @@
-const place_controller          = require('../../controller/placeController')
-const review_controller         = require('../../controller/reviewController')
+const placeController           = require('../../controller/placeController')
+const reviewController          = require('../../controller/reviewController')
 const express                   = require('express')
 const router                    = express.Router()
 const multer                    = require('multer')
@@ -37,7 +37,7 @@ let upload = multer({
 }).array('images', 4)
 
 /* ==================== review router ==================== */
-router.get('/:placeNumber/review', review_controller.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
+router.get('/:placeNumber/review', reviewController.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
 router.post('/:placeNumber/review', (request, response, next) => {
     upload(request, response, (error) => {
         if(error) {
@@ -46,8 +46,8 @@ router.post('/:placeNumber/review', (request, response, next) => {
             next()
         }
     })
-}, review_controller.reviewCreate)                                                                // 리뷰생성
-router.get('/:placeNumber/review/:reviewNumber', review_controller.reviewReadOneByPlace)          // 장소의 리뷰 한개 조회(특정리뷰조회)
+}, reviewController.reviewCreate)                                                                 // 리뷰생성
+router.get('/:placeNumber/review/:reviewNumber', reviewController.reviewReadOneByPlace)           // 장소의 리뷰 한개 조회(특정리뷰조회)
 router.put('/:placeNumber/review/:reviewNumber', (request, response, next) => {                   // 장소의 리뷰 수정
     upload(request, response, (error) => {
         if(error) {
@@ -56,8 +56,8 @@ router.put('/:placeNumber/review/:reviewNumber', (request, response, next) => { 
             next()
         }
     })
-}, review_controller.reviewUpdate)    
-router.delete('/:placeNumber/review/:reviewNumber', review_controller.reviewDelete)               // 장소의 리뷰 삭제
+}, reviewController.reviewUpdate)    
+router.delete('/:placeNumber/review/:reviewNumber', reviewController.reviewDelete)               // 장소의 리뷰 삭제
 
 /* ==================== place router ==================== */
 router.post('/', (request, response, next) => {
@@ -68,10 +68,10 @@ router.post('/', (request, response, next) => {
             next()
         }
     })
-}, place_controller.place_create)                                                      // 장소생성 (이미지)
-router.get('/duplicate-check', place_controller.placeDuplicateCheck)                   // 장소 중복확인
-router.get('/:placeNumber' , place_controller.place_readOne)                           // 장소한개조회
-router.get('/', place_controller.place_readAll)                                        // 장소전체조회
+}, placeController.placeCreate)                                                       // 장소생성 (이미지)
+router.get('/duplicate-check', placeController.placeDuplicateCheck)                   // 장소 중복확인
+router.get('/:placeNumber' , placeController.placeReadOne)                            // 장소한개조회
+router.get('/', placeController.placeReadAll)                                         // 장소전체조회
 router.put('/:placeNumber',(request, response, next) => {
     upload(request, response, (error) => {
         if(error) {
@@ -80,10 +80,10 @@ router.put('/:placeNumber',(request, response, next) => {
             next()
         }
     })
-}, place_controller.place_update)                                                      // 장소수정
-router.delete('/:placeNumber', place_controller.place_delete)                          // 장소삭제
-router.get('/:latitude/:longitude', place_controller.place_getCutrrentLocation)        // 장소 현재위치 
-router.put('/:placeNumber/keyword', place_controller.placeKeyword_update)              // 장소의 키워드 수정
-router.put('/:placeNumber/openingTime', place_controller.placeOpeningTimeUpdate)       // 장소의 영업시간 수정
+}, placeController.placeUpdate)                                                       // 장소수정
+router.delete('/:placeNumber', placeController.placeDelete)                           // 장소삭제
+router.get('/:latitude/:longitude', placeController.placeGetCutrrentLocation)         // 장소 현재위치 
+router.put('/:placeNumber/keyword', placeController.placeKeywordUpdate)              // 장소의 키워드 수정
+router.put('/:placeNumber/openingTime', placeController.placeOpeningTimeUpdate)       // 장소의 영업시간 수정
 
 module.exports = router
