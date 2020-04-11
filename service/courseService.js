@@ -137,13 +137,13 @@ exports.courseUpdate = function(request, response, next) {
     let image = request.file
     let courseNumber = request.params.courseNumber
     const setValues = {
-        imageNumber, memberNumber, title, content, placeNumber
+        imageNumber, memberNumber, title, content, placeNumber, savedImageName
     } = request.body
 
     const nullValueCheckObject = {
         courseNumber, memberNumber, title, content, placeNumber
     }
-    console.log("Request values : ", image, ", ", courseNumber, ", ", imageNumber, ", ", memberNumber, ", ", title, ", ", content, ", ", placeNumber)
+    console.log("Request values : ", image, ", ", courseNumber, ", ", imageNumber, ", ", savedImageName, ", ", memberNumber, ", ", title, ", ", content, ", ", placeNumber)
 
     isEmpty(nullValueCheckObject)
     
@@ -164,10 +164,23 @@ exports.courseUpdate = function(request, response, next) {
                         
             title = (title == result[0].title) ? result[0].title : title
             content = (content == result[0].content) ? result[0].content : content
-            originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
-            savedImageName = (setImageArray[1] == result[0].savedImageName) ? result[0].savedImageName : setImageArray[1]
-            mimetype = (setImageArray[2] == result[0].mimetype) ? result[0].mimetype : setImageArray[2]
-            imageSize = (setImageArray[3] == result[0].imageSize) ? result[0].imageSize : setImageArray[3]
+            
+            if (savedImageName == result[0].savedImageName) {
+                originalImageName = result[0].originalImageName
+                savedImageName = result[0].savedImageName
+                mimetype = result[0].mimetype
+                imageSize = result[0].imageSize
+            } else {
+                originalImageName = setImageArray[0]
+                savedImageName = setImageArray[1]
+                mimetype = setImageArray[2]
+                imageSize = ressetImageArrayult[3]
+            }
+            
+            // originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
+            // savedImageName = (setImageArray[1] == result[0].savedImageName) ? result[0].savedImageName : setImageArray[1]
+            // mimetype = (setImageArray[2] == result[0].mimetype) ? result[0].mimetype : setImageArray[2]
+            // imageSize = (setImageArray[3] == result[0].imageSize) ? result[0].imageSize : setImageArray[3]
             console.log("Course and images ToString : ", title, ",", content, ",", originalImageName, ",", savedImageName, ",", mimetype, ",", imageSize)       
 
             Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
