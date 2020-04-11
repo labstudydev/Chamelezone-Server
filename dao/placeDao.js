@@ -13,6 +13,7 @@ Place.createPlace = function([memberNumber, name, address, addressDetail, setKey
                     response(error, null)
                 }
                 
+                console.log("11111111111111111 ======================= ")
                 const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, addressDetail, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
                 connection.query(placeSqlQuery, [memberNumber, name, address, addressDetail, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
