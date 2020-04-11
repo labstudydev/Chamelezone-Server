@@ -19,7 +19,7 @@ function splitString(stringToSplit, separator) {
 exports.createPlace = function(request, response, next) {
     const images = request.files
     const setValues = {
-        memberNumber, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
+        memberNumber, name, address, addressDetail, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
     
     const nullValueCheckObject = {
@@ -87,7 +87,7 @@ exports.createPlace = function(request, response, next) {
             }
 
             if (result == true) {
-                Place.createPlace([memberNumber, name, address, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
+                Place.createPlace([memberNumber, name, address, addressDetail, setKeywordNameValues, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude, setImagesValues], function(error, place) { 
                     if (error) {
                         return next(new ErrorHandler(500, error))
                     }
@@ -219,8 +219,6 @@ exports.placeDuplicateCheck = function(request, response, next) {
     const setValues = {
         name, latitude, longitude
     } = request.query
-    // let name = requets.query.name
-    // let address = requets.query.name
 
     const nullValueCheckObject = {
         name, latitude, longitude
@@ -243,11 +241,10 @@ exports.placeDuplicateCheck = function(request, response, next) {
 }
 
 exports.updatePlace = function(request, response, next) {
-    // 장소번호, 회원번호, 주소, 전화번호, 내용, 사진
     let placeNumber = request.params.placeNumber
     let images = request.files
     const setValues = {
-        memberNumber, address, phoneNumber, content, latitude, longitude, imageNumber
+        memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, imageNumber
     } = request.body
 
     const nullValueCheckObject = {
@@ -266,6 +263,7 @@ exports.updatePlace = function(request, response, next) {
 
             if (result[0].memberNumber == memberNumber) {
                 address = (address == result[0].address) ? result[0].address : address
+                addressDetail = (addressDetail == result[0].addressDetail) ? result[0].addressDetail : addressDetail
                 phoneNumber = (phoneNumber == result[0].phoneNumber) ? result[0].phoneNumber : phoneNumber
                 content = (content == result[0].content) ? result[0].content : content
                 latitude = (latitude == result[0].latitude) ? result[0].latitude : latitude
@@ -274,8 +272,8 @@ exports.updatePlace = function(request, response, next) {
                 let parseLatitude = parseFloat(latitude)
                 let parseLongitude = parseFloat(longitude)
 
-                console.log("Place ToString : ", address, ",", phoneNumber, ",", content, ",", parseLatitude, ",", parseLongitude, ",", placeNumber, ",", memberNumber)
-                Place.updatePlace([address, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], this)
+                console.log("Place ToString : ", address, ",", addressDetail, ",", phoneNumber, ",", content, ",", parseLatitude, ",", parseLongitude, ",", placeNumber, ",", memberNumber)
+                Place.updatePlace([address, addressDetail, phoneNumber, content, parseLatitude, parseLongitude, placeNumber, memberNumber], this)
             } else {
                 response.status(200).send("The creater of the place does not match")
             }

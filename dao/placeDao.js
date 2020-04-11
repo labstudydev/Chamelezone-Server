@@ -13,7 +13,6 @@ Place.createPlace = function([memberNumber, name, address, addressDetail, setKey
                     response(error, null)
                 }
                 
-                console.log("11111111111111111 ======================= ")
                 const placeSqlQuery = `INSERT INTO place (memberNumber, name, address, addressDetail, openingTime, phoneNumber, content, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
                 connection.query(placeSqlQuery, [memberNumber, name, address, addressDetail, openingTimeString, phoneNumber, content, parseLatitude, parseLongitude], function(error, results) {
                     if (error) {
@@ -22,7 +21,7 @@ Place.createPlace = function([memberNumber, name, address, addressDetail, setKey
                             response(error, null)
                         })
                     }
-                    console.log("place insert ======================= ")
+
                     let placeNumber = results.insertId
                     for (var i in setImagesValues) {
                         setImagesValues[i].unshift(placeNumber)
@@ -40,7 +39,6 @@ Place.createPlace = function([memberNumber, name, address, addressDetail, setKey
                                 response(error, null)
                             })
                         }
-                        console.log("image insert ======================= ")
                         
                         const placeHasKeywordSqlQuery = `INSERT INTO place_has_keyword (placeNumber, keywordNumber) VALUES ?`
                         connection.query(placeHasKeywordSqlQuery, [setKeywordNameValues], function(error, results) {
