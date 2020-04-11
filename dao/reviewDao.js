@@ -1,58 +1,50 @@
-/* ==================== START modules ==================== */
-
 const { ErrorHandler }      = require('../costomModules/customError')
 const db                    = require('../config/db')
-const Images                = require('../dao/imagesDao')
+const Images                = require('../dao/imageDao')
 
-/* ==================== END modules ==================== */
+var Review = function(review) { }
 
-var Review = function(review) {
-
-}
-
-Review.insertReview = function([placeNumber, content, setImagesValues], response){
+Review.insertReview = function([placeNumber, memberNumber, content, setImagesValues], response) {
     try {
-        console.log("toString : " + placeNumber, content, setImagesValues)
         db((error, connection) => {
             connection.beginTransaction(function(error) {
                 if (error) {
                     response(error, null)
                 }
                 
-                const insertReviewSqlQuery = 'INSERT INTO review (memberNumber, placeNumber, content) VALUES (?, ?, ?)'
+                const insertReviewSqlQuery = `INSERT INTO review (memberNumber, placeNumber, content) VALUES (?, ?, ?)`
                 connection.query(insertReviewSqlQuery, [memberNumber, placeNumber, content], function(error, results) {
                     if (error) {
+                        connection.release()
                         return connection.rollback(function() {
                             response(error, null)
                         })
                     }
-                    
-                    console.log(__filename + ': insertReviewSqlQuery * response: ', results)
-                    connection.release()
 
                     let reviewNumber = results.insertId
                     for (var i in setImagesValues) {
                         setImagesValues[i].unshift(reviewNumber)
                     }
 
-                    console.log(setImagesValues)
-
                     // images insert query
-                    Images.insertReviewImages([setImagesValues], function(error, results) {
+                    const insertReviewImagesSqlQuery = 'INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?'
+                    connection.query(insertReviewImagesSqlQuery, [setImagesValues], function(error, results) {
+                    // Images.insertReviewImages([setImagesValues], function(error, results) {
                         if (error) {
+                            connection.release()
                             return connection.rollback(function() {
                                 response(error, null)
                             })
                         }
                         connection.commit(function(error) {
                             if (error) {
+                                connection.release()
                                 return connection.rollback(function() {
                                     response(error, null)
                                 })
                             }
-                            console.log('Transaction Success !!!');
+                            connection.release()
                             response(null, results)
-
                         })  // commit()
                     })  // Images.insertReviewImages()
                 })  // insertReviewSqlQuery()
@@ -66,16 +58,11 @@ Review.insertReview = function([placeNumber, content, setImagesValues], response
 Review.selectAllReview = function(response) {
     try {
         db((error, connection) => {
-            let selectAllReviewSqlQuery = 'select reviewNumber, placeNumber, memberNumber, content, regiDate from review'
+            const selectAllReviewSqlQuery = `SELECT reviewNumber, placeNumber, memberNumber, content, DATE_FORMAT(regiDate, '%Y-%m-%d') as regiDate FROM review`
             connection.query(selectAllReviewSqlQuery, function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -83,28 +70,22 @@ Review.selectAllReview = function(response) {
     }
 }
 
-// 회원의 리뷰 목록 - 이거 일단 됬고 ok
 Review.selectByUser = function([memberNumber], response) {
     try {
         db((error, connection) => {
-            let selectByUserSqlQuery = `SELECT R.reviewNumber, R.memberNumber, R.placeNumber, R.content, R.regiDate, P.name, ` + 
-                                        `GROUP_CONCAT(PI.imageNumber separator ',') AS 'imageNumber', ` + 
-                                        `GROUP_CONCAT(PI.originalImageName separator ',') AS 'originalImageName', ` + 
-                                        `GROUP_CONCAT(PI.savedImageName separator ',') AS 'savedImageName' ` + 
-                                        `FROM review R ` + 
-                                        `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
-                                        `LEFT JOIN place_images PI ON PI.placeNumber = R.placeNumber ` + 
-                                        `WHERE R.memberNumber = ? ` + 
-                                        `GROUP BY R.reviewNumber`
+            const selectByUserSqlQuery = `SELECT R.reviewNumber, R.memberNumber, R.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, P.name, ` + 
+                                            `GROUP_CONCAT(PI.imageNumber separator ',') AS 'imageNumber', ` + 
+                                            `GROUP_CONCAT(PI.originalImageName separator ',') AS 'originalImageName', ` + 
+                                            `GROUP_CONCAT(PI.savedImageName separator ',') AS 'savedImageName' ` + 
+                                            `FROM review R ` + 
+                                            `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
+                                            `LEFT JOIN place_images PI ON PI.placeNumber = R.placeNumber ` + 
+                                            `WHERE R.memberNumber = ? ` + 
+                                            `GROUP BY R.reviewNumber`
             connection.query(selectByUserSqlQuery, [memberNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -112,28 +93,22 @@ Review.selectByUser = function([memberNumber], response) {
     }
 }
 
-// 나의 리뷰에서 리뷰선택시 리뷰 상세화면 - 이거 일단 됬고2 ok
 Review.selectByReview = function([placeNumber, reviewNumber], response) {
     try {
         db((error, connection) => {
-            let selectByReviewSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, P.name, ` + 
+            const selectByReviewSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, P.name, ` + 
                                             `GROUP_CONCAT(RI.imageNumber separator ',') AS 'imageNumber', ` + 
                                             `GROUP_CONCAT(RI.originalImageName separator ',') AS 'originalImageName', ` + 
                                             `GROUP_CONCAT(RI.savedImageName separator ',') AS 'savedImageName' ` + 
                                             `FROM review R ` + 
                                             `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
                                             `LEFT JOIN review_images RI ON RI.reviewNumber = R.reviewNumber ` + 
-                                            `WHERE P.placeNumber && R.reviewNumber = ? ` + 
+                                            `WHERE P.placeNumber = ? && R.reviewNumber = ? ` + 
                                             `GROUP BY R.reviewNumber`
             connection.query(selectByReviewSqlQuery, [placeNumber, reviewNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -144,24 +119,20 @@ Review.selectByReview = function([placeNumber, reviewNumber], response) {
 Review.selectByPlace = function([placeNumber], response) {
     try {
         db((error, connection) => {
-            let selectByPlaceSqlQuery = "select R.reviewNumber, R.memberNumber, P.placeNumber, R.content, R.regiDate, " +
-                                        "group_concat(I.imageNumber separator ',') AS 'imageNumber', " +
-                                        "group_concat(I.originalImageName separator ',') AS 'originalImageName', " +
-                                        "group_concat(I.savedImageName separator ',') AS 'savedImageName' " +
-                                        "from review R " +
-                                        "left join place P on R.placeNumber = P.placeNumber " +
-                                        "left join review_images I on R.reviewNumber = I.reviewNumber " +
-                                        "where R.placeNumber = ? " +
-                                        "group by R.reviewNumber"
+            const selectByPlaceSqlQuery = `SELECT R.reviewNumber, R.memberNumber, P.placeNumber, R.content, DATE_FORMAT(R.regiDate, '%Y-%m-%d') as regiDate, M.nickName, ` +
+                                            `GROUP_CONCAT(RI.imageNumber SEPARATOR ',') AS 'imageNumber', ` +
+                                            `GROUP_CONCAT(RI.originalImageName SEPARATOR ',') AS 'originalImageName', ` +
+                                            `GROUP_CONCAT(RI.savedImageName SEPARATOR ',') AS 'savedImageName' ` +
+                                            `FROM review R ` +
+                                            `LEFT JOIN place P ON R.placeNumber = P.placeNumber ` +
+                                            `LEFT JOIN review_images RI ON R.reviewNumber = RI.reviewNumber ` +
+                                            `LEFT JOIN member M ON R.memberNumber = M.memberNumber ` +
+                                            `WHERE R.placeNumber = ? ` +
+                                            `GROUP BY R.reviewNumber`
             connection.query(selectByPlaceSqlQuery, [placeNumber], function(error, results) {
-                if (error) {
-                    console.log("error: ", error)
-                    connection.release()
-                    return response(error, null)
-                }
-                console.log('response: ', results)
-                response(null, results)
                 connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
             })
         })
     } catch (error) {
@@ -169,4 +140,111 @@ Review.selectByPlace = function([placeNumber], response) {
     }
 }
 
-module.exports = Review;
+Review.deleteReview = function([memberNumber, placeNumber, reviewNumber], response) {
+    try {
+        db((error, connection) => {
+            const deleteReviewSqlQuery = `DELETE FROM review WHERE memberNumber = ? AND placeNumber = ? AND reviewNumber = ?`
+            connection.query(deleteReviewSqlQuery, [memberNumber, placeNumber, reviewNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.selectReviewDuplicateCheck = function([memberNumber, placeNumber, content], response) {
+    try {
+        db((error, connection) => {
+            const selectReviewDuplicateCheckSqkQyery = `SELECT reviewNumber, memberNumber, placeNumber, content FROM review where memberNumber = ? AND placeNumber = ? AND content =?`
+            connection.query(selectReviewDuplicateCheckSqkQyery, [memberNumber, placeNumber, content], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.updateReview = function([content, reviewNumber], response) {
+    try {
+        db((error, connection) => {
+            const updateReviewSqlQuery = `UPDATE review SET content = ? WHERE reviewNumber =?`
+            connection.query(updateReviewSqlQuery, [content, reviewNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.updateReviewImages = function([originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], response) {
+    try {
+        db((error, connection) => {
+            console.log("Dao update ToString : ", originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber)
+            const updateReviewImagesSqlQuery = `UPDATE review_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE reviewNumber = ? AND imageNumber = ?`
+            connection.query(updateReviewImagesSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+
+Review.selectReviewImages = function([reviewNumber], response) {
+    try {
+        db((error, connection) => {
+            const selectReviewImagesSqlQuery = `select * from review_images where reviewNumber = ?`
+            connection.query(selectReviewImagesSqlQuery, [reviewNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.insertReviewImages = function([setImagesValues], response) {
+    try {
+        db((error, connection) => {
+            const insertReviewImagesSqlQuery = `INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?`
+            connection.query(insertReviewImagesSqlQuery, [setImagesValues], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+Review.deleteReviewImages = function([reviewNumber, imageNumber], response) {
+    try {
+        db((error, connection) => {
+            const deleteReviewImagesSqlQuery = `DELETE FROM review_images WHERE reviewNumber in (?) AND imageNumber in (?)`
+            connection.query(deleteReviewImagesSqlQuery, [reviewNumber, imageNumber], function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            })
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
+module.exports = Review

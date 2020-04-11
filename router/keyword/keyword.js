@@ -1,11 +1,7 @@
-/* ==================== START modules ==================== */
+const keywordController     = require('../../controller/keywordController')
+const express               = require('express')
+const router                = express.Router()
 
-const express               = require('express');
-const router                = express.Router();
-const keywordController     = require('../../controller/keywordController');
+router.get('/', keywordController.keywordReadAll)           // 키워드 전체 조회
 
-/* ==================== END modules ==================== */
-
-router.get('/', keywordController.keyword_readAll)           // 키워드 전체 조회
-
-module.exports = router;
+module.exports = router
