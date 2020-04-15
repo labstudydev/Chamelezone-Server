@@ -32,6 +32,7 @@ exports.courseCreate = function(request, response, next) {
     placeNumber.forEach((item, index, array) => {
         setPlaceNumberValues[index][0] = item
     })
+
     Step (
         function courseDuplicateCheck() {
             Course.selectCourseDuplicateCheck([memberNumber, title, content], this)
@@ -148,11 +149,13 @@ exports.courseUpdate = function(request, response, next) {
     isEmpty(nullValueCheckObject)
     
     let setImageArray = new Array(4)
-    setImageArray[0] = image.originalname
-    setImageArray[1] = image.filename
-    setImageArray[2] = image.mimetype
-    setImageArray[3] = image.size
-    
+    if (image != undefined) {    
+        setImageArray[0] = image.originalname
+        setImageArray[1] = image.filename
+        setImageArray[2] = image.mimetype
+        setImageArray[3] = image.size
+    }
+
     Step(
         function placeNumberCheck() {
             Course.selectOneCourse([courseNumber], this)
@@ -164,25 +167,32 @@ exports.courseUpdate = function(request, response, next) {
                         
             title = (title == result[0].title) ? result[0].title : title
             content = (content == result[0].content) ? result[0].content : content
-            
-            if (savedImageName == result[0].savedImageName) {
+                        
+            // 코스이미지에서 이미지가 수정될땐 imageNumber랑 image보내주고, 수정안될땐 imageNumber랑 savedImageName 이렇게는
+            // 이건 수정이 안될 때
+            // let originalImageName, savedImageName, mimetype, imageSize
+            if(savedImageName == result[0].courseImage) {
                 originalImageName = result[0].originalImageName
                 savedImageName = result[0].savedImageName
                 mimetype = result[0].mimetype
                 imageSize = result[0].imageSize
-            } else {
+            }
+
+            // 수정이 될 때
+            if (image !== undefined) {
                 originalImageName = setImageArray[0]
                 savedImageName = setImageArray[1]
                 mimetype = setImageArray[2]
-                imageSize = ressetImageArrayult[3]
-            }
-            
+                imageSize = setImageArray[3]                
+            } 
+
             // originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
             // savedImageName = (setImageArray[1] == result[0].savedImageName) ? result[0].savedImageName : setImageArray[1]
             // mimetype = (setImageArray[2] == result[0].mimetype) ? result[0].mimetype : setImageArray[2]
             // imageSize = (setImageArray[3] == result[0].imageSize) ? result[0].imageSize : setImageArray[3]
+            
             console.log("Course and images ToString : ", title, ",", content, ",", originalImageName, ",", savedImageName, ",", mimetype, ",", imageSize)       
-
+            
             Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
 
             return result
