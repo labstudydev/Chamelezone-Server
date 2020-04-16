@@ -176,8 +176,7 @@ exports.courseUpdate = function(request, response, next) {
                 // savedImageName = result[0].savedImageName
                 // mimetype = result[0].mimetype
                 // imageSize = result[0].imageSize
-                console.log("이건 이미지 수정이 안될때 !!!!")
-                return result
+                console.log("not image update")
             }
 
             // 수정이 될 때
@@ -187,11 +186,9 @@ exports.courseUpdate = function(request, response, next) {
                 savedImageName = setImageArray[1]
                 mimetype = setImageArray[2]
                 imageSize = setImageArray[3]                
-                
-                Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
-                return result
             } 
-
+            Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
+            return result
             // originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
             // savedImageName = (setImageArray[1] == result[0].savedImageName) ? result[0].savedImageName : setImageArray[1]
             // mimetype = (setImageArray[2] == result[0].mimetype) ? result[0].mimetype : setImageArray[2]
