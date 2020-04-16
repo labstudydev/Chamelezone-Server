@@ -171,16 +171,16 @@ exports.courseUpdate = function(request, response, next) {
             // 코스이미지에서 이미지가 수정될땐 imageNumber랑 image보내주고, 수정안될땐 imageNumber랑 savedImageName 이렇게는
             
             // let originalImageName, savedImageName, mimetype, imageSize
+            let originalImageName, requestSavedImageName, mimetype, imageSize
             if(savedImageName == result[0].courseImage) {
-                // originalImageName = result[0].originalImageName
-                // savedImageName = result[0].savedImageName
-                // mimetype = result[0].mimetype
-                // imageSize = result[0].imageSize
+                originalImageName = result[0].originalImageName
+                requestSavedImageName = result[0].savedImageName
+                mimetype = result[0].mimetype
+                imageSize = result[0].imageSize
                 console.log("not image update")
             }
 
             // 수정이 될 때
-            let originalImageName, requestSavedImageName, mimetype, imageSize
             if (image !== undefined) {
                 console.log("이건 이미지 수정할때 !!!!")
                 originalImageName = setImageArray[0]
