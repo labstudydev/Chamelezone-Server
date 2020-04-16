@@ -36,6 +36,15 @@ let upload = multer({
     }
 }).array('images', 4)
 
+let updateUpload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        files: 4,             
+        fileSize: 1024 * 1024 * 1024 
+    }
+}).fields([{ name: 'updateImages', maxCount: 4 },{ name: 'insertImages', maxCount: 4 }])
+
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', reviewController.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
 router.post('/:placeNumber/review', (request, response, next) => {
@@ -73,7 +82,7 @@ router.get('/duplicate-check', placeController.placeDuplicateCheck)             
 router.get('/:placeNumber' , placeController.placeReadOne)                            // 장소한개조회
 router.get('/', placeController.placeReadAll)                                         // 장소전체조회
 router.put('/:placeNumber',(request, response, next) => {
-    upload(request, response, (error) => {
+    updateUpload(request, response, (error) => {
         if(error) {
             response.status(404).send('Please images type check')
         } else {
@@ -83,7 +92,7 @@ router.put('/:placeNumber',(request, response, next) => {
 }, placeController.placeUpdate)                                                       // 장소수정
 router.delete('/:placeNumber', placeController.placeDelete)                           // 장소삭제
 router.get('/:latitude/:longitude', placeController.placeGetCutrrentLocation)         // 장소 현재위치 
-router.put('/:placeNumber/keyword', placeController.placeKeywordUpdate)              // 장소의 키워드 수정
+router.put('/:placeNumber/keyword', placeController.placeKeywordUpdate)               // 장소의 키워드 수정
 router.put('/:placeNumber/openingTime', placeController.placeOpeningTimeUpdate)       // 장소의 영업시간 수정
 
 module.exports = router
