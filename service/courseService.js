@@ -144,7 +144,7 @@ exports.courseUpdate = function(request, response, next) {
     const nullValueCheckObject = {
         courseNumber, memberNumber, title, content, placeNumber
     }
-    console.log("Request values : ", image, ", ", courseNumber, ", ", imageNumber, ", ", savedImageName, ", ", memberNumber, ", ", title, ", ", content, ", ", placeNumber)
+    console.log("Request values : ", setValues, ", ", courseNumber, ", ", image)
 
     isEmpty(nullValueCheckObject)
     
@@ -169,7 +169,7 @@ exports.courseUpdate = function(request, response, next) {
             content = (content == result[0].content) ? result[0].content : content
                         
             // 코스이미지에서 이미지가 수정될땐 imageNumber랑 image보내주고, 수정안될땐 imageNumber랑 savedImageName 이렇게는
-            // 이건 수정이 안될 때
+            
             // let originalImageName, savedImageName, mimetype, imageSize
             if(savedImageName == result[0].courseImage) {
                 // originalImageName = result[0].originalImageName
@@ -180,21 +180,21 @@ exports.courseUpdate = function(request, response, next) {
             }
 
             // 수정이 될 때
-            let originalImageName, savedImageName, mimetype, imageSize
+            let originalImageName, requestSavedImageName, mimetype, imageSize
             if (image !== undefined) {
                 console.log("이건 이미지 수정할때 !!!!")
                 originalImageName = setImageArray[0]
-                savedImageName = setImageArray[1]
+                requestSavedImageName = setImageArray[1]
                 mimetype = setImageArray[2]
                 imageSize = setImageArray[3]                
             }
 
-            Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
-            return result
             // originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
             // savedImageName = (setImageArray[1] == result[0].savedImageName) ? result[0].savedImageName : setImageArray[1]
             // mimetype = (setImageArray[2] == result[0].mimetype) ? result[0].mimetype : setImageArray[2]
             // imageSize = (setImageArray[3] == result[0].imageSize) ? result[0].imageSize : setImageArray[3]
+            Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, requestSavedImageName, mimetype, imageSize, imageNumber], this)
+            return result
 
         },
         function updateCourseHasPlace(error, result) {
