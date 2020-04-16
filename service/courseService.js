@@ -180,13 +180,15 @@ exports.courseUpdate = function(request, response, next) {
             }
 
             // 수정이 될 때
+            let originalImageName, savedImageName, mimetype, imageSize
             if (image !== undefined) {
                 console.log("이건 이미지 수정할때 !!!!")
                 originalImageName = setImageArray[0]
                 savedImageName = setImageArray[1]
                 mimetype = setImageArray[2]
                 imageSize = setImageArray[3]                
-            } 
+            }
+
             Course.updateCourseTransaction([title, content, courseNumber, memberNumber, originalImageName, savedImageName, mimetype, imageSize, imageNumber], this)
             return result
             // originalImageName = (setImageArray[0] == result[0].originalImageName) ? result[0].originalImageName : setImageArray[0]
