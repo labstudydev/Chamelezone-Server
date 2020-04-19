@@ -3,7 +3,9 @@ const express                           = require('express')
 const hbs                               = require('express-handlebars')
 const app                               = express()
 const bodyParser                        = require('body-parser')
-const router                            = require('./router/index')
+// const router                            = require('./router/index')
+const routerApiV1                       = require('./router/api/v1.0')
+const routerApiV2                       = require('./router/api/v2.0')
 
 app.engine('hbs', hbs({
     extname: 'hbs',
@@ -17,7 +19,8 @@ app.set('view engine', 'hbs')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/image', express.static(__dirname + '/public/uploads'))
-app.use(router)
+app.use(routerApiV1)
+app.use(routerApiV2)
 
 app.use((error, request, response, next) => {
     if (error instanceof ErrorHandler) {
@@ -31,7 +34,8 @@ app.use((error, request, response, next) => {
 })
 
 app.get('/addressSearch', (request, response) => {
-    response.status(200).render('map/addressSearch.hbs')
+    // response.status(200).render('map/addressSearch.hbs')
+    response.status(200).render('views/map/addressSearch.hbs')
 })
 
 app.listen(3000, () => {

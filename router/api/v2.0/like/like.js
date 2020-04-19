@@ -1,0 +1,5 @@
+const likeController            = require('../../../../controller/v2.0/likeController')
+const express                   = require('express')
+const router                    = express.Router()
+
+module.exports = router
