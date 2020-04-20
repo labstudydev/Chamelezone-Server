@@ -320,7 +320,7 @@ exports.updatePlace = function(request, response, next) {
             //     }
             // }
             
-            if (images != undefined) {
+            if (images.length > 0) {
                 console.log("이미지가 추가될때")
                 let originalImageName, savedImageName, mimetype, imageSize
                 let imagesArraySize = (images != undefined) ? images.length : 0
@@ -352,7 +352,7 @@ exports.updatePlace = function(request, response, next) {
                 })
             }
             
-            if (deleteImageNumber > 0) {
+            if (deleteImageNumber.length > 0) {
                 console.log('이미지가 삭제될때')
                 Place.deletePlaceImages([placeNumber, deleteImageNumber], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }

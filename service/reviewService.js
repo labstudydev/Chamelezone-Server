@@ -133,14 +133,15 @@ exports.reviewUpdate = function(request, response, next) {
     let reviewNumber = request.params.reviewNumber
 
     const setValues = {
-        memberNumber, content, imageNumber
+        memberNumber, content, deleteImageNumber,
     } = request.body
 
     const nullValueCheckObject = {
-        placeNumber, reviewNumber, memberNumber, content, images
+        placeNumber, reviewNumber, memberNumber, content
     }
+
     isEmpty(nullValueCheckObject)
-    console.log("Review update ToString == placeNumber: ", placeNumber, ", reviewNumber: ", reviewNumber, ", memberNumber: ", memberNumber, ", content: ", content)
+    console.log("Review update request Values : ", setValues, "\n\ placeNumber : ", placeNumber,  "\n\ reviewNumber : ", reviewNumber, "\n\ images : ", images)
 
     Step (
         function reviewCheck() {
@@ -172,32 +173,25 @@ exports.reviewUpdate = function(request, response, next) {
                 throw new ErrorHandler(404, "Review does not exsit")
             }
 
-            console.log("images.length : ", images.length, ", result.length : ", result.length)
-                        
-            let updateFlag, updateCnt
-            let originalImageName, savedImageName, mimetype, imageSize
-            let imagesArraySize = (images.length > result.length) ? images.length - result.length : 0
-            let setImagesValues = new Array(imagesArraySize)
+            console.log("images", images)
+            console.log("deleteImageNumber", deleteImageNumber)
+            let queryResultFlag = true
 
-            let imageNumberList = new Array()
-            let deleteImageList = new Array()
+            if (images.length > 0) {
+                console.log("이미지가 추가될때")
+                let originalImageName, savedImageName, mimetype, imageSize
+                let imagesArraySize = (images != undefined) ? images.length : 0
+                let setImagesValues = new Array(imagesArraySize)
 
-            if (images.length == result.length) {
-                updateFlag = 0
-                updateCnt = result.length
-            }
-            if (images.length > result.length){
-                updateFlag = true
-                updateCnt = result.length
-
-                for (i = 0; i < imagesArraySize; i++) {
+                for(i = 0; i < imagesArraySize; i++) {
                     setImagesValues[i] = new Array(4)
                 }
-                for(i = 0; i < images.length - result.length; i++) {
-                    originalImageName = images[i+2].originalname
-                    savedImageName = images[i+2].filename
-                    mimetype = images[i+2].mimetype
-                    imageSize = images[i+2].size
+
+                for(i = 0; i < imagesArraySize; i++) {
+                    originalImageName = images[i].originalname
+                    savedImageName = images[i].filename
+                    mimetype = images[i].mimetype
+                    imageSize = images[i].size
                     
                     setImagesValues[i][0] = originalImageName
                     setImagesValues[i][1] = savedImageName
@@ -206,62 +200,36 @@ exports.reviewUpdate = function(request, response, next) {
 
                     setImagesValues[i].unshift(reviewNumber)
                 }
-            }
-            if (images.length < result.length) {
-                updateFlag = false
-                updateCnt = images.length
-
-                // for(i = 0; i < result.length; i++) {
-                //     if (imageNumber[i] != result[i].imageNumber) {
-                //         deleteImageNumber.push(result[i].imageNumber)
-                //     }
-                // }
                 
-                imageNumberList = result.map((target) => target['imageNumber'].toString())
-                deleteImageList = imageNumberList.filter((target) => !imageNumber.includes(target))
-            }
-
-            for(i = 0; i < updateCnt; i++) {
-                Review.updateReviewImages([images[i].originalname, images[i].filename, images[i].mimetype, images[i].size, result[i].reviewNumber, result[i].imageNumber], function(error, results) {
+                Review.insertReviewImages([setImagesValues], function(error, results) {
+                    console.log('setImagesValues', setImagesValues)
                     if (error) { return next(new ErrorHandler(500, error)) }
-                    console.log("Update review success !!!")
+                    queryResultFlag = (results.affectedRows > 0) ? true : false
+                    console.log('INSERT query review success !!!')
+                })
+            }
+            
+            if (deleteImageNumber.length > 0) {
+                console.log('이미지가 삭제될때')
+                Review.deleteReviewImages([reviewNumber, deleteImageNumber], function(error, results) {
+                    if (error) { return next(new ErrorHandler(500, error)) }
+                    queryResultFlag = (results.affectedRows > 0) ? true : false
+                    console.log('DELETE query review success !!!')
                 })
             }
 
-            let resultValue = {
-                updateFlag,
-                reviewNumber,
-                setImagesValues,
-                deleteImageList
-            }
-
-            return resultValue
+            return queryResultFlag
         },
-        function reviewImageTransaction(error, result) {
+        function queryResults(error, result) {
             if (error) {
                 throw new ErrorHandler(500, error)
             }
 
-            console.log(result)
-            if (result.updateFlag === true) {
-                console.log("insert service")
-                Review.insertReviewImages([result.setImagesValues], function(error, results) {
-                    if (error) { return next(new ErrorHandler(500, error)) }
-                    response.status(200).send("Review update success !!!")
-                })
-            }
-
-            if (result.updateFlag === false) {
-                console.log("delete service")
-                Review.deleteReviewImages([result.reviewNumber, result.deleteImageList], function(error, results) {
-                    if (error) { return next(new ErrorHandler(500, error)) }
-                    response.status(200).send("Review update success !!!")
-                })
-            }
-
-            if (result.updateFlag === 0) {
-                console.log("Not insert and delete service")
-                response.status(200).send("Review update success !!!")
+            console.log('queryResultFlag : ', result)
+            if (result == true) {
+                response.status(200).send('Update success !!!')
+            } else {
+                response.status(500).send('Update fail !!!')
             }
         }
     )
