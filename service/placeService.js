@@ -249,7 +249,7 @@ exports.updatePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let images = request.files
     const setValues = {
-        memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, updateImageNumber, deleteImageNumber
+        memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, deleteImageNumber
     } = request.body
     
     const nullValueCheckObject = {
@@ -260,10 +260,10 @@ exports.updatePlace = function(request, response, next) {
     console.log("Place Update Request Values : ", setValues, "\n\ placeNumber : ", placeNumber, "\n\ images : ", images)
     
     Step (
-        function test() {
+        function updatePlaceEditMemberCheck() {
             Place.readOnePlace([placeNumber], this)
         },
-        function test1(error, result) {
+        function updatePlace(error, result) {
             if (error) {
 				throw new ErrorHandler(404, "Place does not exist")
             }
@@ -285,7 +285,7 @@ exports.updatePlace = function(request, response, next) {
                 response.status(200).send("The creater of the place does not match")
             }
         },
-        function test2(error, result) {
+        function updatePlaceImagesEditMemberCheck(error, result) {
             if (error) {
 				throw new ErrorHandler(500, error)
             }
@@ -296,34 +296,34 @@ exports.updatePlace = function(request, response, next) {
                 response.status(500).send("Place Update error")
             }
         },
-        function test3(error, result) {
+        function updatePlaceImages(error, result) {
             if (error) {
                 throw new ErrorHandler(404, "Place Image does not exsit")
             }
 
-            console.log("updateImages", images['updateImages'])
-            console.log("insertImages", images['insertImages'])
+            // console.log("updateImages", images['updateImages'])
+            // console.log("insertImages", images['insertImages'])
+            console.log("images", images)
             console.log("deleteImageNumber", deleteImageNumber)
-            console.log("updateImageNumber", updateImageNumber)
             
             let queryResultFlag = true
+
+            // if (images['updateImages'] != undefined) {
+            //     console.log("이미지가 수정될때")
+            //     for(i = 0; i < images['updateImages'].length; i++) {
+            //         console.log(images['updateImages'][i].originalname, images['updateImages'][i].filename, images['updateImages'][i].mimetype, images['updateImages'][i].size, placeNumber, updateImageNumber[i])
+            //         Place.updatePlaceImages([images['updateImages'][i].originalname, images['updateImages'][i].filename, images['updateImages'][i].mimetype, images['updateImages'][i].size, placeNumber, updateImageNumber[i]], function(error, results) {
+            //             if (error) { return next(new ErrorHandler(500, error)) }
+            //             queryResultFlag = (results.affectedRows > 0) ? true : false
+            //             console.log("UPDATE query place success !!!")
+            //         })
+            //     }
+            // }
             
-            if (images['updateImages'] != undefined) {
-                console.log("이미지가 수정될때")  
-                for(i = 0; i < images['updateImages'].length; i++) {
-                    console.log(images['updateImages'][i].originalname, images['updateImages'][i].filename, images['updateImages'][i].mimetype, images['updateImages'][i].size, placeNumber, updateImageNumber[i])
-                    Place.updatePlaceImages([images['updateImages'][i].originalname, images['updateImages'][i].filename, images['updateImages'][i].mimetype, images['updateImages'][i].size, placeNumber, updateImageNumber[i]], function(error, results) {
-                        if (error) { return next(new ErrorHandler(500, error)) }
-                        queryResultFlag = (results.affectedRows > 0) ? true : false
-                        console.log("UPDATE query place success !!!")
-                    })
-                }
-            }
-            
-            if (images['insertImages'] != undefined) {
+            if (images != undefined) {
                 console.log("이미지가 추가될때")
                 let originalImageName, savedImageName, mimetype, imageSize
-                let imagesArraySize = (images['insertImages'] != undefined) ? images['insertImages'].length : 0
+                let imagesArraySize = (images != undefined) ? images.length : 0
                 let setImagesValues = new Array(imagesArraySize)
 
                 for(i = 0; i < imagesArraySize; i++) {
@@ -331,10 +331,10 @@ exports.updatePlace = function(request, response, next) {
                 }
 
                 for(i = 0; i < imagesArraySize; i++) {
-                    originalImageName = images['insertImages'][i].originalname
-                    savedImageName = images['insertImages'][i].filename
-                    mimetype = images['insertImages'][i].mimetype
-                    imageSize = images['insertImages'][i].size
+                    originalImageName = images[i].originalname
+                    savedImageName = images[i].filename
+                    mimetype = images[i].mimetype
+                    imageSize = images[i].size
                     
                     setImagesValues[i][0] = originalImageName
                     setImagesValues[i][1] = savedImageName
@@ -343,21 +343,21 @@ exports.updatePlace = function(request, response, next) {
 
                     setImagesValues[i].unshift(placeNumber)
                 }
-
+                
                 Place.insertPlaceImages([setImagesValues], function(error, results) {
-                    console.log(setImagesValues)
+                    console.log('setImagesValues', setImagesValues)
                     if (error) { return next(new ErrorHandler(500, error)) }
                     queryResultFlag = (results.affectedRows > 0) ? true : false
-                    console.log("INSERT query place success !!!")
+                    console.log('INSERT query place success !!!')
                 })
             }
             
             if (deleteImageNumber > 0) {
-                console.log("이미지가 삭제될때")    
+                console.log('이미지가 삭제될때')
                 Place.deletePlaceImages([placeNumber, deleteImageNumber], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }
                     queryResultFlag = (results.affectedRows > 0) ? true : false
-                    console.log("DELETE query place success !!!")
+                    console.log('DELETE query place success !!!')
                 })
             }
 
@@ -368,13 +368,13 @@ exports.updatePlace = function(request, response, next) {
 				throw new ErrorHandler(500, error)
             }
 
-            console.log("queryResultFlag : ", result)
+            console.log('queryResultFlag : ', result)
             if (result == true) {
-                response.status(200).send("Update success !!!")
+                response.status(200).send('Update success !!!')
             } else {
-                response.status(500).send("Update fail !!!")
+                response.status(500).send('Update fail !!!')
             }
-        } 
+        }
     )
 }
 

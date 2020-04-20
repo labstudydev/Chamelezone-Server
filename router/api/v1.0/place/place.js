@@ -36,14 +36,14 @@ let upload = multer({
     }
 }).array('images', 4)
 
-let updateUpload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-        files: 4,             
-        fileSize: 1024 * 1024 * 1024 
-    }
-}).fields([{ name: 'updateImages', maxCount: 4 },{ name: 'insertImages', maxCount: 4 }])
+// let updateUpload = multer({
+//     storage: storage,
+//     fileFilter: fileFilter,
+//     limits: {
+//         files: 4,             
+//         fileSize: 1024 * 1024 * 1024 
+//     }
+// }).fields([{ name: 'updateImages', maxCount: 4 },{ name: 'insertImages', maxCount: 4 }])
 
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', reviewController.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)
@@ -82,7 +82,7 @@ router.get('/duplicate-check', placeController.placeDuplicateCheck)             
 router.get('/:placeNumber' , placeController.placeReadOne)                            // 장소한개조회
 router.get('/', placeController.placeReadAll)                                         // 장소전체조회
 router.put('/:placeNumber',(request, response, next) => {
-    updateUpload(request, response, (error) => {
+    upload(request, response, (error) => {
         if(error) {
             response.status(404).send('Please images type check')
         } else {
