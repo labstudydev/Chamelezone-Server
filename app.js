@@ -7,10 +7,6 @@ const routerApiV1                       = require('./router/api/v1.0')
 const routerApiV2                       = require('./router/api/v2.0')
 const https                             = require('https') 
 const fs                                = require('fs')
-const options = {
-    key: fs.readFileSync('./keys/private.pem'),
-	cert: fs.readFileSync('./keys/public.pem')
-}
 
 app.engine('hbs', hbs({
     extname: 'hbs',
