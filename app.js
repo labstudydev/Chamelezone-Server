@@ -42,6 +42,6 @@ app.get('/addressSearch', (request, response) => {
     response.status(200).render('views/map/addressSearch.hbs')
 })
 
-app.listen(80, () => {
-    console.log('The server is running on Port 80')
+app.listen(3000, () => {
+    console.log('The server is running on Port 3000')
 })
