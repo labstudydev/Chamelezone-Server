@@ -5,8 +5,22 @@ const app                               = express()
 const bodyParser                        = require('body-parser')
 const routerApiV1                       = require('./router/api/v1.0')
 const routerApiV2                       = require('./router/api/v2.0')
-const https                             = require('https') 
+const https                             = require('https')
+const http                              = require('http')
 const fs                                = require('fs')
+
+/* openssl localhost */ 
+// const options = {
+//     key: fs.readFileSync('./keys/private.pem'),
+// 	cert: fs.readFileSync('./keys/public.pem')
+// }
+
+/* letsencrypt ec2 server */ 
+const options = {
+    ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
+}
 
 app.engine('hbs', hbs({
     extname: 'hbs',
@@ -38,10 +52,14 @@ app.get('/addressSearch', (request, response) => {
     response.status(200).render('map/addressSearch.hbs')
 })
 
-app.listen(3000, () => {
-    console.log('The server is running on Port 3000')
+// app.listen(3000, () => {
+//     console.log('The server is running on Port 3000')
+// })
+
+http.createServer(app).listen(3030, function() {
+    console.log("HTTP server listening on port " + 3030)
 })
 
-// https.createServer(options, app).listen(3000, function() {
-//     console.log("HTTPS server listening on port " + 3000);
-// })
+https.createServer(options, app).listen(3000, function() {
+    console.log("HTTPS server listening on port " + 3000);
+})
