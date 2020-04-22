@@ -1,4 +1,7 @@
 const { ErrorHandler, handleError , NullCheckErrorHandler, nullCheckHandleError}     = require('./costomModules/customError')
+const https = require('https')
+const greenlock = require('greenlock-express')
+var createServer = require("auto-sni")
 const express                           = require('express')
 const hbs                               = require('express-handlebars')
 const app                               = express()
@@ -19,6 +22,7 @@ app.set('view engine', 'hbs')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/image', express.static(__dirname + '/public/uploads'))
+app.use(express.static('pulbic'))
 app.use(routerApiV1)
 app.use(routerApiV2)
 
@@ -38,6 +42,6 @@ app.get('/addressSearch', (request, response) => {
     response.status(200).render('views/map/addressSearch.hbs')
 })
 
-app.listen(3000, () => {
-    console.log('The server is running on Port 3000')
+app.listen(80, () => {
+    console.log('The server is running on Port 80')
 })
