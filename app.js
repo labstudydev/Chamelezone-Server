@@ -9,12 +9,6 @@ const https                             = require('https')
 const http                              = require('http')
 const fs                                = require('fs')
 
-/* openssl localhost */ 
-// const options = {
-//     key: fs.readFileSync('./keys/private.pem'),
-// 	cert: fs.readFileSync('./keys/public.pem')
-// }
-
 app.engine('hbs', hbs({
     extname: 'hbs',
     defaultLayout: 'layout',
@@ -29,6 +23,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/image', express.static(__dirname + '/public/uploads'))
 app.use(routerApiV1)
 app.use(routerApiV2)
+
+/* openssl localhost */ 
+// const options = {
+//     key: fs.readFileSync('./keys/private.pem'),
+// 	cert: fs.readFileSync('./keys/public.pem')
+// }
 
 /* letsencrypt ec2 server */ 
 const options = {
@@ -51,10 +51,6 @@ app.use((error, request, response, next) => {
 app.get('/addressSearch', (request, response) => {
     response.status(200).render('map/addressSearch.hbs')
 })
-
-// app.listen(3000, () => {
-//     console.log('The server is running on Port 3000')
-// })
 
 http.createServer(app).listen(3000, function() {
     console.log("HTTP server listening on port " + 3000)
