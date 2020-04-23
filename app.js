@@ -15,13 +15,6 @@ const fs                                = require('fs')
 // 	cert: fs.readFileSync('./keys/public.pem')
 // }
 
-/* letsencrypt ec2 server */ 
-const options = {
-    ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
-}
-
 app.engine('hbs', hbs({
     extname: 'hbs',
     defaultLayout: 'layout',
@@ -36,6 +29,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/image', express.static(__dirname + '/public/uploads'))
 app.use(routerApiV1)
 app.use(routerApiV2)
+
+/* letsencrypt ec2 server */ 
+const options = {
+    ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
+}
 
 app.use((error, request, response, next) => {
     if (error instanceof ErrorHandler) {
@@ -56,10 +56,10 @@ app.get('/addressSearch', (request, response) => {
 //     console.log('The server is running on Port 3000')
 // })
 
-http.createServer(app).listen(3030, function() {
-    console.log("HTTP server listening on port " + 3030)
+http.createServer(app).listen(3000, function() {
+    console.log("HTTP server listening on port " + 3000)
 })
 
-https.createServer(options, app).listen(3000, function() {
-    console.log("HTTPS server listening on port " + 3000);
+https.createServer(options, app).listen(3030, function() {
+    console.log("HTTPS server listening on port " + 3030);
 })
