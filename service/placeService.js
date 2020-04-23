@@ -305,7 +305,7 @@ exports.updatePlace = function(request, response, next) {
             // console.log("insertImages", images['insertImages'])
             console.log("images", images)
             console.log("deleteImageNumber", deleteImageNumber)
-            
+
             let queryResultFlag = true
 
             // if (images['updateImages'] != undefined) {
@@ -351,8 +351,8 @@ exports.updatePlace = function(request, response, next) {
                     console.log('INSERT query place success !!!')
                 })
             }
-            
-            if (deleteImageNumber.length > 0) {
+
+            if (deleteImageNumber != undefined) {
                 console.log('이미지가 삭제될때')
                 Place.deletePlaceImages([placeNumber, deleteImageNumber], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }
