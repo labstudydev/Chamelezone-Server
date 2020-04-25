@@ -7,7 +7,7 @@ mail.sendGmail = function(param, next) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         prot : 587,
-        host :'smtp.gmlail.com',
+        host :'smtp.gmail.com',
         secure : false,
         requireTLS : true,
         auth: {
@@ -16,7 +16,7 @@ mail.sendGmail = function(param, next) {
         }
     })
     var mailOptions = {
-            from: '샵인샵(#inshop)',
+            from: 'hiyong27@gmail.com',
             to: param.toEmail,
             subject: '샵인샵(#inshop) - ' + param.toName + ' 회원님의 인증메일입니다.',
             text: param.text
