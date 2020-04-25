@@ -11,14 +11,14 @@ mail.sendGmail = function(param, next) {
         secure : false,
         requireTLS : true,
         auth: {
-            user: 'chldydrnjs94@gmail.com',
-            pass: '!dydrnjs94'
+            user: 'hiyong27@gmail.com',
+            pass: 'chldydrnjs1!'
         }
     })
     var mailOptions = {
-            from: 'chldydrnjs94@gmail.com',
+            from: 'hiyong27@gmail.com',
             to: param.toEmail,
-            subject: '카멜레존 - ' + param.toName + ' 회원님의 인증메일입니다.',
+            subject: '샵인샵(# in shop) - ' + param.toName + ' 회원님의 인증메일입니다.',
             text: param.text
     }
     transporter.sendMail(mailOptions, function(error, info){
