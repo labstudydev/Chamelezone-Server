@@ -16,9 +16,9 @@ mail.sendGmail = function(param, next) {
         }
     })
     var mailOptions = {
-            from: 'hiyong27@gmail.com',
+            from: '샵인샵(#inshop)',
             to: param.toEmail,
-            subject: '샵인샵(# in shop) - ' + param.toName + ' 회원님의 인증메일입니다.',
+            subject: '샵인샵(#inshop) - ' + param.toName + ' 회원님의 인증메일입니다.',
             text: param.text
     }
     transporter.sendMail(mailOptions, function(error, info){
