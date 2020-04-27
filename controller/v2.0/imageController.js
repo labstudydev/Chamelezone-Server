@@ -1,0 +1,1 @@
+const Images = require('../../service/v2.0/imageService.js')

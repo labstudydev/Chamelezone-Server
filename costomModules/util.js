@@ -1,5 +1,5 @@
 const { ErrorHandler }  	= require('../costomModules/customError')
-const User					= require('../dao/userDao')
+const User					= require('../dao/v1.0/userDao')
 const Step					= require('../node_modules/step')
 
 var util = { }
