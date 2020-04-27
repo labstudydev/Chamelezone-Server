@@ -1,4 +1,4 @@
-const User = require('../../service/userService')
+const User = require('../../service/v2.0/userService')
 
 exports.userCreate = function(request, response, next) {
     User.createUser(request, response, next)

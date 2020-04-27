@@ -1,4 +1,4 @@
-const Review = require('../../service/reviewService.js')
+const Review = require('../../service/v1.0/reviewService.js')
 
 exports.reviewCreate = function(request, response, next) {
     Review.reviewCreate(request, response, next)

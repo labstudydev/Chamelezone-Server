@@ -1,4 +1,4 @@
-const Search = require('../../service/searchService')
+const Search = require('../../service/v2.0/searchService')
 
 exports.searchByPlaceName = function(request, response, next) {
     Search.searchByPlaceName(request, response, next)

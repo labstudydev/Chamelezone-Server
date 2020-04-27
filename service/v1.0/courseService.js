@@ -1,8 +1,8 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const Course                = require('../dao/courseDao.js')
-const isEmpty               = require('../costomModules/valueCheck')
-const Step					= require('../node_modules/step')
-const util                  = require('../costomModules/util')
+const { ErrorHandler }      = require('../../costomModules/customError')
+const Course                = require('../../dao/courseDao.js')
+const isEmpty               = require('../../costomModules/valueCheck')
+const Step					= require('step')
+const util                  = require('../../costomModules/util')
 
 exports.courseCreate = function(request, response, next) {
     const image = request.file

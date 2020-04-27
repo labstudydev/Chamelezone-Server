@@ -1,9 +1,9 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const User                  = require('../dao/userDao.js')
-const Step					= require('../node_modules/step')
-const isEmpty               = require('../costomModules/valueCheck')
-const util                  = require('../costomModules/util')
-const mail                  = require('../costomModules/node-mailer')             
+const { ErrorHandler }      = require('../../costomModules/customError')
+const User                  = require('../../dao/userDao.js')
+const Step					= require('step')
+const isEmpty               = require('../../costomModules/valueCheck')
+const util                  = require('../../costomModules/util')
+const mail                  = require('../../costomModules/node-mailer')             
 
 exports.createUser = function(request, response, next) {
     let setValues = {

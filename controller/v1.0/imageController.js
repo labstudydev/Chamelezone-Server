@@ -1,1 +1,1 @@
-const Images = require('../../service/imageService.js')
+const Images = require('../../service/v1.0/imageService.js')

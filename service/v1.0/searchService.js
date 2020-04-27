@@ -1,7 +1,7 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const isEmpty               = require('../costomModules/valueCheck')
-const Search                = require('../dao/searchDao.js')
-const util                  = require('../costomModules/util')
+const { ErrorHandler }      = require('../../costomModules/customError')
+const isEmpty               = require('../../costomModules/valueCheck')
+const Search                = require('../../dao/searchDao.js')
+const util                  = require('../../costomModules/util')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name

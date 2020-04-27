@@ -1,4 +1,4 @@
-const Like = require('../../service/likeService.js')
+const Like = require('../../service/v2.0/likeService.js')
 
 exports.likeAddPlace = function(request, response, next) {
     Like.likeAddPlace(request, response, next)

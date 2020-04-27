@@ -1,4 +1,4 @@
-const Place = require('../../service/placeService.js')
+const Place = require('../../service/v2.0/placeService.js')
 
 exports.placeCreate = function(request, response, next) {
     Place.createPlace(request, response, next)

@@ -1,4 +1,4 @@
-const Course = require('../../service/courseService.js')
+const Course = require('../../service/v2.0/courseService.js')
 
 exports.courseCreate = function(request, response, next) {
     Course.courseCreate(request, response, next)
