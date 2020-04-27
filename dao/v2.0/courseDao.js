@@ -1,7 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const db                    = require('../../config/db')
-const Images                = require('./imageDao')
-const Step					= require('step')
 
 var Course = function(course) { }
 

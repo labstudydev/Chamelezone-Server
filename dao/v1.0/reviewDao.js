@@ -1,6 +1,5 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db')
-const Images                = require('../dao/imageDao')
+const { ErrorHandler }      = require('../../costomModules/customError')
+const db                    = require('../../config/db')
 
 var Review = function(review) { }
 

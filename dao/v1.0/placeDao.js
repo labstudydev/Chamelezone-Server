@@ -1,7 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const db                    = require('../../config/db')
-const Keyword               = require('../dao/keywordDao')
-const Images                = require('./imageDao')
 
 var Place = function(place) { }
 
