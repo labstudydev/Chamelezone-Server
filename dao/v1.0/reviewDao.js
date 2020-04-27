@@ -26,10 +26,8 @@ Review.insertReview = function([placeNumber, memberNumber, content, setImagesVal
                         setImagesValues[i].unshift(reviewNumber)
                     }
 
-                    // images insert query
                     const insertReviewImagesSqlQuery = 'INSERT INTO review_images (reviewNumber, originalImageName, savedImageName, mimetype, imageSize) VALUES ?'
                     connection.query(insertReviewImagesSqlQuery, [setImagesValues], function(error, results) {
-                    // Images.insertReviewImages([setImagesValues], function(error, results) {
                         if (error) {
                             connection.release()
                             return connection.rollback(function() {
@@ -185,27 +183,10 @@ Review.updateReview = function([content, reviewNumber], response) {
     }
 }
 
-Review.updateReviewImages = function([originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], response) {
-    try {
-        db((error, connection) => {
-            console.log("Dao update ToString : ", originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber)
-            const updateReviewImagesSqlQuery = `UPDATE review_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE reviewNumber = ? AND imageNumber = ?`
-            connection.query(updateReviewImagesSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, reviewNumber, imageNumber], function(error, results) {
-                connection.release()
-                if (error) { return response(error, null) }
-                else { response(null, results) }
-            })
-        })
-    } catch (error) {
-        throw new ErrorHandler(500, error)
-    }
-}
-
-
 Review.selectReviewImages = function([reviewNumber], response) {
     try {
         db((error, connection) => {
-            const selectReviewImagesSqlQuery = `select * from review_images where reviewNumber = ?`
+            const selectReviewImagesSqlQuery = `SELECT imageNumber, reviewNumber, originalImageName, savedImageName, mimetype, imageSize FROM review_images WHERE reviewNumber = ?`
             connection.query(selectReviewImagesSqlQuery, [reviewNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }

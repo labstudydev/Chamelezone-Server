@@ -1,5 +1,5 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db')
+const { ErrorHandler }      = require('../../costomModules/customError')
+const db                    = require('../../config/db')
 
 var Like = function(like) { }
 

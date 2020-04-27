@@ -1,7 +1,7 @@
-const { ErrorHandler }      = require('../costomModules/customError')
-const db                    = require('../config/db')
+const { ErrorHandler }      = require('../../costomModules/customError')
+const db                    = require('../../config/db')
 const Images                = require('./imageDao')
-const Step					= require('../node_modules/step')
+const Step					= require('step')
 
 var Course = function(course) { }
 
@@ -288,7 +288,6 @@ Course.updateCourseTransaction = function([title, content, courseNumber, memberN
 Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNumber], response) {
     try {
         db((error, connection) => {
-            console.log("Dao update : ", placeNumber, ", courseNumber", courseNumber, ", coursePlaceNumber", coursePlaceNumber)
             const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
             connection.query(updateCourseHasPlaceSqlQuery, [placeNumber, courseNumber, coursePlaceNumber], function(error, results) {
                 connection.release()
@@ -304,7 +303,6 @@ Course.updateCourseHasPlace = function([placeNumber, courseNumber, coursePlaceNu
 Course.deleteCourseHasPlace = function([coursePlaceNumberFlag], response) {
     try {
         db((error, connection) => {
-            console.log("Dao Delete : ", coursePlaceNumberFlag)
             const deleteCourseHasPlaceSqlQuery = `DELETE FROM course_has_place WHERE coursePlaceNumber = ?`
             connection.query(deleteCourseHasPlaceSqlQuery, [coursePlaceNumberFlag], function(error, results) {
                 connection.release()
@@ -320,7 +318,6 @@ Course.deleteCourseHasPlace = function([coursePlaceNumberFlag], response) {
 Course.insertCourseHasPlace = function([courseNumber, coursePlaceNumberFlag], response) {
     try {
         db((error, connection) => {
-            console.log("Dao Insert : ", courseNumber, ", ", coursePlaceNumberFlag)
             const insertCourseHasPlaceSqlQuery = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES (?, ?)`
             connection.query(insertCourseHasPlaceSqlQuery, [courseNumber, coursePlaceNumberFlag], function(error, results) {
                 connection.release()
@@ -334,107 +331,3 @@ Course.insertCourseHasPlace = function([courseNumber, coursePlaceNumberFlag], re
 }
  
 module.exports = Course
-
-// Course.updateCourseHasPlace = function([title, content, memberNumber, originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber, setCourseHasPlaceNumberArray, updateFlag, coursePlaceNumberFlag], response) {
-//     try {
-//         db((error, connection) => {
-//             connection.beginTransaction(function(error) {
-//                 if (error) {
-//                     reesponse(error, null)
-//                 }
-            
-//                 const updateCourseSqlQuery = `UPDATE course SET title = ?, content = ? WHERE courseNumber = ? AND memberNumber = ?`
-//                 connection.query(updateCourseSqlQuery, [title, content, courseNumber, memberNumber], function(error, results) {
-//                     if (error) {
-//                         connection.release()
-//                         return connection.rollback(function() {
-//                             response(error, null)
-//                         })
-//                     }
-
-//                     const updateCourseImageSqlQuery = `UPDATE course_images SET originalImageName = ?, savedImageName = ?, mimetype = ?, imageSize = ?  WHERE courseNumber = ? AND imageNumber = ?`
-//                     connection.query(updateCourseImageSqlQuery, [originalImageName, savedImageName, mimetype, imageSize, courseNumber, imageNumber], function(error, results) {
-//                         if (error) {
-//                             connection.release()
-//                             return connection.rollback(function() {
-//                                 response(error, null)
-//                             })
-//                         }
-                        
-//                         console.log(placeNumber, ", updateFlag", updateFlag, ", coursePlaceNumberFlag", coursePlaceNumberFlag)
-//                         const updateCourseHasPlaceSqlQuery = `UPDATE course_has_place SET placeNumber = ?  WHERE courseNumber = ? AND coursePlaceNumber = ?`
-//                         let data = [3, 65, 98]
-//                         connection.query(updateCourseHasPlaceSqlQuery, data, function(error, results) {
-//                             if (error) {
-//                                 connection.release()
-//                                 return connection.rollback(function() {
-//                                     response(error, null)
-//                                 })
-//                             }
-
-//                             if (updateFlag == true) {
-//                                 //insert
-//                                 const insertCourseHasPlace = `INSERT INTO course_has_place (courseNumber, placeNumber) VALUES ?`
-//                                 connection.query(insertCourseHasPlace, [courseNumber, coursePlaceNumberFlag], function(error, results) {
-//                                     if (error) {
-//                                         connection.release()
-//                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     return connection.rollback(function() {
-//                                             response(error, null)
-//                                         })
-//                                     }
-
-//                                     connection.commit(function(error) {
-//                                         if (error) {
-//                                             connection.release()
-//                                             return connection.rollback(function() {
-//                                                 response(error, null)
-//                                             })
-//                                         }
-//                                         response(null, results)
-//                                         connection.release()
-//                                     })  // commit()
-//                                 })
-//                             }
-
-//                             if (updateFlag == false) {
-//                                 //delete
-//                                 const deleteCourseHasPlace = `DELETE FROM course_has_place WHERE coursePlaceNumber = ?`
-//                                 connection.query(deleteCourseHasPlace, [coursePlaceNumberFlag], function(error, results) {
-//                                     if (error) {
-//                                         connection.release()
-//                                         return connection.rollback(function() {
-//                                             response(error, null)
-//                                         })
-//                                     }
-
-//                                     connection.commit(function(error) {
-//                                         if (error) {
-//                                             connection.release()
-//                                             return connection.rollback(function() {
-//                                                 response(error, null)
-//                                             })
-//                                         }
-//                                         response(null, results)
-//                                         connection.release()
-//                                     })  // commit()
-//                                 })
-//                             }
-                                    
-//                             connection.commit(function(error) {
-//                                 if (error) {
-//                                     connection.release()
-//                                     return connection.rollback(function() {
-//                                         response(error, null)
-//                                     })
-//                                 }
-//                                 response(null, results)
-//                             })  // commit()
-//                         })
-//                     })  // sdafdfasasdf
-//                 })  // insertCourseSqlQuery()
-//             })  // beginTransaction()
-//         })  // db connection()
-//     } catch (error) {
-//         throw new ErrorHandler(500, error)
-//     }
-// }

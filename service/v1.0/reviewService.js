@@ -1,6 +1,6 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const Review                = require('../../dao/reviewDao.js')
+const Review                = require('../../dao/v1.0/reviewDao.js')
 const util                  = require('../../costomModules/util')
 const Step					= require('step')
 
@@ -141,7 +141,6 @@ exports.reviewUpdate = function(request, response, next) {
     }
 
     isEmpty(nullValueCheckObject)
-    console.log("Review update request Values : ", setValues, "\n\ placeNumber : ", placeNumber,  "\n\ reviewNumber : ", reviewNumber, "\n\ images : ", images)
 
     Step (
         function reviewCheck() {
@@ -173,12 +172,9 @@ exports.reviewUpdate = function(request, response, next) {
                 throw new ErrorHandler(404, "Review does not exsit")
             }
 
-            console.log("images", images)
-            console.log("deleteImageNumber", deleteImageNumber)
             let queryResultFlag = true
 
             if (images.length > 0) {
-                console.log("이미지가 추가될때")
                 let originalImageName, savedImageName, mimetype, imageSize
                 let imagesArraySize = (images != undefined) ? images.length : 0
                 let setImagesValues = new Array(imagesArraySize)
@@ -202,19 +198,15 @@ exports.reviewUpdate = function(request, response, next) {
                 }
                 
                 Review.insertReviewImages([setImagesValues], function(error, results) {
-                    console.log('setImagesValues', setImagesValues)
                     if (error) { return next(new ErrorHandler(500, error)) }
                     queryResultFlag = (results.affectedRows > 0) ? true : false
-                    console.log('INSERT query review success !!!')
                 })
             }
             
             if (deleteImageNumber.length > 0) {
-                console.log('이미지가 삭제될때')
                 Review.deleteReviewImages([reviewNumber, deleteImageNumber], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }
                     queryResultFlag = (results.affectedRows > 0) ? true : false
-                    console.log('DELETE query review success !!!')
                 })
             }
 
@@ -225,7 +217,6 @@ exports.reviewUpdate = function(request, response, next) {
                 throw new ErrorHandler(500, error)
             }
 
-            console.log('queryResultFlag : ', result)
             if (result == true) {
                 response.status(200).send('Update success !!!')
             } else {

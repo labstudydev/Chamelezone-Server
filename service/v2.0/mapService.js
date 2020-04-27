@@ -1,5 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
-const Map                   = require('../../dao/mapDao.js')
+const Map                   = require('../../dao/v2.0/mapDao.js')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
 

@@ -1,6 +1,6 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const Like                  = require('../../dao/likeDao.js')
+const Like                  = require('../../dao/v1.0/likeDao.js')
 const util                  = require('../../costomModules/util')
 
 /*  unlike -> like = likeStatus: true

@@ -1,2 +1,2 @@
 const { ErrorHandler }       = require('../../costomModules/customError')
-const Images                 = require('../../dao/imageDao')
+const Images                 = require('../../dao/v1.0/imageDao')

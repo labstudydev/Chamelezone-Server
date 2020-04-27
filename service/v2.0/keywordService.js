@@ -1,5 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
-const Keyword               = require('../../dao/keywordDao.js')
+const Keyword               = require('../../dao/v2.0/keywordDao.js')
 
 exports.keywordReadAll = function(request, response, next) {
     Keyword.selectAllKeyword(function(error, keyword) {

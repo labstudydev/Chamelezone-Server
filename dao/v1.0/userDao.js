@@ -21,7 +21,7 @@ User.createUser = function(request, response) {
 User.getUserById = function(request, response) {
     try {
         db((error, connection) => {
-            const selectUserByIdSqlQuery = `SELECT * FROM member WHERE memberNumber = ?`
+            const selectUserByIdSqlQuery = `SELECT memberNumber, email, password, name, nickName, phoneNumber FROM member WHERE memberNumber = ?`
             connection.query(selectUserByIdSqlQuery, request, function(error, results, fields) {
                 connection.release()
                 if (error) { return response(error, null) }
@@ -184,7 +184,6 @@ User.insertPasswordSecurityCode = function(request, response) {
 }
 
 User.selectPasswordSecurityCodeCheck = function([securityCode, email, phoneNumber], response) {
-    console.log
     try {
         db((error, connection) => {
             const selectPasswordSecurityCodeCheckSqlQuery = `SELECT securityCode, email, phoneNumber FROM password_security_code WHERE securityCode = ? AND email = ? AND phoneNumber = ?`
