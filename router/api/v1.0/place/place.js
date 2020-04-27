@@ -11,10 +11,10 @@ let storage = multer.diskStorage({
     },
     filename: function (request, file, callback) {
         let decodeOriginalName = decodeURI(file.originalname)
-        console.log("TEST -- decodeOriginalName: ", decodeOriginalName)
+        console.log("Images - decodeOriginalName: ", decodeOriginalName)
         let extension = path.extname(file.originalname)
         let basename = path.basename(decodeOriginalName, extension)
-        console.log("TEST -- basename: ", basename)
+        console.log("Images - basename: ", basename)
         callback(null, basename + '-' + Date.now() + '-' + extension)
     }    
 })
@@ -35,15 +35,6 @@ let upload = multer({
         fileSize: 1024 * 1024 * 1024 
     }
 }).array('images', 4)
-
-// let updateUpload = multer({
-//     storage: storage,
-//     fileFilter: fileFilter,
-//     limits: {
-//         files: 4,             
-//         fileSize: 1024 * 1024 * 1024 
-//     }
-// }).fields([{ name: 'updateImages', maxCount: 4 },{ name: 'insertImages', maxCount: 4 }])
 
 /* ==================== review router ==================== */
 router.get('/:placeNumber/review', reviewController.reviewReadByPlace)                           // 장소의 리뷰 전체 조회(장소의 리뷰 목록 조회)

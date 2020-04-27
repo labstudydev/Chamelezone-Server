@@ -6,6 +6,7 @@ const courseController          = require('../../../../controller/v1.0/courseCon
 const express                   = require('express')
 const router                    = express.Router()
 
+/* ==================== user router ==================== */
 router.put('/password', userController.userPasswordReset)                      // 회원의 비밀번호 재설정
 router.post('/', userController.userCreate)                                    // 회원가입
 router.post('/login', userController.userLogin)                                // 로그인

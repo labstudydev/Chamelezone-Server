@@ -10,10 +10,10 @@ let storage = multer.diskStorage({
     },
     filename: function (request, file, callback) {
         let decodeOriginalName = decodeURI(file.originalname)
-        console.log("TEST -- decodeOriginalName: ", decodeOriginalName)
+        console.log("Images - decodeOriginalName: ", decodeOriginalName)
         let extension = path.extname(file.originalname)
         let basename = path.basename(decodeOriginalName, extension)
-        console.log("TEST -- basename: ", basename)
+        console.log("Images - basename: ", basename)
         callback(null, basename + '-' + Date.now() + '-' + extension)
     }    
 })
@@ -47,7 +47,7 @@ router.post('/', (request, response, next) => {
 router.get('/', courseController.courseReadAll)                          // 코스 목록 조회
 router.get('/:courseNumber', courseController.courseReadOne)             // 코스 한개 조회
 router.delete('/:courseNumber',courseController.courseDelete)            // 코스 삭제
-router.put('/:courseNumber', (request, response, next) => {               // 코스 수정
+router.put('/:courseNumber', (request, response, next) => {              // 코스 수정
     upload(request, response, (error) => {
         if(error) {
             response.status(404).send('Please image type check')

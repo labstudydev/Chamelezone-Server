@@ -13,7 +13,6 @@ const course        = require('./course/course')
 const like          = require('./like/like')
 
 v1.get("/", (request, response) => {
-    // response.sendFile(path.join(__dirname, '../../views/index.hbs'))
     response.sendFile(path.join(__dirname, '/views/index.hbs'))
     response.status(200).end('v1.0 version get success')
 })
