@@ -125,7 +125,8 @@ Review.selectByPlace = function([placeNumber], response) {
                                             `LEFT JOIN review_images RI ON R.reviewNumber = RI.reviewNumber ` +
                                             `LEFT JOIN member M ON R.memberNumber = M.memberNumber ` +
                                             `WHERE R.placeNumber = ? ` +
-                                            `GROUP BY R.reviewNumber`
+                                            `GROUP BY R.reviewNumber ` +
+                                            `ORDER BY R.reviewNumber DESC`
             connection.query(selectByPlaceSqlQuery, [placeNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
