@@ -152,7 +152,7 @@ exports.reviewUpdate = function([images, placeNumber, reviewNumber, memberNumber
                     })
                 }
                 
-                if (deleteImageNumber.length > 0) {
+                if (deleteImageNumber != undefined) {
                     Review.deleteReviewImages([reviewNumber, deleteImageNumber], function(error, results) {
                         if (error) { return response(error, null) }
                         queryResultFlag = (results.affectedRows > 0) ? true : false
