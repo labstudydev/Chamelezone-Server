@@ -1,67 +1,55 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
-const isEmpty               = require('../../costomModules/valueCheck')
 const Search                = require('../../dao/v2.0/searchDao.js')
-const util                  = require('../../costomModules/util')
 
-exports.searchByPlaceName = function(request, response, next) {
-    let name = request.params.name
-    const nullValueCheckObject = {
-        name
+exports.searchByPlaceName = function([name], response, next) {
+    try {
+        Search.selectByPlaceName(name, function(error, results) {
+            if (error) { return response(error, null) }
+            
+            if(results.length == 0) {
+                response(null, 404)
+            } else {
+                response(null, results)
+            }
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
     }
-    isEmpty(nullValueCheckObject)
-
-    Search.selectByPlaceName(name, function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))
-        }
-
-        if(results.length == 0 || results.length == undefined) {
-            response.status(404).send("No Results Found")
-        } else {
-            util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
-            response.status(200).send(results)
-        } 
-    })
 }
 
-exports.searchByAreaName = function(request, response, next) {
-    let name = request.params.name
-    const nullValueCheckObject = {
-        name
+exports.searchByAreaName = function([name], response, next) {
+    try {
+        Search.selectByAreaName(name, function(error, results) {
+            if (error) {
+                return next(new ErrorHandler(500, error))
+            }
+            
+            if(results.length == 0) {
+                response(null, 404)
+            } else {
+                response(null, results)
+            }
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
     }
-    isEmpty(nullValueCheckObject)
-
-    Search.selectByAreaName(name, function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))
-        }
-        
-        if(results.length == 0 || results.length == undefined) {
-            response.status(404).send("No Results Found")
-        } else {
-            util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
-            response.status(200).send(results)
-        } 
-    })
 }
+    
 
-exports.searchByKeywordName = function(request, response, next) {
-    let name = request.params.name
-    const nullValueCheckObject = {
-        name
+exports.searchByKeywordName = function([name], response, next) {
+    try {
+        Search.selectByKeywordName(name, function(error, results) {
+            if (error) {
+                return next(new ErrorHandler(500, error))
+            }
+    
+            if(results.length == 0) {
+                response(null, 404)
+            } else {
+                response(null, results)
+            }
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
     }
-    isEmpty(nullValueCheckObject)
-
-    Search.selectByKeywordName(name, function(error, results) {
-        if (error) {
-            return next(new ErrorHandler(500, error))
-        }
-
-        if(results.length == 0 || results.length == undefined) {
-            response.status(404).send("No Results Found")
-        } else {
-            util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
-            response.status(200).send(results)
-        } 
-    })
 }
