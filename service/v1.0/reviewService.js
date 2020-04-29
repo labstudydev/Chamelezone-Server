@@ -203,7 +203,7 @@ exports.reviewUpdate = function(request, response, next) {
                 })
             }
             
-            if (deleteImageNumber.length > 0) {
+            if (deleteImageNumber != undefined) {
                 Review.deleteReviewImages([reviewNumber, deleteImageNumber], function(error, results) {
                     if (error) { return next(new ErrorHandler(500, error)) }
                     queryResultFlag = (results.affectedRows > 0) ? true : false
