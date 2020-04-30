@@ -78,7 +78,8 @@ Review.selectByUser = function([memberNumber], response) {
                                             `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
                                             `LEFT JOIN place_images PI ON PI.placeNumber = R.placeNumber ` + 
                                             `WHERE R.memberNumber = ? ` + 
-                                            `GROUP BY R.reviewNumber`
+                                            `GROUP BY R.reviewNumber ` +
+                                            `ORDER BY R.regiDate DESC`
             connection.query(selectByUserSqlQuery, [memberNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
