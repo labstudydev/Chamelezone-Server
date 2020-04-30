@@ -95,7 +95,7 @@ Course.selectOneCourse = function([courseNumber], response) {
                                             `            FROM course C ` +
                                             `            LEFT JOIN member M ON M.memberNumber = C.memberNumber) COURSE ON COURSE.courseNumber = CHP.courseNumber ` +
                                             `LEFT JOIN course_images CI ON CI.courseNumber = CHP.courseNumber ` +
-                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, P.addressDetail, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name separator ',') AS 'keywordName' ` +
+                                            `LEFT JOIN (SELECT PHK.placeNumber, P.name AS 'placeName', P.address, P.addressDetail, PI.savedImageName, GROUP_CONCAT(DISTINCT K.name ORDER BY placeKeywordNumber SEPARATOR ',') AS 'keywordName' ` +
                                             `           FROM place_has_keyword PHK ` +
                                             `           LEFT JOIN place P ON P.placeNumber = PHK.placeNumber ` +
                                             `           LEFT JOIN place_images PI ON PI.placeNumber = PHK.placeNumber ` +
