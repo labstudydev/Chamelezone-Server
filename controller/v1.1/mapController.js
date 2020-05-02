@@ -1,19 +1,15 @@
-const { ErrorHandler }      = require('../../costomModules/customError')
-const Map                   = require('../../dao/v1.0/mapDao.js')
+const Map = require('../../service/v1.1/mapService')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
 
 exports.mapSearchPlaceByName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
-    
     const nullValueCheckObject = {
         name
     }
     isEmpty(nullValueCheckObject)
 
-    Map.selectPlaceByName(name, function(error, results) {
+    Map.mapSearchPlaceByName(name, function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
@@ -23,6 +19,6 @@ exports.mapSearchPlaceByName = function(request, response, next) {
         } else {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
-        } 
+        }
     })
 }

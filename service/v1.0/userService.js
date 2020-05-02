@@ -3,12 +3,14 @@ const User                  = require('../../dao/v1.0/userDao.js')
 const Step					= require('step')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
-const mail                  = require('../../costomModules/node-mailer')             
+const mail                  = require('../../costomModules/node-mailer')
+const logger                = require('../../config/logger')
 
 exports.createUser = function(request, response, next) {
     let setValues = {
         email, password, name, nickName, phoneNumber
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
 
     const nullValueCheckObject = {
         email, password, name, nickName, phoneNumber
@@ -58,6 +60,7 @@ exports.createUser = function(request, response, next) {
 
 exports.getUserById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
+    logger.info(`Request Values = memberNumber: ${memberNumber}`)
 
     User.getUserById(memberNumber, function(error, results) {
         if (error) {
@@ -76,6 +79,8 @@ exports.getLogin = function(request, response, next) {
     const setValues = {
         email, password
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
+
     const nullValueCheckObject = {
         email, password
     }
@@ -99,7 +104,8 @@ exports.updateById = function(request, response, next) {
     const setValues = {
         password, nickName, phoneNumber
     } = request.body
-    
+    logger.info(`Request Values = setValues: ${setValues} / memberNumber: ${memberNumber}`)
+
     const nullValueCheckObject = {
         memberNumber
     }
@@ -140,7 +146,8 @@ exports.updateById = function(request, response, next) {
 
 exports.deleteById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-        
+    logger.info(`Request Values = memberNumber: ${memberNumber}`)
+
     const nullValueCheckObject = {
         memberNumber
     }
@@ -155,7 +162,9 @@ exports.deleteById = function(request, response, next) {
 }
 
 exports.userEmailDuplicateCheck = function(request, response, next) {
-    let email = request.params.email    
+    let email = request.params.email  
+    logger.info(`Request Values = email: ${email}`)  
+
     const nullValueCheckObject = {
         email
     }
@@ -178,6 +187,8 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
 
 exports.userNickNameDuplicateCheck = function(request, response, next) {
     let nickName = request.params.nickName
+    logger.info(`Request Values = nickName: ${nickName}`)
+
     const nullValueCheckObject = {
         nickName
     }
@@ -202,6 +213,8 @@ exports.userEmailFind = function(request, response, next) {
     const setValues = {
         name, phoneNumber
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
+
     const nullValueCheckObject = {
         name, phoneNumber
     }
@@ -224,6 +237,7 @@ exports.userPasswordReset = function(request, response, next) {
     const setValues = {
         password, memberNumber
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
     
     const nullValueCheckObject = {
         password, memberNumber
@@ -243,6 +257,8 @@ exports.userSendSecurityCode = function(request, response, next) {
     const setValues = {
         email, phoneNumber
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
+
     const nullValueCheckObject = {
         email, phoneNumber
     }
@@ -302,6 +318,7 @@ exports.userCheckSecurityCode = function(request, response, next) {
     const setValues = {
         securityCode, email, phoneNumber
     } = request.body
+    logger.info(`Request Values = setValues: ${setValues}`)
     
     const nullValueCheckObject = {
         securityCode, email, phoneNumber

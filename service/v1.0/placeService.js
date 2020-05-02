@@ -4,13 +4,15 @@ const Like                  = require('../../dao/v1.0/likeDao.js')
 const isEmpty               = require('../../costomModules/valueCheck')
 const Step					= require('step')
 const util                  = require('../../costomModules/util')
+const logger                = require('../../config/logger')
   
 exports.createPlace = function(request, response, next) {
     const images = request.files
     const setValues = {
         memberNumber, name, address, addressDetail, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
-    
+    logger.info(`Request Values = setValues: ${setValues} / images: ${images}`)
+
     const nullValueCheckObject = {
         memberNumber, images, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     }
@@ -90,6 +92,8 @@ exports.createPlace = function(request, response, next) {
 exports.readOnePlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
     let placeNumber = request.params.placeNumber
+    logger.info(`Request Values = memberNumber: ${memberNumber} / placeNumber: ${placeNumber}`)
+
     const nullValueCheckObject = {
         placeNumber
     }
@@ -134,6 +138,7 @@ exports.readOnePlace = function(request, response, next) {
 
 exports.readAllPlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
+    logger.info(`Request Values = memberNumber: ${memberNumber}`)
     if (memberNumber == null || memberNumber == undefined) {
         memberNumber = 0
     }
@@ -155,6 +160,7 @@ exports.readAllPlace = function(request, response, next) {
 exports.deletePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let memberNumber = request.body
+    logger.info(`Request Values = placeNumber: ${placeNumber} / memberNumber: ${memberNumber}`)
 
     const nullValueCheckObject = {
         placeNumber, memberNumber
@@ -173,6 +179,7 @@ exports.getCutrrentLocation = function(request, response, next) {
     const setValues = {
         latitude, longitude, latitude2
     } = request.params
+    logger.info(`Request Values = setValues: ${setValues}`)
 
     Place.getCutrrentLocation(setValues, function(error, results){
         if (error) {
@@ -184,6 +191,7 @@ exports.getCutrrentLocation = function(request, response, next) {
 
 exports.placeListUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
+    logger.info(`Request Values = memberNumber: ${memberNumber}`)
 
     const nullValueCheckObject = {
         memberNumber
@@ -208,6 +216,7 @@ exports.placeDuplicateCheck = function(request, response, next) {
     const setValues = {
         name, latitude, longitude
     } = request.query
+    logger.info(`Request Values = setValues: ${setValues}`)
 
     const nullValueCheckObject = {
         name, latitude, longitude
@@ -235,7 +244,8 @@ exports.updatePlace = function(request, response, next) {
     const setValues = {
         memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, deleteImageNumber
     } = request.body
-    
+    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber} / images: ${images}`)
+
     const nullValueCheckObject = {
         placeNumber, memberNumber, address, phoneNumber, content
     }
@@ -339,6 +349,8 @@ exports.updatePlace = function(request, response, next) {
 exports.updatePlaceHasKeyword = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     const setValues = { keywordName, placeKeywordNumber } = request.body
+    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber}`)
+
     const nullValueCheckObject = { placeNumber, keywordName }
     isEmpty(nullValueCheckObject)
 
@@ -427,6 +439,8 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
 exports.updatePlaceOpeningTime = function(request,response, next) {
     let placeNumber = request.params.placeNumber
     const setValues = { openingTime } = request.body
+    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber}`)
+
     const nullValueCheckObject = { openingTime }
     isEmpty(nullValueCheckObject)
 

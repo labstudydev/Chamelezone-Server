@@ -1,29 +1,22 @@
+const Like                  = require('../../service/v1.1/likeService.js')
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const Like                  = require('../../dao/v1.0/likeDao.js')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
-
-/*  unlike -> like = likeStatus: true
-    like -> unlike = likeStatus: false
-    (likeNumber is null) == unlike = likeStatus: false
-    (likeNumber is not null) == like = likeStatus: true */
 
 exports.likeAddPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
     let placeNumber = request.body.placeNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber} / placeNumber: ${placeNumber}`)
     
     const nullValueCheckObject = {
         memberNumber, placeNumber
     }
     isEmpty(nullValueCheckObject)
 
-    Like.insertLike([placeNumber, memberNumber], function(error, results) {
+    Like.likeAddPlace([placeNumber, memberNumber], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
-        
+
         results[0] = { likeStatus : true }
         response.status(200).send(results[0])
     })
@@ -32,14 +25,13 @@ exports.likeAddPlace = function(request, response, next) {
 exports.likeCancelPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
     let placeNumber = request.body.placeNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber} / placeNumber: ${placeNumber}`)
 
     const nullValueCheckObject = {
         memberNumber, placeNumber
     }
     isEmpty(nullValueCheckObject)
 
-    Like.deleteLike([placeNumber, memberNumber], function(error, results) {
+    Like.likeCancelPlace([placeNumber, memberNumber], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
@@ -51,14 +43,13 @@ exports.likeCancelPlace = function(request, response, next) {
 
 exports.likeReadAllByUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber}`)
     
     const nullValueCheckObject = {
         memberNumber
     }
     isEmpty(nullValueCheckObject)
 
-    Like.selectAllByUserLikes([memberNumber], function(error, results) {
+    Like.likeReadAllByUser([memberNumber], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }

@@ -1,74 +1,67 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const Search                = require('../../dao/v1.0/searchDao.js')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
+const Search                = require('../../service/v1.1/searchService')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
-
     const nullValueCheckObject = {
         name
     }
     isEmpty(nullValueCheckObject)
 
-    Search.selectByPlaceName(name, function(error, results) {
+    Search.searchByPlaceName([name], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
 
-        if(results.length == 0 || results.length == undefined) {
+        if(results == 404) {
             response.status(404).send("No Results Found")
         } else {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
-        } 
+        }
     })
 }
 
 exports.searchByAreaName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
-
     const nullValueCheckObject = {
         name
     }
     isEmpty(nullValueCheckObject)
 
-    Search.selectByAreaName(name, function(error, results) {
+    Search.searchByAreaName([name], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
         
-        if(results.length == 0 || results.length == undefined) {
+        if(results == 404) {
             response.status(404).send("No Results Found")
         } else {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
-        } 
+        }
     })
 }
 
 exports.searchByKeywordName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
-
     const nullValueCheckObject = {
         name
     }
     isEmpty(nullValueCheckObject)
 
-    Search.selectByKeywordName(name, function(error, results) {
+    Search.searchByKeywordName([name], function(error, results) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
-
-        if(results.length == 0 || results.length == undefined) {
+        
+        if(results.length == 0) {
             response.status(404).send("No Results Found")
         } else {
             util.resultStringToArray(results, ['keywordName', 'imageNumber', 'savedImageName'])
             response.status(200).send(results)
-        } 
+        }
     })
 }
