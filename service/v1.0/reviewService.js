@@ -12,7 +12,7 @@ exports.reviewCreate = function(request, response, next) {
         memberNumber, content
     } = request.body
     logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber} / images: ${images}`)
-    
+
     const nullValueCheckObject = {
         images, content
     }
