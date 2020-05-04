@@ -111,6 +111,13 @@ exports.updateById = function(request, response, next) {
     }
     isEmpty(nullValueCheckObject)
 
+    if (password.length < 8 || password.length > 16) {
+        throw new ErrorHandler(400, 'password size is not valid')
+    }
+    if (phoneNumber.length < 11 || phoneNumber.length > 14) {
+        throw new ErrorHandler(400, 'phoneNumber size is not valid')
+    }
+
     Step (
         function getUserInfo() {
             User.getUserById([memberNumber], this)
