@@ -2,11 +2,10 @@ const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
 const Search                = require('../../dao/v1.0/searchDao.js')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
+    console.log("Request params: ", request.params)
 
     const nullValueCheckObject = {
         name
@@ -29,7 +28,7 @@ exports.searchByPlaceName = function(request, response, next) {
 
 exports.searchByAreaName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
+    console.log("Request params: ", request.params)
 
     const nullValueCheckObject = {
         name
@@ -52,7 +51,7 @@ exports.searchByAreaName = function(request, response, next) {
 
 exports.searchByKeywordName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
+    console.log("Request params: ", request.params)
 
     const nullValueCheckObject = {
         name

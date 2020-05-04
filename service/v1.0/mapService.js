@@ -2,11 +2,10 @@ const { ErrorHandler }      = require('../../costomModules/customError')
 const Map                   = require('../../dao/v1.0/mapDao.js')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
 
 exports.mapSearchPlaceByName = function(request, response, next) {
     let name = request.params.name
-    logger.info(`Request Values = name: ${name}`)
+    console.log("Request params: ", request.params)
     
     const nullValueCheckObject = {
         name

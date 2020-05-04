@@ -3,14 +3,13 @@ const Course                = require('../../dao/v1.0/courseDao.js')
 const isEmpty               = require('../../costomModules/valueCheck')
 const Step					= require('step')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
 
 exports.courseCreate = function(request, response, next) {
     const image = request.file
     const setValues = {
         memberNumber, title, content, placeNumber
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / image: ${image}`)
+    console.log("Request file: ", request.file, "\nRequest body:", request.body)
 
     const nullValueCheckObject = {
         placeNumber, memberNumber, title, content
@@ -87,7 +86,7 @@ exports.courseReadAll = function(request, response, next) {
 exports.courseReadOne = function(request, response, next) {
     let courseNumber = request.params.courseNumber
     let memberNumber = request.query.memberNumber
-    logger.info(`Request Values = courseNumber: ${courseNumber} / memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params, "\nRequest query:", request.query)
 
     const nullValueCheckObject = {
         courseNumber
@@ -110,7 +109,7 @@ exports.courseReadOne = function(request, response, next) {
 
 exports.courseListUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params)
 
     const nullValueCheckObject = {
         memberNumber
@@ -133,7 +132,7 @@ exports.courseListUser = function(request, response, next) {
 exports.courseDelete = function(request, response, next) {
     let courseNumber = request.params.courseNumber
     let memberNumber = request.query.memberNumber
-    logger.info(`Request Values = courseNumber: ${courseNumber} / memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params, "\nRequest query:", request.query)
     
     const nullValueCheckObject = {
         courseNumber, memberNumber
@@ -155,8 +154,8 @@ exports.courseUpdate = function(request, response, next) {
     const setValues = {
         imageNumber, memberNumber, title, content, placeNumber, savedImageName
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / courseNumber: ${courseNumber} / image: ${image}`)
-
+    console.log("Request params: ", request.params, "\nRequest body:", request.body,  "\nRequest file:", request.file)
+    
     const nullValueCheckObject = {
         courseNumber, memberNumber, title, content, placeNumber
     }

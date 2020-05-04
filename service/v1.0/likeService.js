@@ -2,7 +2,6 @@ const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
 const Like                  = require('../../dao/v1.0/likeDao.js')
 const util                  = require('../../costomModules/util')
-const logger                = require('../../config/logger')
 
 /*  unlike -> like = likeStatus: true
     like -> unlike = likeStatus: false
@@ -12,7 +11,7 @@ const logger                = require('../../config/logger')
 exports.likeAddPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
     let placeNumber = request.body.placeNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber} / placeNumber: ${placeNumber}`)
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
     
     const nullValueCheckObject = {
         memberNumber, placeNumber
@@ -32,7 +31,7 @@ exports.likeAddPlace = function(request, response, next) {
 exports.likeCancelPlace = function(request, response, next) {
     let memberNumber = request.params.memberNumber
     let placeNumber = request.body.placeNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber} / placeNumber: ${placeNumber}`)
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
 
     const nullValueCheckObject = {
         memberNumber, placeNumber
@@ -51,7 +50,7 @@ exports.likeCancelPlace = function(request, response, next) {
 
 exports.likeReadAllByUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params)
     
     const nullValueCheckObject = {
         memberNumber

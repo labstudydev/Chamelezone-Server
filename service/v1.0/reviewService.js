@@ -3,7 +3,6 @@ const isEmpty               = require('../../costomModules/valueCheck')
 const Review                = require('../../dao/v1.0/reviewDao.js')
 const util                  = require('../../costomModules/util')
 const Step					= require('step')
-const logger                = require('../../config/logger')
 
 exports.reviewCreate = function(request, response, next) { 
     let placeNumber = request.params.placeNumber
@@ -11,6 +10,8 @@ exports.reviewCreate = function(request, response, next) {
     const setValues = {
         memberNumber, content
     } = request.body
+
+    console.log("Request params: ", request.params, "\nRequest body:", request.body,  "\nRequest files:", request.files)
 
     const nullValueCheckObject = {
         images, content
@@ -72,7 +73,7 @@ exports.reviewReadAll = function(request, response, next) {
 
 exports.reviewReadByUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-    logger.info(`Request Values = memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params)
 
     Review.selectByUser([memberNumber], function(error, results) {
         if (error) {
@@ -87,7 +88,7 @@ exports.reviewReadByUser = function(request, response, next) {
 exports.reviewReadOneByPlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let reviewNumber = request.params.reviewNumber
-    logger.info(`Request Values = placeNumber: ${placeNumber} / reviewNumber: ${reviewNumber}`)
+    console.log("Request params: ", request.params)
     
     Review.selectByReview([placeNumber, reviewNumber], function(error, results) {
         if (error) {
@@ -101,7 +102,7 @@ exports.reviewReadOneByPlace = function(request, response, next) {
 
 exports.reviewReadByPlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
-    logger.info(`Request Values = placeNumber: ${placeNumber}`)
+    console.log("Request params: ", request.params)
 
     Review.selectByPlace([placeNumber], function(error, results) {
         if (error) {
@@ -117,7 +118,7 @@ exports.reviewDelete = function(request, response, next) {
     const setValues = {
         placeNumber, reviewNumber
     } = request.params
-    logger.info(`Request Values = setValues: ${setValues} / memberNumber: ${memberNumber}`)
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
     
     const nullValueCheckObject = {
         placeNumber, reviewNumber, memberNumber
@@ -136,10 +137,11 @@ exports.reviewUpdate = function(request, response, next) {
     let images = request.files
     let placeNumber = request.params.placeNumber
     let reviewNumber = request.params.reviewNumber
-    
     const setValues = {
         memberNumber, content, deleteImageNumber,
     } = request.body
+    
+    console.log("Request params: ", request.params, "\nRequest body:", request.body,  "\nRequest files:", request.files)
     
     const nullValueCheckObject = {
         placeNumber, reviewNumber, memberNumber, content
