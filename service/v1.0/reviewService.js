@@ -11,7 +11,6 @@ exports.reviewCreate = function(request, response, next) {
     const setValues = {
         memberNumber, content
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber} / images: ${images}`)
 
     const nullValueCheckObject = {
         images, content
@@ -141,7 +140,6 @@ exports.reviewUpdate = function(request, response, next) {
     const setValues = {
         memberNumber, content, deleteImageNumber,
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber} / reviewNumber: ${reviewNumber} / images: ${images}`)
     
     const nullValueCheckObject = {
         placeNumber, reviewNumber, memberNumber, content

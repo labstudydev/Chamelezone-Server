@@ -11,7 +11,6 @@ exports.createPlace = function(request, response, next) {
     const setValues = {
         memberNumber, name, address, addressDetail, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / images: ${images}`)
 
     const nullValueCheckObject = {
         memberNumber, images, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
@@ -244,7 +243,6 @@ exports.updatePlace = function(request, response, next) {
     const setValues = {
         memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, deleteImageNumber
     } = request.body
-    logger.info(`Request Values = setValues: ${setValues} / placeNumber: ${placeNumber} / images: ${images}`)
 
     const nullValueCheckObject = {
         placeNumber, memberNumber, address, phoneNumber, content
