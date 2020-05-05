@@ -55,7 +55,7 @@ Keyword.selectAllKeywordByRank = function(response) {
                                                 FROM place_has_keyword PHK
                                                 LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber
                                                 GROUP BY keywordNumber
-                                                ORDER BY keywordRank DESC
+                                                ORDER BY keywordRank DESC, keywordNumber ASC
                                                 LIMIT 10`
             connection.query(selectKeywordByRankSqlQuery, function(error, results) {
                 connection.release()
