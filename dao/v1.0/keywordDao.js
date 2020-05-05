@@ -48,4 +48,24 @@ Keyword.updatePlaceKeyword = function([setKeywordNameValues], response) {
     }
 }
 
+Keyword.selectAllKeywordByRank = function(response) {
+    try {
+        db((error, connection) => {
+            const selectKeywordByRankSqlQuery = `SELECT PHK.keywordNumber, COUNT(*) as keywordRank, K.name
+                                                FROM place_has_keyword PHK
+                                                LEFT JOIN keyword K ON K.keywordNumber = PHK.keywordNumber
+                                                GROUP BY keywordNumber
+                                                ORDER BY keywordRank DESC
+                                                LIMIT 10`
+            connection.query(selectKeywordByRankSqlQuery, function(error, results) {
+                connection.release()
+                if (error) { return response(error, null) }
+                else { response(null, results) }
+            }) 
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}
+
 module.exports = Keyword

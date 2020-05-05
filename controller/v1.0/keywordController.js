@@ -5,3 +5,8 @@ exports.keywordReadAll = function(request, response, next) {
     logger.info(`Request Method: ${request.method} / Request Url: ${request.originalUrl}`)
     Keyword.keywordReadAll(request, response, next)
 }
+
+exports.keywrodReadByRank = function(request, response, next) {
+    logger.info(`Request Method: ${request.method} / Request Url: ${request.originalUrl}`)
+    Keyword.keywrodReadByRank(request, response, next)
+}
