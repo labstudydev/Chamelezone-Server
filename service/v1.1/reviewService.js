@@ -1,6 +1,6 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const Review                = require('../../dao/v2.0/reviewDao.js')
+const Review                = require('../../dao/v1.1/reviewDao.js')
 const util                  = require('../../costomModules/util')
 const Step					= require('step')
 

@@ -1,6 +1,6 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
-const User = require('../../service/v2.0/userService')
+const User                  = require('../../service/v1.1/userService')
 
 exports.userCreate = function(request, response, next) {
     let setValues = {

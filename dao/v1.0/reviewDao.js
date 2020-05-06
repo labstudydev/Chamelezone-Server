@@ -78,7 +78,8 @@ Review.selectByUser = function([memberNumber], response) {
                                             `LEFT JOIN place P ON P.placeNumber = R.placeNumber ` + 
                                             `LEFT JOIN place_images PI ON PI.placeNumber = R.placeNumber ` + 
                                             `WHERE R.memberNumber = ? ` + 
-                                            `GROUP BY R.reviewNumber`
+                                            `GROUP BY R.reviewNumber ` +
+                                            `ORDER BY R.regiDate DESC`
             connection.query(selectByUserSqlQuery, [memberNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
@@ -125,7 +126,8 @@ Review.selectByPlace = function([placeNumber], response) {
                                             `LEFT JOIN review_images RI ON R.reviewNumber = RI.reviewNumber ` +
                                             `LEFT JOIN member M ON R.memberNumber = M.memberNumber ` +
                                             `WHERE R.placeNumber = ? ` +
-                                            `GROUP BY R.reviewNumber`
+                                            `GROUP BY R.reviewNumber ` +
+                                            `ORDER BY R.reviewNumber DESC`
             connection.query(selectByPlaceSqlQuery, [placeNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }

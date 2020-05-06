@@ -5,6 +5,8 @@ const util                  = require('../../costomModules/util')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         name
     }
@@ -26,6 +28,8 @@ exports.searchByPlaceName = function(request, response, next) {
 
 exports.searchByAreaName = function(request, response, next) {
     let name = request.params.name
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         name
     }
@@ -47,6 +51,8 @@ exports.searchByAreaName = function(request, response, next) {
 
 exports.searchByKeywordName = function(request, response, next) {
     let name = request.params.name
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         name
     }

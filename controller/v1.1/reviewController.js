@@ -1,4 +1,4 @@
-const Review                = require('../../service/v2.0/reviewService.js')
+const Review                = require('../../service/v1.1/reviewService.js')
 const isEmpty               = require('../../costomModules/valueCheck')
 const { ErrorHandler }      = require('../../costomModules/customError')
 const util                  = require('../../costomModules/util')

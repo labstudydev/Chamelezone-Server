@@ -72,7 +72,12 @@ exports.courseReadAll = function(request, response, next) {
         if (error) {
             return next(new ErrorHandler(500, error))
         }
-        response.status(200).send(results)
+
+        if (results.length == 0 || results.length == undefined) {
+            response.status(404).send("Course list does not exist")
+        } else {
+            response.status(200).send(results)
+        }
     })
 }
 
@@ -90,7 +95,11 @@ exports.courseReadOne = function(request, response, next) {
         }
 
         util.resultStringToArray(results, ['keywordName'])
-        response.status(200).send(results)
+        if (results.length == 0 || results.length == undefined) {
+            response.status(404).send("Course does not exist")
+        } else {
+            response.status(200).send(results)
+        }
     })
 }
 

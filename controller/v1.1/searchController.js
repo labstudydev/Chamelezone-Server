@@ -1,7 +1,7 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
-const Search                = require('../../service/v2.0/searchService')
+const Search                = require('../../service/v1.1/searchService')
 
 exports.searchByPlaceName = function(request, response, next) {
     let name = request.params.name

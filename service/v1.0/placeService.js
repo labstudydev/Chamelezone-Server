@@ -10,7 +10,9 @@ exports.createPlace = function(request, response, next) {
     const setValues = {
         memberNumber, name, address, addressDetail, keywordName, openingTime, phoneNumber, content, latitude, longitude
     } = request.body
-    
+
+    console.log("Request body: ", request.body, "\nRequest files:", request.files)
+
     const nullValueCheckObject = {
         memberNumber, images, name, address, keywordName, openingTime, phoneNumber, content, latitude, longitude
     }
@@ -90,6 +92,8 @@ exports.createPlace = function(request, response, next) {
 exports.readOnePlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
     let placeNumber = request.params.placeNumber
+    console.log("Request params: ", request.params, "\nRequest query:", request.query)
+
     const nullValueCheckObject = {
         placeNumber
     }
@@ -134,6 +138,8 @@ exports.readOnePlace = function(request, response, next) {
 
 exports.readAllPlace = function(request, response, next) {
     let memberNumber = request.query.memberNumber
+    console.log("Request query: ", request.query)
+
     if (memberNumber == null || memberNumber == undefined) {
         memberNumber = 0
     }
@@ -155,6 +161,7 @@ exports.readAllPlace = function(request, response, next) {
 exports.deletePlace = function(request, response, next) {
     let placeNumber = request.params.placeNumber
     let memberNumber = request.body
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
 
     const nullValueCheckObject = {
         placeNumber, memberNumber
@@ -173,6 +180,7 @@ exports.getCutrrentLocation = function(request, response, next) {
     const setValues = {
         latitude, longitude, latitude2
     } = request.params
+    console.log("Request params: ", request.params)
 
     Place.getCutrrentLocation(setValues, function(error, results){
         if (error) {
@@ -184,6 +192,7 @@ exports.getCutrrentLocation = function(request, response, next) {
 
 exports.placeListUser = function(request, response, next) {
     let memberNumber = request.params.memberNumber
+    console.log("Request params: ", request.params)
 
     const nullValueCheckObject = {
         memberNumber
@@ -208,6 +217,7 @@ exports.placeDuplicateCheck = function(request, response, next) {
     const setValues = {
         name, latitude, longitude
     } = request.query
+    console.log("Request query: ", request.query)
 
     const nullValueCheckObject = {
         name, latitude, longitude
@@ -236,6 +246,8 @@ exports.updatePlace = function(request, response, next) {
         memberNumber, address, addressDetail, phoneNumber, content, latitude, longitude, deleteImageNumber
     } = request.body
     
+    console.log("Request params: ", request.params, "\nRequest body:", request.body,  "\nRequest files:", request.files)
+
     const nullValueCheckObject = {
         placeNumber, memberNumber, address, phoneNumber, content
     }
@@ -338,8 +350,15 @@ exports.updatePlace = function(request, response, next) {
 
 exports.updatePlaceHasKeyword = function(request, response, next) {
     let placeNumber = request.params.placeNumber
-    const setValues = { keywordName, placeKeywordNumber } = request.body
-    const nullValueCheckObject = { placeNumber, keywordName }
+    const setValues = {
+        keywordName, placeKeywordNumber
+    } = request.body
+    
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
+
+    const nullValueCheckObject = {
+        placeNumber, keywordName
+    }
     isEmpty(nullValueCheckObject)
 
     Step (
@@ -427,6 +446,8 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
 exports.updatePlaceOpeningTime = function(request,response, next) {
     let placeNumber = request.params.placeNumber
     const setValues = { openingTime } = request.body
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
+
     const nullValueCheckObject = { openingTime }
     isEmpty(nullValueCheckObject)
 

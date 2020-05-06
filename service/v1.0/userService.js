@@ -3,12 +3,13 @@ const User                  = require('../../dao/v1.0/userDao.js')
 const Step					= require('step')
 const isEmpty               = require('../../costomModules/valueCheck')
 const util                  = require('../../costomModules/util')
-const mail                  = require('../../costomModules/node-mailer')             
+const mail                  = require('../../costomModules/node-mailer')
 
 exports.createUser = function(request, response, next) {
     let setValues = {
         email, password, name, nickName, phoneNumber
     } = request.body
+    console.log("Request body: ", request.body)
 
     const nullValueCheckObject = {
         email, password, name, nickName, phoneNumber
@@ -58,6 +59,7 @@ exports.createUser = function(request, response, next) {
 
 exports.getUserById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
+    console.log("Request params: ", request.params)
 
     User.getUserById(memberNumber, function(error, results) {
         if (error) {
@@ -76,6 +78,8 @@ exports.getLogin = function(request, response, next) {
     const setValues = {
         email, password
     } = request.body
+    console.log("Request body: ", request.body)
+
     const nullValueCheckObject = {
         email, password
     }
@@ -99,11 +103,19 @@ exports.updateById = function(request, response, next) {
     const setValues = {
         password, nickName, phoneNumber
     } = request.body
-    
+    console.log("Request params: ", request.params, "\nRequest body:", request.body)
+
     const nullValueCheckObject = {
         memberNumber
     }
     isEmpty(nullValueCheckObject)
+
+    if (password.length < 8 || password.length > 16) {
+        throw new ErrorHandler(400, 'password size is not valid')
+    }
+    if (phoneNumber.length < 11 || phoneNumber.length > 14) {
+        throw new ErrorHandler(400, 'phoneNumber size is not valid')
+    }
 
     Step (
         function getUserInfo() {
@@ -140,7 +152,8 @@ exports.updateById = function(request, response, next) {
 
 exports.deleteById = function(request, response, next) {
     let memberNumber = request.params.memberNumber
-        
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         memberNumber
     }
@@ -155,7 +168,9 @@ exports.deleteById = function(request, response, next) {
 }
 
 exports.userEmailDuplicateCheck = function(request, response, next) {
-    let email = request.params.email    
+    let email = request.params.email  
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         email
     }
@@ -178,6 +193,8 @@ exports.userEmailDuplicateCheck = function(request, response, next) {
 
 exports.userNickNameDuplicateCheck = function(request, response, next) {
     let nickName = request.params.nickName
+    console.log("Request params: ", request.params)
+
     const nullValueCheckObject = {
         nickName
     }
@@ -202,6 +219,8 @@ exports.userEmailFind = function(request, response, next) {
     const setValues = {
         name, phoneNumber
     } = request.body
+    console.log("Request body: ", request.body)
+
     const nullValueCheckObject = {
         name, phoneNumber
     }
@@ -224,6 +243,7 @@ exports.userPasswordReset = function(request, response, next) {
     const setValues = {
         password, memberNumber
     } = request.body
+    console.log("Request body: ", request.body)
     
     const nullValueCheckObject = {
         password, memberNumber
@@ -243,6 +263,8 @@ exports.userSendSecurityCode = function(request, response, next) {
     const setValues = {
         email, phoneNumber
     } = request.body
+    console.log("Request body: ", request.body)
+
     const nullValueCheckObject = {
         email, phoneNumber
     }
@@ -302,6 +324,7 @@ exports.userCheckSecurityCode = function(request, response, next) {
     const setValues = {
         securityCode, email, phoneNumber
     } = request.body
+    console.log("Request body: ", request.body)
     
     const nullValueCheckObject = {
         securityCode, email, phoneNumber

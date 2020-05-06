@@ -3,11 +3,11 @@ const db                    = require('../../config/db')
 
 var User = function(user) { }
 
-User.createUser = function(request, response) {
+User.createUser = function([email, password, name, nickName, phoneNumber], response) {
     try {
         db((error, connection) => {
-            const insertUserSqlQuery = `INSERT INTO member SET ?`
-            connection.query(insertUserSqlQuery, request, function(error, results) {
+            const insertUserSqlQuery = `INSERT INTO member (email, password, name, nickName, phoneNumber) VALUES (?, ?, ?, ?, ?)`
+            connection.query(insertUserSqlQuery, [email, password, name, nickName, phoneNumber], function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
                 else { response(null, results) }

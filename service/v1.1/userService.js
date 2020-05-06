@@ -1,5 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
-const User                  = require('../../dao/v2.0/userDao.js')
+const User                  = require('../../dao/v1.1/userDao.js')
 const Step					= require('step')
 const util                  = require('../../costomModules/util')
 const mail                  = require('../../costomModules/node-mailer')             

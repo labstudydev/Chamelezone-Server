@@ -173,7 +173,7 @@ Place.selectAllByUser = function([memberNumber], response) {
                                             `FROM place P ` +
                                             `LEFT JOIN member M ON M.memberNumber = P.memberNumber ` +
                                             `LEFT JOIN place_images PI ON PI.placeNumber = P.placeNumber ` +
-                                            `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name SEPARATOR ',') AS 'keywordName' ` +
+                                            `LEFT JOIN (select PHK.placeNumber, GROUP_CONCAT(K.keywordNumber ORDER BY placeKeywordNumber SEPARATOR ',') AS 'keywordNumber', GROUP_CONCAT(K.name ORDER BY placeKeywordNumber SEPARATOR ',') AS 'keywordName' ` +
                                             `           FROM place_has_keyword PHK ` +
                                             `           JOIN keyword K ON K.keywordNumber = PHK.keywordNumber ` +
                                             `           GROUP BY PHK.placeNumber) KEYWORD ON KEYWORD.placeNumber = P.placeNumber ` +

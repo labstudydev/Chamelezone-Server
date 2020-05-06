@@ -1,5 +1,5 @@
 const { ErrorHandler }      = require('../../costomModules/customError')
-const Search                = require('../../dao/v2.0/searchDao.js')
+const Search                = require('../../dao/v1.1/searchDao.js')
 
 exports.searchByPlaceName = function([name], response, next) {
     try {
