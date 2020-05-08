@@ -6,7 +6,7 @@ var Keyword = function(keyword) { }
 Keyword.selectAllKeyword = function(response) {
     try {
         db((error, connection) => {
-            const keywordSqlQuery = 'SELECT keywordNumber, name FROM keyword'
+            const keywordSqlQuery = 'SELECT keywordNumber, name FROM keyword ORDER BY name ASC'
             connection.query(keywordSqlQuery, function(error, results) {
                 connection.release()
                 if (error) { return response(error, null) }
