@@ -11,6 +11,7 @@ const search        = require('./search/search')
 const review        = require('./review/review')
 const course        = require('./course/course')
 const like          = require('./like/like')
+const release       = require('./release/release')
 
 v1.get("/", (request, response) => {
     response.sendFile(path.join(__dirname, '/views/index.hbs'))
@@ -26,5 +27,6 @@ v1.use("/v1.0/search", search)
 v1.use("/v1.0/review", review)
 v1.use("/v1.0/course", course)
 v1.use("/v1.0/like", like)
+v1.use("/v1.0/release", release)
 
 module.exports = v1
