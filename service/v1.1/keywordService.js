@@ -11,3 +11,14 @@ exports.keywordReadAll = function(request, response, next) {
         throw new ErrorHandler(500, error)
     }
 }
+
+exports.keywrodReadByRank = function(request, response, next) {
+    try {
+        Keyword.selectAllKeywordByRank(function(error, results) {
+            if (error) { return response(error, null) }
+                response(null, results)
+        })
+    } catch (error) {
+        throw new ErrorHandler(500, error)
+    }
+}

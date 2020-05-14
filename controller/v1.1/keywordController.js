@@ -10,3 +10,13 @@ exports.keywordReadAll = function(request, response, next) {
         response.status(200).send(results)
     })
 }
+
+exports.keywrodReadByRank = function(request, response, next) {
+    Keyword.keywrodReadByRank(request, function(error, results) {
+        if (error) {
+            return next(new ErrorHandler(500, error))
+        }
+        
+        response.status(200).send(results)
+    })
+}

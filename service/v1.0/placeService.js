@@ -369,7 +369,6 @@ exports.updatePlaceHasKeyword = function(request, response, next) {
             if (error) {
                 throw new ErrorHandler(404, 'Place Has Keyword does not exsit')
             }
-            
             let updateFlag, updateCnt
             let keywordNameArraySize = (keywordName.length > result.length) ? keywordName.length - result.length : 0
             let setKeywordNameValues = new Array(keywordNameArraySize)
