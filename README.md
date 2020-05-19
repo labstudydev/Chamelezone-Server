@@ -8,39 +8,53 @@
 ### Introduce
 
 - 2019년 트렌드 키워드 복합문화 공간 카멜레존
-    - 카멜레존 이란? '카멜레온'과 공간을 뜻하는 '존(zone)'을 합친 신조어로 원래의 용도와는 달리 상황에 맞게 변화하는 공간을 뜻함
+  - 카멜레존? '카멜레온'과 공간을 뜻하는 '존(zone)'을 합친 신조어로 원래의 용도와는 달리 상황에 맞게 변화하는 공간을 뜻함
+- Google Play Store : [#inshop(샵인샵)](https://play.google.com/store/apps/details?id=tk.yeonaeyong.shopinshop)
 - App Naiming
-    - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
-- Google play store : [#inshop(샵인샵)](https://play.google.com/store/apps/details?id=tk.yeonaeyong.shopinshop)
+  - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
 - App Style guide
-![](asset\style-guide.jpg)<br>
+  ![](asset\style-guide.jpg)<br>
+
 
 ### Project function
-  # 이름, 지역, 키워드, 지도 검색 기능
-    장소의 키워드를 통한 카멜레존 검색
-  # 리뷰 서비스
-    이미지 필수 리뷰를 통한 검증된 후기 확인
-  # 카멜레존 장소 등록 및 사용자 간의 코스 공유
-    직접 경험하거나 새롭게 접하게된 카멜레존 장소 및 코스 등록
-    등록된 코스를 통한 카멜레존 공유, 추천 가능
-  # 카멜레존 좋아요
-    내가 좋아하는 카멜레존, 가보고 싶은 카멜레존 장소 등록 가능
+  &nbsp;<b>&#35; 이름, 지역, 키워드, 지도 검색 기능</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;장소의 키워드를 통한 카멜레존 검색
+  &nbsp;<b>&#35; 리뷰 서비스</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;이미지 필수 리뷰를 통한 검증된 후기 확인
+  &nbsp;<b>&#35; 카멜레존 장소 등록 및 사용자 간의 코스 공유</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;직접 경험하거나 새롭게 접하게된 카멜레존 장소 및 코스 등록
+  &nbsp;&nbsp;&nbsp;&nbsp;등록된 코스를 통한 카멜레존 공유, 추천 가능
+  &nbsp;<b>&#35; 카멜레존 좋아요</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;내가 좋아하는 카멜레존, 가보고 싶은 카멜레존 장소 등록 가능
+
 
 ### Application technology
-  - Back-End
-    - Node.js Express
-    - AWS EC2(ubuntu), AWS RDS(Mysql), AWS Route53
-    - Apache
-    - Https server
-  - Tools
-    - Visual Studio code
-    - Mysql Workbench
-    - API 테스트 : Postman
-    - 형상관리 : Git
-    - AWS EC2 접근 : putty
-    - To do List 및 공용 문서 배포 : Google Drive
-    - 커뮤니케이션 : Slack
-  - OS
-    windows10
+- Back-End
+  - Node.js Express
+  - AWS EC2(ubuntu), AWS RDS(Mysql), AWS Route53
+  - Apache
+  - Https server
+- Tools
+  - Visual Studio code
+  - Mysql Workbench
+  - API 테스트 : Postman
+  - 형상관리 : Git
+  - AWS EC2 접근 : putty
+  - To do List 및 공용 문서 배포 : Google Drive
+  - 커뮤니케이션 : Slack
+- OS
+  windows10
+
 
 ### Architecture
+- putty 환경의 forever process로 서버 동작
+- https server, DNS Apache Proxy Pass
+- 메인 서버 데이터베이스(chamelezonedb), 개발-테스트 데이터베이스(alpha_chamelezonedb) 총 2개 구성
+- RestAPI 로 구성된 API 서버
+- callback => Refactoring async/await 진행중
+- 3 layer architecture 로 구성
+  - Express Route Controller : Service- Dao 구조
+  - Express Route Controller : 클라이언트 API 호출
+  - Service : 비즈니스 로직 작성
+  - Dao : Sql Query 관리
+  ![](asset\3LalerArchtect.PNG)<br>
