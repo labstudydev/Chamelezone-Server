@@ -8,12 +8,12 @@
 ### Introduce
 
 - 2019년 트렌드 키워드 복합문화 공간 카멜레존
-  - 카멜레존? '카멜레온'과 공간을 뜻하는 '존(zone)'을 합친 신조어로 원래의 용도와는 달리 상황에 맞게 변화하는 공간을 뜻함
+  - 카멜레존 이란? '카멜레온'과 공간을 뜻하는 '존(zone)'으로 원래의 용도와는 달리 상황에 맞게 변화하는 공간을 뜻
 - Google Play Store : [#inshop(샵인샵)](https://play.google.com/store/apps/details?id=tk.yeonaeyong.shopinshop)
 - App Naiming
   - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
 - App Style guide
-  <img src="https://user-images.githubusercontent.com/40785404/82349621-4fbdbb80-9a35-11ea-86de-7a5328b92fbe.jpg" width="800" height="600" />
+  <img src="https://user-images.githubusercontent.com/40785404/82349621-4fbdbb80-9a35-11ea-86de-7a5328b92fbe.jpg" width="650" height="450" />
 
 
 ### Project function
