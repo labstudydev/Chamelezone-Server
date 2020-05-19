@@ -13,7 +13,7 @@
 - App Naiming
   - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
 - App Style guide
-  ![App Style guide](./asset/style-guide.jpg)
+  ![App Style guide](./asset/style-guide.jpg){: width="70" height="70"}
 
 
 ### Project function
@@ -56,5 +56,5 @@
   - Express Route Controller : Service- Dao 구조
   - Express Route Controller : 클라이언트 API 호출
   - Service : 비즈니스 로직 작성
-  - Dao : Sql Query 관리
-  ![3 layer architecture](./asset/3LalerArchtect.PNG)
+  - Dao : Sql Query 관리<br>
+  ![3 layer architecture](./asset/3LalerArchtect.PNG){: width="70" height="70"}
