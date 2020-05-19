@@ -13,18 +13,26 @@
 - App Naiming
   - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
 - App Style guide
-  ![](asset\style-guide.jpg)<br>
+  ![](asset\style-guide.jpg)
 
 
 ### Project function
   &nbsp;<b>&#35; 이름, 지역, 키워드, 지도 검색 기능</b>
+
   &nbsp;&nbsp;&nbsp;&nbsp;장소의 키워드를 통한 카멜레존 검색
+
   &nbsp;<b>&#35; 리뷰 서비스</b>
+
   &nbsp;&nbsp;&nbsp;&nbsp;이미지 필수 리뷰를 통한 검증된 후기 확인
+
   &nbsp;<b>&#35; 카멜레존 장소 등록 및 사용자 간의 코스 공유</b>
+
   &nbsp;&nbsp;&nbsp;&nbsp;직접 경험하거나 새롭게 접하게된 카멜레존 장소 및 코스 등록
+
   &nbsp;&nbsp;&nbsp;&nbsp;등록된 코스를 통한 카멜레존 공유, 추천 가능
+
   &nbsp;<b>&#35; 카멜레존 좋아요</b>
+
   &nbsp;&nbsp;&nbsp;&nbsp;내가 좋아하는 카멜레존, 가보고 싶은 카멜레존 장소 등록 가능
 
 
@@ -57,4 +65,4 @@
   - Express Route Controller : 클라이언트 API 호출
   - Service : 비즈니스 로직 작성
   - Dao : Sql Query 관리
-  ![](asset\3LalerArchtect.PNG)<br>
+  ![](asset\3LalerArchtect.PNG)
