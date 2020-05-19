@@ -12,7 +12,7 @@
 - Google Play Store : [#inshop(샵인샵)](https://play.google.com/store/apps/details?id=tk.yeonaeyong.shopinshop)
 - App Naiming
   - #inshop(샵인샵) 이란? '가게 안에 테마(해시태그(#))'라는 뜻
-- App Style guide
+- App Style guide<br>
   <img src="https://user-images.githubusercontent.com/40785404/82349621-4fbdbb80-9a35-11ea-86de-7a5328b92fbe.jpg" width="600" height="400" />
 
 
