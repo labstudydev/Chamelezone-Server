@@ -28,6 +28,12 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;내가 좋아하는 카멜레존, 가보고 싶은 카멜레존 장소 등록 가능<br>
 
 
+### Preview
+![ezgif com-resize_1](https://user-images.githubusercontent.com/40785404/86130681-7a645f00-bb1f-11ea-9820-6593c4c8e1f1.gif)&nbsp;&nbsp;
+![ezgif com-resize_2](https://user-images.githubusercontent.com/40785404/86130722-88b27b00-bb1f-11ea-88bc-9906699faf29.gif)&nbsp;&nbsp;
+![ezgif com-resize_3](https://user-images.githubusercontent.com/40785404/86130752-9962f100-bb1f-11ea-8305-fb2d66e683b2.gif)
+
+
 ### Application technology
 - Back-End
   - Node.js Express
