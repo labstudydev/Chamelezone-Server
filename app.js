@@ -27,17 +27,17 @@ app.use(routerApiV1_1)
 app.use(routerApiV2)
 
 /* openssl localhost */ 
-// const options = {
-//     key: fs.readFileSync('./keys/private.pem'),
-// 	cert: fs.readFileSync('./keys/public.pem')
-// }
+const options = {
+    key: fs.readFileSync('./keys/private.pem'),
+	cert: fs.readFileSync('./keys/public.pem')
+}
 
 /* letsencrypt ec2 server */ 
-const options = {
-    ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
-}
+// const options = {
+//     ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
+//     key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
+//     cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
+// }
 
 app.use((error, request, response, next) => {
     if (error instanceof ErrorHandler) {

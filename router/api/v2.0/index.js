@@ -11,9 +11,9 @@ const search        = require('./search/search')
 const review        = require('./review/review')
 const course        = require('./course/course')
 const like          = require('./like/like')
+const release       = require('./release/release')
 
 v2.get("/", (request, response) => {
-    // response.sendFile(path.join(__dirname, '../../views/index.hbs'))
     response.sendFile(path.join(__dirname, '/views/index.hbs'))
     response.status(200).end('v2.0 version get success')
 })
@@ -27,5 +27,6 @@ v2.use("/v2.0/search", search)
 v2.use("/v2.0/review", review)
 v2.use("/v2.0/course", course)
 v2.use("/v2.0/like", like)
+v2.use("/v2.0/release", release)
 
 module.exports = v2
