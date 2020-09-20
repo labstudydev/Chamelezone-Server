@@ -193,9 +193,33 @@ exports.placeUpdate = function(request, response, next) {
 }
 
 exports.placeKeywordUpdate = function(request, response, next) {
-    Place.updatePlaceHasKeyword(request, response, next)
+    let placeNumber = request.params.placeNumber
+    const setValues = { keywordName, placeKeywordNumber } = request.body
+    const nullValueCheckObject = { placeNumber, keywordName }
+    isEmpty(nullValueCheckObject)
+
+    Place.updatePlaceHasKeyword([placeNumber, keywordName, placeKeywordNumber], function(error, results) {
+        if (error) {
+            return next(new ErrorHandler(500, error.message))
+        }
+        
+        if (results == 200) { response.status(200).send('Place_Has_Keyword update success !!!') }
+        if (results == 'INSERT SUCCESS') { response.status(404).send('Place insert-update success !!!') }
+        if (results == 'DELETE SUCCESS') { response.status(200).send('Place delete-update success !!!') }
+    })
 }
 
 exports.placeOpeningTimeUpdate = function(request, response, next) {
-    Place.updatePlaceOpeningTime(request, response, next)
+    let placeNumber = request.params.placeNumber
+    const setValues = { openingTime } = request.body
+    const nullValueCheckObject = { openingTime }
+    isEmpty(nullValueCheckObject)
+
+    Place.updatePlaceOpeningTime([placeNumber, openingTime], function(error, results) {
+        if (error) {
+            return next(new ErrorHandler(500, error.message))
+        }
+        
+        response.status(200).send("Place update success !!!")
+    })
 }

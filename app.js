@@ -1,9 +1,10 @@
-const { ErrorHandler, handleError , NullCheckErrorHandler, nullCheckHandleError}     = require('./costomModules/customError')
+const { ErrorHandler, handleError , NullCheckErrorHandler, nullCheckHandleError }     = require('./costomModules/customError')
 const express                           = require('express')
 const hbs                               = require('express-handlebars')
 const app                               = express()
 const bodyParser                        = require('body-parser')
 const routerApiV1                       = require('./router/api/v1.0')
+const routerApiV1_1                     = require('./router/api/v1.1')
 const routerApiV2                       = require('./router/api/v2.0')
 const https                             = require('https')
 const http                              = require('http')
@@ -22,20 +23,21 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/image', express.static(__dirname + '/public/uploads'))
 app.use(routerApiV1)
+app.use(routerApiV1_1)
 app.use(routerApiV2)
 
 /* openssl localhost */ 
-// const options = {
-//     key: fs.readFileSync('./keys/private.pem'),
-// 	cert: fs.readFileSync('./keys/public.pem')
-// }
+const options = {
+    key: fs.readFileSync('./keys/private.pem'),
+	cert: fs.readFileSync('./keys/public.pem')
+}
 
 /* letsencrypt ec2 server */ 
-const options = {
-    ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
-}
+// const options = {
+//     ca: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/fullchain.pem'),
+//     key: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/privkey.pem'),
+//     cert: fs.readFileSync('/etc/letsencrypt/live/shopinshop.tk/cert.pem')
+// }
 
 app.use((error, request, response, next) => {
     if (error instanceof ErrorHandler) {
@@ -57,5 +59,5 @@ http.createServer(app).listen(3000, function() {
 })
 
 https.createServer(options, app).listen(3030, function() {
-    console.log("HTTPS server listening on port " + 3030);
+    console.log("HTTPS server listening on port " + 3030)
 })

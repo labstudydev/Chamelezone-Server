@@ -1,5 +1,5 @@
 const express       = require('express')
-const v2            = express.Router()
+const v1_1          = express.Router()
 const path          = require('path')
 
 const user          = require('./user/user')
@@ -13,20 +13,20 @@ const course        = require('./course/course')
 const like          = require('./like/like')
 const release       = require('./release/release')
 
-v2.get("/", (request, response) => {
+v1_1.get("/", (request, response) => {
     response.sendFile(path.join(__dirname, '/views/index.hbs'))
-    response.status(200).end('v2.0 version get success')
+    response.status(200).end('v1.1 version get success')
 })
 
-v2.use("/v2.0/user", user)
-v2.use("/v2.0/place", place)
-v2.use("/v2.0/image", image)
-v2.use("/v2.0/map", map)
-v2.use("/v2.0/keyword", keyword)
-v2.use("/v2.0/search", search)
-v2.use("/v2.0/review", review)
-v2.use("/v2.0/course", course)
-v2.use("/v2.0/like", like)
-v2.use("/v2.0/release", release)
+v1_1.use("/v1.1/user", user)
+v1_1.use("/v1.1/place", place)
+v1_1.use("/v1.1/image", image)
+v1_1.use("/v1.1/map", map)
+v1_1.use("/v1.1/keyword", keyword)
+v1_1.use("/v1.1/search", search)
+v1_1.use("/v1.1/review", review)
+v1_1.use("/v1.1/course", course)
+v1_1.use("/v1.1/like", like)
+v1_1.use("/v1.1/release", release)
 
-module.exports = v2
+module.exports = v1_1

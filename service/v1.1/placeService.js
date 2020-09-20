@@ -225,116 +225,114 @@ exports.updatePlace = function([placeNumber, images, memberNumber, address, addr
     }
 }
 
-exports.updatePlaceHasKeyword = function(request, response, next) {
-    let placeNumber = request.params.placeNumber
-    const setValues = { keywordName, placeKeywordNumber } = request.body
-    const nullValueCheckObject = { placeNumber, keywordName }
-    isEmpty(nullValueCheckObject)
-
-    Step (
-        function updatePlaceHasKeywordCheck() {
-            Place.selectPlaceHasKeyword([placeNumber], this)
-        },
-        function updatePlaceHasKeywordEdit(error, result) {
-            if (error) {
-                throw new ErrorHandler(404, 'Place Has Keyword does not exsit')
-            }
-            
-            let updateFlag, updateCnt
-            let keywordNameArraySize = (keywordName.length > result.length) ? keywordName.length - result.length : 0
-            let setKeywordNameValues = new Array(keywordNameArraySize)
-
-            let keywordNumberList = new Array()
-            let deleteKeywordList = new Array()
-            if (keywordName.length == result.length) {
-                updateFlag = 0
-                updateCnt = result.length
-            }
-            if (keywordName.length > result.length){
-                updateFlag = true
-                updateCnt = result.length
-
-                for (i = 0; i < keywordNameArraySize; i++) {
-                    setKeywordNameValues[i] = new Array(1)
+exports.updatePlaceHasKeyword = function([placeNumber, keywordName, placeKeywordNumber], response, next) {
+    try {
+        Step (
+            function updatePlaceHasKeywordCheck() {
+                Place.selectPlaceHasKeyword([placeNumber], this)
+            },
+            function updatePlaceHasKeywordEdit(error, result) {
+                if (error) {
+                    throw new ErrorHandler(500, error)
                 }
                 
-                for (i = 0; i < keywordName.length - result.length; i++) {
-                    setKeywordNameValues[i][0] = keywordName[result.length + i]
-                    setKeywordNameValues[i].unshift(placeNumber)
+                let updateFlag, updateCnt
+                let keywordNameArraySize = (keywordName.length > result.length) ? keywordName.length - result.length : 0
+                let setKeywordNameValues = new Array(keywordNameArraySize)
+    
+                let keywordNumberList = new Array()
+                let deleteKeywordList = new Array()
+                if (keywordName.length == result.length) {
+                    updateFlag = 0
+                    updateCnt = result.length
+                }
+                if (keywordName.length > result.length){
+                    updateFlag = true
+                    updateCnt = result.length
+    
+                    for (i = 0; i < keywordNameArraySize; i++) {
+                        setKeywordNameValues[i] = new Array(1)
+                    }
+                    
+                    for (i = 0; i < keywordName.length - result.length; i++) {
+                        setKeywordNameValues[i][0] = keywordName[result.length + i]
+                        setKeywordNameValues[i].unshift(placeNumber)
+                    }
+                }
+    
+                if (keywordName.length < result.length) {
+                    updateFlag = false
+                    updateCnt = keywordName.length                 
+                    
+                    keywordNumberList = result.map((target) => target['placeKeywordNumber'].toString())
+                    deleteKeywordList = keywordNumberList.filter((target) => !placeKeywordNumber.includes(target))
+                }
+    
+                for(i = 0; i < updateCnt; i++) {
+                    Place.updatePlaceHasKeyword([keywordName[i], placeKeywordNumber[i], placeNumber], function(error, results) {
+                        if (error) { return response(error, null) }
+                    })
+                }
+                    
+                let resultValue = {
+                    updateFlag,
+                    placeNumber,
+                    setKeywordNameValues,
+                    deleteKeywordList
+                }
+    
+                return resultValue
+            },
+            function updatePlaceHasKeywordResult(error, result) {
+                if (error) {
+                    throw new ErrorHandler(500, error)
+                }
+    
+                if (result.updateFlag === true) {
+                    Place.insertPlaceHasKeyowrd([result.setKeywordNameValues], function(error, results) {
+                        if (error) { return response(error, null) }
+                        return response(null, "INSERT SUCCESS")
+                    })
+                }
+    
+                if (result.updateFlag === false) {
+                    Place.deletePlaceHasKeyowrd([result.placeNumber, result.deleteKeywordList], function(error, results) {
+                        if (error) { return response(error, null) }
+                        return response(null, "DELETE SUCCESS")
+                    })
+                }
+    
+                if (result.updateFlag === 0) {
+                    return response(null, 200)
                 }
             }
-
-            if (keywordName.length < result.length) {
-                updateFlag = false
-                updateCnt = keywordName.length                 
-                
-                keywordNumberList = result.map((target) => target['placeKeywordNumber'].toString())
-                deleteKeywordList = keywordNumberList.filter((target) => !placeKeywordNumber.includes(target))
-            }
-
-            for(i = 0; i < updateCnt; i++) {
-                Place.updatePlaceHasKeyword([keywordName[i], placeKeywordNumber[i], placeNumber], function(error, results) {
-                    if (error) { return next(new ErrorHandler(500, error)) }
-                })
-            }
-                
-            let resultValue = {
-                updateFlag,
-                placeNumber,
-                setKeywordNameValues,
-                deleteKeywordList
-            }
-
-            return resultValue
-        },
-        function updatePlaceHasKeywordResult(error, result) {
-            if (error) {
-                throw new ErrorHandler(500, error)
-            }
-
-            if (result.updateFlag === true) {
-                Place.insertPlaceHasKeyowrd([result.setKeywordNameValues], function(error, results) {
-                    if (error) { return next(new ErrorHandler(500, error)) }
-                    response.status(200).send("Place update success !!!")
-                })
-            }
-
-            if (result.updateFlag === false) {
-                Place.deletePlaceHasKeyowrd([result.placeNumber, result.deleteKeywordList], function(error, results) {
-                    if (error) { return next(new ErrorHandler(500, error)) }
-                    response.status(200).send("Place update success !!!")
-                })
-            }
-
-            if (result.updateFlag === 0) {
-                response.status(200).send("Place_Has_Keyword update success !!!")
-            }
-        }
-    )
+        )    
+    } catch (error) {
+        throw new ErrorHandler(500, error)   
+    }
 }
 
-exports.updatePlaceOpeningTime = function(request,response, next) {
-    let placeNumber = request.params.placeNumber
-    const setValues = { openingTime } = request.body
-    const nullValueCheckObject = { openingTime }
-    isEmpty(nullValueCheckObject)
-
-    Step (
-        function updatePlaceOpeningTimeCheck() {
-            Place.selectPlaceOpeningTime([placeNumber], this)
-        },
-        function updatePlaceOpeningTimeEdit(error, result) {
-            if(error) {
-                throw new ErrorHandler(404, 'Place opeingTime does not exsit')
+exports.updatePlaceOpeningTime = function([placeNumber, openingTime],response, next) {
+    try {
+        Step (
+            function updatePlaceOpeningTimeCheck() {
+                Place.selectPlaceOpeningTime([placeNumber], this)
+            },
+            function updatePlaceOpeningTimeEdit(error, result) {
+                if(error) {
+                    throw new ErrorHandler(404, 'Place opeingTime does not exsit')
+                }
+    
+                let openingTimeString = openingTime.toString()
+                openingTimeString = (openingTimeString == result[0].openingTime) ? result[0].phoneNumber : openingTimeString
+                
+                Place.updatePlaceOpeningTime([openingTimeString, placeNumber], function(error, results) {
+                    if (error) { return response(error, null) }
+                    response(null, results)
+                })
             }
-
-            let openingTimeString = openingTime.toString()
-            openingTimeString = (openingTimeString == result[0].openingTime) ? result[0].phoneNumber : openingTimeString
-            
-            Place.updatePlaceOpeningTime([openingTimeString, placeNumber], function(error, results) {
-                if (error) { return next(new ErrorHandler(500, error)) }
-                response.status(200).send("Place update success !!!")
-            })
-        }
-    )
+        )
+    } catch (error) {
+        throw new ErrorHandler(500, error)  
+    }   
 }
